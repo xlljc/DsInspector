@@ -1,39 +1,58 @@
-extends WindowDialog
+extends Window
 
-export var tree_path: NodePath;
-export var exclude_list_path: NodePath;
-export var select_btn_path: NodePath;
-export var save_btn_path: NodePath;
-export var delete_btn_path: NodePath;
-export var hide_border_btn_path: NodePath;
-export var play_btn_path: NodePath;
-export var file_window_path: NodePath;
-export var put_away_path: NodePath;
+@export
+var tree_path: NodePath;
+@export
+var exclude_list_path: NodePath;
+@export
+var select_btn_path: NodePath;
+@export
+var save_btn_path: NodePath;
+@export
+var delete_btn_path: NodePath;
+@export
+var hide_border_btn_path: NodePath;
+@export
+var play_btn_path: NodePath;
+@export
+var file_window_path: NodePath;
+@export
+var put_away_path: NodePath;
 
 const SAVE_PATH := "user://ds_inspector_window.txt"
 
-onready var tree: NodeTree = get_node(tree_path)
-onready var exclude_list: ExcludeList = get_node(exclude_list_path)
-onready var select_btn: Button = get_node(select_btn_path)
-onready var save_btn: Button = get_node(save_btn_path)
-onready var delete_btn: Button = get_node(delete_btn_path)
-onready var hide_border_btn: Button = get_node(hide_border_btn_path)
-onready var play_btn: Button = get_node(play_btn_path)
-onready var file_window: FileDialog = get_node(file_window_path)
-onready var put_away: Button = get_node(put_away_path)
-onready var debug_tool = get_node("/root/DsInspector")
+@onready
+var tree: NodeTree = get_node(tree_path)
+@onready
+var exclude_list: ExcludeList = get_node(exclude_list_path)
+@onready
+var select_btn: Button = get_node(select_btn_path)
+@onready
+var save_btn: Button = get_node(save_btn_path)
+@onready
+var delete_btn: Button = get_node(delete_btn_path)
+@onready
+var hide_border_btn: Button = get_node(hide_border_btn_path)
+@onready
+var play_btn: Button = get_node(play_btn_path)
+@onready
+var file_window: FileDialog = get_node(file_window_path)
+@onready
+var put_away: Button = get_node(put_away_path)
+@onready
+var debug_tool = get_node("/root/DsInspector")
 
 func _ready():
 	_load_window_state()
-	select_btn.connect("pressed", self, "select_btn_click")
-	delete_btn.connect("pressed", self, "delete_btn_click")
-	hide_border_btn.connect("pressed", self, "hide_border_btn_click")
-	play_btn.connect("pressed", self, "play_btn_click")
-	save_btn.connect("pressed", self, "save_btn_click")
-	connect("popup_hide", self, "do_hide")
-	connect("resized", self, "_on_window_resized")
-	file_window.connect("file_selected", self, "on_file_selected")
-	put_away.connect("pressed", self, "do_put_away")
+	select_btn.pressed.connect(select_btn_click)
+	delete_btn.pressed.connect(delete_btn_click)
+	hide_border_btn.pressed.connect(hide_border_btn_click)
+	play_btn.pressed.connect(play_btn_click)
+	save_btn.pressed.connect(save_btn_click)
+	close_requested.connect(do_hide)
+	size_changed.connect(_on_window_resized)
+	file_window.file_selected.connect(on_file_selected)
+	put_away.pressed.connect(do_put_away)
 
 # 显示弹窗
 func do_show():
@@ -69,7 +88,7 @@ func hide_border_btn_click():
 	pass
 
 func play_btn_click():
-	var p = !get_tree().paused
+	var p: bool = !get_tree().paused
 	get_tree().paused = p
 	play_btn.text = "继续游戏" if p else "暂停游戏"
 	pass
@@ -105,14 +124,14 @@ func save_node_as_scene(node: Node, path: String) -> void:
 	node.owner = null
 	_recursion_set_owner(node, node)
 	var scene: PackedScene = PackedScene.new()
-	var result = scene.pack(node)
+	var result: int = scene.pack(node)
 	if result != OK:
 		print("打包失败，错误码：", result)
 		node.owner = o
 		return
 	
 	var _file = File.new()
-	var _err = ResourceSaver.save(path, scene)
+	var _err: int = ResourceSaver.save(path, scene)
 	if _err == OK:
 		print("保存成功: ", path)
 	else:

@@ -1,8 +1,10 @@
 extends BaseAttr
 class_name LabelAttr
 
-onready var label: Label = $Name
-onready var text: Label = $Text
+@onready
+var label: Label = $Name
+@onready
+var text: Label = $Text
 
 var _node: Node
 

@@ -7,7 +7,8 @@ var drag_move_flag: bool = false
 
 const SAVE_PATH := "user://ds_inspector_icon.txt"
 
-onready var debug_tool = get_node("/root/DsInspector")
+@onready
+var debug_tool = get_node("/root/DsInspector")
 
 func _ready():
 	
@@ -15,9 +16,9 @@ func _ready():
 		get_parent().call_deferred("queue_free")
 		pass
 	_load_pos()
-	connect("pressed", self, "_on_HoverIcon_pressed")
-	connect("mouse_entered", self, "_on_mouse_entered")
-	connect("mouse_exited", self, "_on_mouse_exited")
+	pressed.connect(_on_HoverIcon_pressed)
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 	pass
 
 func _on_mouse_entered():
@@ -32,12 +33,12 @@ func _on_mouse_exited():
 
 func _input(event):
 	# 检测鼠标按下事件
-	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			drag_move_flag = false
 			if get_global_rect().has_point(event.position):
 				is_dragging = true
-				drag_offset = event.position - rect_global_position
+				drag_offset = event.position - global_position
 		else:
 			is_dragging = false
 			_save_pos()
@@ -45,7 +46,7 @@ func _input(event):
 	# 检测鼠标移动事件
 	if event is InputEventMouseMotion and is_dragging:
 		drag_move_flag = true
-		rect_global_position = _clamp_to_screen(event.position - drag_offset)
+		global_position = _clamp_to_screen(event.position - drag_offset)
 
 
 func _on_HoverIcon_pressed():
@@ -56,9 +57,9 @@ func _on_HoverIcon_pressed():
 
 
 func _save_pos():
-	var file := File.new()
-	if file.open(SAVE_PATH, File.WRITE) == OK:
-		var pos := rect_global_position
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file:
+		var pos := global_position
 		file.store_string(str(pos.x) + "," + str(pos.y))
 		file.close()
 	else:
@@ -66,25 +67,25 @@ func _save_pos():
 	pass
 
 func _clamp_to_screen(pos: Vector2) -> Vector2:
-	var vp := get_viewport().size
-	var w := rect_size.x
-	var h := rect_size.y
+	var vp := get_viewport().get_visible_rect().size
+	var w := size.x
+	var h := size.y
 	# 确保在可视区域内
 	pos.x = clamp(pos.x, 0, max(0, vp.x - w))
 	pos.y = clamp(pos.y, 0, max(0, vp.y - h))
 	return pos
 
 func _load_pos():
-	var file := File.new()
-	if file.file_exists(SAVE_PATH):
-		if file.open(SAVE_PATH, File.READ) == OK:
+	if FileAccess.file_exists(SAVE_PATH):
+		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+		if file:
 			var content := file.get_as_text()
 			file.close()
 			var parr := content.split(",")
 			if parr.size() >= 2:
 				var raw_pos := Vector2(float(parr[0]), float(parr[1]))
 				var clamped := _clamp_to_screen(raw_pos)
-				rect_global_position = clamped
+				global_position = clamped
 				# 如果位置被修正，保存回配置文件以持久化
 				if clamped != raw_pos:
 					_save_pos()

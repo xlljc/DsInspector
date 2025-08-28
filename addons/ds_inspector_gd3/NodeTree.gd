@@ -148,7 +148,8 @@ class IconMapping:
 		pass
 pass
 
-export var update_time: float = 1  # 更新间隔时间
+@export
+var update_time: float = 1  # 更新间隔时间
 var _timer: float = 0.0  # 计时器
 var _is_show: bool = false
 var _init_tree: bool = false  # 是否已初始化树
@@ -156,20 +157,26 @@ var _init_tree: bool = false  # 是否已初始化树
 var _is_in_select_func: bool = false
 var _next_frame_index: int = 0
 var _next_frame_select: TreeItem = null # 下一帧要选中的item
-onready var icon_mapping: IconMapping = IconMapping.new()
-onready var debug_tool = get_node("/root/DsInspector")
-onready var _script_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_script.svg")
-onready var _scene_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_play_scene.svg")
-onready var _visible_icon: Texture = preload("res://addons/ds_inspector_gd3/Visible.png")
-onready var _hide_icon: Texture = preload("res://addons/ds_inspector_gd3/Hide.png")
+@onready
+var icon_mapping: IconMapping = IconMapping.new()
+@onready
+var debug_tool: CanvasLayer = get_node("/root/DsInspector")
+@onready
+var _script_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_script.svg")
+@onready
+var _scene_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_play_scene.svg")
+@onready
+var _visible_icon: Texture = preload("res://addons/ds_inspector_gd3/Visible.png")
+@onready
+var _hide_icon: Texture = preload("res://addons/ds_inspector_gd3/Hide.png")
 
 func _ready():
 	# 选中item信号
-	connect("item_selected", self, "_on_item_selected")
+	connect("item_selected", Callable(self,"_on_item_selected"))
 	# item按钮按下信号
-	connect("button_pressed", self, "_on_button_pressed")
+	connect("button_pressed", Callable(self,"_on_button_pressed"))
 	# 展开收起节点信号
-	connect("item_collapsed", self, "_on_item_collapsed")
+	connect("item_collapsed", Callable(self,"_on_item_collapsed"))
 
 func _process(delta):
 	if _is_show:
@@ -269,7 +276,7 @@ func locate_selected(select_node: Node):
 	# print("执行选中节点...")
 	var path_arr: Array = []
 	# 一路往上找父节点
-	var current = select_node
+	var current := select_node
 	while current:
 		path_arr.push_front(current)
 		current = current.get_parent()

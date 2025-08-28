@@ -1,20 +1,26 @@
 extends Tree
 
-export var node_tree_path: NodePath
+@export
+var node_tree_path: NodePath
 
-onready var _script_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_script.svg")
-onready var _scene_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_play_scene.svg")
-onready var _visible_icon: Texture = preload("res://addons/ds_inspector_gd3/Visible.png")
-onready var _hide_icon: Texture = preload("res://addons/ds_inspector_gd3/Hide.png")
+@onready
+var _script_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_script.svg")
+@onready
+var _scene_icon: Texture = preload("res://addons/ds_inspector_gd3/node_icon/icon_play_scene.svg")
+@onready
+var _visible_icon: Texture = preload("res://addons/ds_inspector_gd3/Visible.png")
+@onready
+var _hide_icon: Texture = preload("res://addons/ds_inspector_gd3/Hide.png")
 
-onready var node_tree: NodeTree = get_node(node_tree_path)
+@onready
+var node_tree: NodeTree = get_node(node_tree_path)
 var _root_item: TreeItem
 
 func _ready():
 	# 选中item信号
-	connect("item_selected", self, "_on_item_selected")
+	connect("item_selected", Callable(self, "_on_item_selected"))
 	# item按钮按下信号
-	connect("button_pressed", node_tree, "_on_button_pressed")
+	connect("button_pressed", Callable(node_tree, "_on_button_pressed"))
 	_root_item = create_item()
 
 ## 选中节点
@@ -33,8 +39,8 @@ func set_search_node(arr: Array):
 	pass
 
 func _create_node_item(node: Node):
-	var item: TreeItem = create_item(_root_item)
-	var node_data = node_tree.create_node_data(node)
+	var item: TreeItem      = create_item(_root_item)
+	var node_data := node_tree.create_node_data(node)
 	item.set_metadata(0, node_data)  # 存储节点引用
 	item.set_text(0, node.name)
 	item.set_icon(0, load(node_tree.icon_mapping.get_icon(node.get_class())))

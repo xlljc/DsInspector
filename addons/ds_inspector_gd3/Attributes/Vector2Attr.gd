@@ -1,9 +1,12 @@
 extends BaseAttr
 class_name Vector2Attr
 
-onready var label: Label = $Name
-onready var x_line_edit: LineEdit = $HBoxContainer/XLineEdit
-onready var y_line_edit: LineEdit = $HBoxContainer/YLineEdit
+@onready
+var label: Label = $Name
+@onready
+var x_line_edit: LineEdit = $HBoxContainer/XLineEdit
+@onready
+var y_line_edit: LineEdit = $HBoxContainer/YLineEdit
 
 var _attr: String
 var _node: Node
@@ -12,14 +15,14 @@ var _focus_flag: bool = false
 var _temp_value: Vector2
 
 func _ready():
-	x_line_edit.connect("text_changed", self, "_on_x_text_changed")
-	y_line_edit.connect("text_changed", self, "_on_y_text_changed")
+	x_line_edit.text_changed.connect(_on_x_text_changed)
+	y_line_edit.text_changed.connect(_on_y_text_changed)
 
-	x_line_edit.connect("focus_entered", self, "_on_focus_entered")
-	y_line_edit.connect("focus_entered", self, "_on_focus_entered")
+	x_line_edit.focus_entered.connect(_on_focus_entered)
+	y_line_edit.focus_entered.connect(_on_focus_entered)
 
-	x_line_edit.connect("focus_exited", self, "_on_focus_exited")
-	y_line_edit.connect("focus_exited", self, "_on_focus_exited")
+	x_line_edit.focus_exited.connect(_on_focus_exited)
+	y_line_edit.focus_exited.connect(_on_focus_exited)
 	pass
 
 func set_node(node: Node):

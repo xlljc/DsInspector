@@ -1,20 +1,34 @@
 extends CanvasLayer
 
-export var window_path: NodePath;
-export var brush_path: NodePath;
-export var mask_path: NodePath;
-export var inspector_path: NodePath;
-export var tips_path: NodePath;
-export var tips_anim_path: NodePath;
-export var cheat_path: NodePath;
+@export
+var window_path: NodePath;
+@export
+var brush_path: NodePath;
+@export
+var mask_path: NodePath;
+@export
+var inspector_path: NodePath;
+@export
+var tips_path: NodePath;
+@export
+var tips_anim_path: NodePath;
+@export
+var cheat_path: NodePath;
 
-onready var window: WindowDialog = get_node(window_path)
-onready var brush: Brush = get_node(brush_path)
-onready var mask: Control = get_node(mask_path)
-onready var inspector: InspectorContainer = get_node(inspector_path)
-onready var tips: Label = get_node(tips_path)
-onready var tips_anim: AnimationPlayer = get_node(tips_anim_path)
-onready var cheat: VBoxContainer = get_node(cheat_path)
+@onready
+var window: Window = get_node(window_path)
+@onready
+var brush: Brush = get_node(brush_path)
+@onready
+var mask: Control = get_node(mask_path)
+@onready
+var inspector: InspectorContainer = get_node(inspector_path)
+@onready
+var tips: Label = get_node(tips_path)
+@onready
+var tips_anim: AnimationPlayer = get_node(tips_anim_path)
+@onready
+var cheat: VBoxContainer = get_node(cheat_path)
 
 var main_camera: Camera2D = null
 var prev_click: bool = false
@@ -43,7 +57,7 @@ class NodeTransInfo:
 
 func _ready():
 	brush.node_tree = window.tree
-	tips_anim.connect("animation_finished", self, "on_tip_anim_finished")
+	tips_anim.animation_finished.connect(on_tip_anim_finished)
 	pass
 
 ## func _on_idle_frame() -> void:
@@ -58,16 +72,16 @@ func _process(delta: float) -> void:
 			_check_camer_timer = 1.0
 			check_camera()
 
-		if !_mouse_in_hover_btn and Input.is_mouse_button_pressed(BUTTON_LEFT):
+		if !_mouse_in_hover_btn and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			if !prev_click:
 				prev_click = true
 				# 在macOS上使用Command键，其他平台使用Ctrl键
-				var modifier_key_pressed = false
+				var modifier_key_pressed: bool = false
 				var p = OS.get_name()
 				if p == "OSX":
 					modifier_key_pressed = Input.is_key_pressed(KEY_META)  # Command键
 				else:
-					modifier_key_pressed = Input.is_key_pressed(KEY_CONTROL)  # Ctrl键
+					modifier_key_pressed = Input.is_key_pressed(KEY_CTRL)  # Ctrl键
 				
 				if modifier_key_pressed: # 按下修饰键, 执行向前选择
 					if _selected_list.size() > 0:
@@ -130,7 +144,7 @@ func get_check_node() -> Node:
 	if _has_exclude_coll:
 		while _coll_list.size() > 0:
 			var item = _coll_list[0]
-			_coll_list.remove(0)
+			_coll_list.remove_at(0)
 			var collider = item["collider"]
 			if collider and is_instance_valid(collider) and !(collider is TileMap):
 				var collision_shape = _find_collision_shape(collider)
@@ -270,7 +284,7 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 		var curr_node: Node = node
 		while curr_node != null:
 			if curr_node is Control:
-				r += deg2rad(curr_node.rect_rotation)
+				r += deg_to_rad(curr_node.rect_rotation)
 				s *= curr_node.rect_scale
 			elif curr_node is CanvasItem:
 				r += curr_node.global_rotation
@@ -281,7 +295,7 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 		rect.size *= s
 		return NodeTransInfo.new(rect.position, rect.size, r)
 	elif node is Node2D:
-		if node is Sprite:
+		if node is Sprite2D:
 			var texture: Texture = node.texture;
 			if texture:
 				var scale: Vector2 = node.global_scale;
@@ -294,7 +308,7 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 					return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
 				else:
 					return NodeTransInfo.new(node.global_position + node.offset * scale, size, node.global_rotation)
-		elif node is AnimatedSprite:
+		elif node is AnimatedSprite2D:
 			var sf: SpriteFrames = node.frames
 			if sf:
 				# spriteFrames.GetFrameTexture(AnimatedSprite.Animation, AnimatedSprite.Frame);
@@ -318,7 +332,7 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 			var size: Vector2 = rect.size * scale * node.cell_size
 			var pos: Vector2 = rect.position * scale * node.cell_size
 			return NodeTransInfo.new(pos + node.global_position, size, node.global_rotation)
-		elif node is BackBufferCopy or node is VisibilityNotifier2D:
+		elif node is BackBufferCopy or node is VisibleOnScreenEnabler2D or node is VisibleOnScreenNotifier2D:
 			var scale: Vector2 = node.global_scale;
 			var rect: Rect2 = node.rect
 			return NodeTransInfo.new(node.global_position + rect.position, rect.size * scale, node.global_rotation)

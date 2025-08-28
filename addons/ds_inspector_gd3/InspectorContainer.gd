@@ -1,7 +1,8 @@
 extends VBoxContainer
 class_name InspectorContainer
 
-export var update_time: float = 0.2 # 更新时间
+@export
+var update_time: float = 0.2 # 更新时间
 
 var _curr_node: Node
 var _timer: float = 0
@@ -9,16 +10,26 @@ var _timer: float = 0
 const flag: int = PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_EDITOR
 var _attr_list: Array = [] # value: AttrItem
 
-onready var line: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/Line.tscn")
-onready var label_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/LabelAttr.tscn")
-onready var bool_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/BoolAttr.tscn")
-onready var number_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/NumberAttr.tscn")
-onready var vector2_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/Vector2Attr.tscn")
-onready var color_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/ColorAttr.tscn")
-onready var rect_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/RectAttr.tscn")
-onready var string_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/StringAttr.tscn")
-onready var texture_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/TextureAttr.tscn")
-onready var sprite_frames_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/SpriteFramesAttr.tscn")
+@onready
+var line: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/Line.tscn")
+@onready
+var label_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/LabelAttr.tscn")
+@onready
+var bool_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/BoolAttr.tscn")
+@onready
+var number_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/NumberAttr.tscn")
+@onready
+var vector2_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/Vector2Attr.tscn")
+@onready
+var color_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/ColorAttr.tscn")
+@onready
+var rect_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/RectAttr.tscn")
+@onready
+var string_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/StringAttr.tscn")
+@onready
+var texture_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/TextureAttr.tscn")
+@onready
+var sprite_frames_attr: PackedScene = preload("res://addons/ds_inspector_gd3/Attributes/SpriteFramesAttr.tscn")
 
 class AttrItem:
 	var attr: BaseAttr

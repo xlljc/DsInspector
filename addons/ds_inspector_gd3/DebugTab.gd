@@ -1,6 +1,7 @@
 extends TabContainer
 
-export var tab_names: Array = []
+@export
+var tab_names: Array = []
 
 func _ready():
 	for i in range(tab_names.size()):

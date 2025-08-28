@@ -1,8 +1,10 @@
 extends BaseAttr
 class_name NumberAttr
 
-onready var label: Label = $Name
-onready var line_edit: LineEdit = $LineEdit
+@onready
+var label: Label = $Name
+@onready
+var line_edit: LineEdit = $LineEdit
 
 var _attr: String
 var _node: Node
@@ -11,9 +13,9 @@ var _focus_flag: bool = false
 var _temp_value: float
 
 func _ready():
-	line_edit.connect("text_changed", self, "_on_text_changed")
-	line_edit.connect("focus_entered", self, "_on_focus_entered")
-	line_edit.connect("focus_exited", self, "_on_focus_exited")
+	line_edit.text_changed.connect(_on_text_changed)
+	line_edit.focus_entered.connect(_on_focus_entered)
+	line_edit.focus_exited.connect(_on_focus_exited)
 	pass
 
 func set_node(node: Node):

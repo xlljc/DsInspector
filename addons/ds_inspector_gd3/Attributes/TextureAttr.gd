@@ -1,8 +1,10 @@
 extends BaseAttr
 class_name TextureAttr
 
-onready var label: Label = $Name
-onready var texture_node: TextureRect = $Texture
+@onready
+var label: Label = $Name
+@onready
+var texture_node: TextureRect = $Texture
 
 var _attr: String
 var _node: Node

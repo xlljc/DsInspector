@@ -7,10 +7,14 @@ var node_tree
 var _draw_node: Node = null
 var _in_canvaslayer: bool = false
 
-onready var control: Control = $"../Control"
-onready var icon_tex_rect: TextureRect = $"../Control/ColorRect/Icon"
-onready var path_label: Label = $"../Control/Path"
-onready var debug_tool = get_node("/root/DsInspector")
+@onready
+var control: Control = $"../Control"
+@onready
+var icon_tex_rect: TextureRect = $"../Control/ColorRect/Icon"
+@onready
+var path_label: Label = $"../Control/Path"
+@onready
+var debug_tool = get_node("/root/DsInspector")
 
 var _icon: Texture
 var _show_text: bool = false
@@ -20,7 +24,7 @@ func _ready():
 	pass
 
 func _process(_delta):
-	update()
+	queue_redraw()
 	pass
 
 func set_draw_node(node: Node) -> void:
@@ -138,10 +142,10 @@ func _draw_node_rect(op):
 	var rect = debug_tool.get_node_rect(_draw_node, camera_zoom , 1 if _in_canvaslayer else 0) if debug_tool else null
 	if rect:
 		var offset: Vector2 = op - rect.position
-		_draw_rect_outline(op, rect.size, rect.rotation, offset, 2, Color.red)
+		_draw_rect_outline(op, rect.size, rect.rotation, offset, 2, Color.RED)
 
-func _draw_rect_outline(pos: Vector2, size: Vector2, rotation: float, offset: Vector2, line_width := 2, color := Color.white):
-	var points = [
+func _draw_rect_outline(pos: Vector2, size: Vector2, rotation: float, offset: Vector2, line_width := 2, color := Color.WHITE):
+	var points: Array[Vector2] = [
 		- offset,
 		- offset + Vector2(size.x, 0),
 		- offset + Vector2(size.x, size.y),

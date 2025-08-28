@@ -2,11 +2,16 @@ extends BaseAttr
 class_name ColorAttr
 
 
-onready var label: Label = $Name
-onready var r_line_edit: LineEdit = $VBoxContainer/HBoxContainer/RLineEdit
-onready var g_line_edit: LineEdit = $VBoxContainer/HBoxContainer/GLineEdit
-onready var b_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/BLineEdit
-onready var a_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/ALineEdit
+@onready
+var label: Label = $Name
+@onready
+var r_line_edit: LineEdit = $VBoxContainer/HBoxContainer/RLineEdit
+@onready
+var g_line_edit: LineEdit = $VBoxContainer/HBoxContainer/GLineEdit
+@onready
+var b_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/BLineEdit
+@onready
+var a_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/ALineEdit
 
 var _attr: String
 var _node: Node
@@ -15,20 +20,20 @@ var _focus_flag: bool = false
 var _temp_value: Color
 
 func _ready():
-	r_line_edit.connect("text_changed", self, "_on_r_text_changed")
-	g_line_edit.connect("text_changed", self, "_on_g_text_changed")
-	b_line_edit.connect("text_changed", self, "_on_b_text_changed")
-	a_line_edit.connect("text_changed", self, "_on_a_text_changed")
+	r_line_edit.text_changed.connect(_on_r_text_changed)
+	g_line_edit.text_changed.connect(_on_g_text_changed)
+	b_line_edit.text_changed.connect(_on_b_text_changed)
+	a_line_edit.text_changed.connect(_on_a_text_changed)
 
-	r_line_edit.connect("focus_entered", self, "_on_focus_entered")
-	g_line_edit.connect("focus_entered", self, "_on_focus_entered")
-	b_line_edit.connect("focus_entered", self, "_on_focus_entered")
-	a_line_edit.connect("focus_entered", self, "_on_focus_entered")
+	r_line_edit.focus_entered.connect(_on_focus_entered)
+	g_line_edit.focus_entered.connect(_on_focus_entered)
+	b_line_edit.focus_entered.connect(_on_focus_entered)
+	a_line_edit.focus_entered.connect(_on_focus_entered)
 
-	r_line_edit.connect("focus_exited", self, "_on_focus_exited")
-	g_line_edit.connect("focus_exited", self, "_on_focus_exited")
-	b_line_edit.connect("focus_exited", self, "_on_focus_exited")
-	a_line_edit.connect("focus_exited", self, "_on_focus_exited")
+	r_line_edit.focus_exited.connect(_on_focus_exited)
+	g_line_edit.focus_exited.connect(_on_focus_exited)
+	b_line_edit.focus_exited.connect(_on_focus_exited)
+	a_line_edit.focus_exited.connect(_on_focus_exited)
 	pass
 
 func set_node(node: Node):

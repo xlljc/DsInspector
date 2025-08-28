@@ -1,21 +1,32 @@
 extends VBoxContainer
 
-export var search_btn_path: NodePath
-export var clear_search_btn_path: NodePath
-export var search_input_path: NodePath
-export var node_tree_path: NodePath
-export var search_tree_path: NodePath
+@export
+var search_btn_path: NodePath
+@export
+var clear_search_btn_path: NodePath
+@export
+var search_input_path: NodePath
+@export
+var node_tree_path: NodePath
+@export
+var search_tree_path: NodePath
 
-onready var search_btn: Button = get_node(search_btn_path)
-onready var clear_search_btn: Button = get_node(clear_search_btn_path)
-onready var search_input: LineEdit = get_node(search_input_path)
-onready var node_tree: Tree = get_node(node_tree_path)
-onready var search_tree: Tree = get_node(search_tree_path)
-onready var debug_tool = get_node("/root/DsInspector")
+@onready
+var search_btn: Button = get_node(search_btn_path)
+@onready
+var clear_search_btn: Button = get_node(clear_search_btn_path)
+@onready
+var search_input: LineEdit = get_node(search_input_path)
+@onready
+var node_tree: Tree = get_node(node_tree_path)
+@onready
+var search_tree: Tree = get_node(search_tree_path)
+@onready
+var debug_tool = get_node("/root/DsInspector")
 
 func _ready():
-	search_btn.connect("pressed", self, "_do_serach")
-	clear_search_btn.connect("pressed", self, "_do_clear_serach")
+	search_btn.pressed.connect(_do_serach)
+	clear_search_btn.pressed.connect(_do_clear_serach)
 	pass
 
 func _do_serach():
