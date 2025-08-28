@@ -8,3 +8,10 @@ script = ExtResource("1_nbeu8")
 [node name="Node2D" type="Node2D" parent="."]
 
 [node name="ppp" type="Node2D" parent="."]
+
+[node name="Button" type="Button" parent="."]
+offset_left = 248.0
+offset_top = 109.0
+offset_right = 256.0
+offset_bottom = 117.0
+text = "abcabcabc"

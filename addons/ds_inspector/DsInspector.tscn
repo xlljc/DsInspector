@@ -108,38 +108,39 @@ layer = 128
 script = ExtResource("4")
 window = NodePath("WindowDialog")
 brush = NodePath("Brush")
-mask = NodePath("Mask")
+mask = NodePath("")
 inspector = NodePath("WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/InspectorContainer")
 tips = NodePath("Tips")
 tips_anim = NodePath("Tips/AnimationPlayer")
 cheat = NodePath("WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat")
 
-[node name="Mask" type="TextureButton" parent="."]
+[node name="Mask" type="Control" parent="."]
 visible = false
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="WindowDialog" type="Window" parent="."]
+[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "file_window", "put_away")]
 title = "DsInspector"
-initial_position = 1
+position = Vector2i(100, 100)
 size = Vector2i(500, 600)
 visible = false
 always_on_top = true
 popup_window = true
 theme = ExtResource("6")
 script = ExtResource("17")
-tree_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
-exclude_list_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
-select_btn_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
-save_btn_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
-delete_btn_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control/DeleteNode")
-hide_border_btn_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/HideBorderNode")
-play_btn_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PlayNode")
-file_window_path = NodePath("../SaveFileDialog")
-put_away_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
+tree = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
+exclude_list = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
+select_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
+save_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
+delete_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control/DeleteNode")
+hide_border_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/HideBorderNode")
+play_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PlayNode")
+file_window = NodePath("../SaveFileDialog")
+put_away = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="WindowDialog"]
 anchors_preset = 15

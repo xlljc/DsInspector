@@ -6,7 +6,7 @@ var window: Window
 @export
 var brush: Brush
 @export
-var mask: TextureButton
+var mask: Control
 @export
 var inspector: InspectorContainer
 @export

@@ -1,44 +1,29 @@
 extends Window
 
-@export
-var tree_path: NodePath;
-@export
-var exclude_list_path: NodePath;
-@export
-var select_btn_path: NodePath;
-@export
-var save_btn_path: NodePath;
-@export
-var delete_btn_path: NodePath;
-@export
-var hide_border_btn_path: NodePath;
-@export
-var play_btn_path: NodePath;
-@export
-var file_window_path: NodePath;
-@export
-var put_away_path: NodePath;
-
 const SAVE_PATH := "user://ds_inspector_window.txt"
 
-@onready
-var tree: NodeTree = get_node(tree_path)
-@onready
-var exclude_list: ExcludeList = get_node(exclude_list_path)
-@onready
-var select_btn: Button = get_node(select_btn_path)
-@onready
-var save_btn: Button = get_node(save_btn_path)
-@onready
-var delete_btn: Button = get_node(delete_btn_path)
-@onready
-var hide_border_btn: Button = get_node(hide_border_btn_path)
-@onready
-var play_btn: Button = get_node(play_btn_path)
-@onready
-var file_window: FileDialog = get_node(file_window_path)
-@onready
-var put_away: Button = get_node(put_away_path)
+@export
+var tree: NodeTree
+@export
+var exclude_list: ExcludeList
+@export
+var select_btn: Button
+@export
+var save_btn: Button
+@export
+var delete_btn: Button
+@export
+var hide_border_btn: Button
+@export
+var play_btn: Button
+@export
+var file_window: FileDialog
+@export
+var put_away: Button
+
+# 缓存的窗口状态
+var _cached_window_state: Dictionary = {}
+
 @onready
 var debug_tool = get_node("/root/DsInspector")
 
@@ -53,7 +38,6 @@ func _ready():
 	size_changed.connect(_on_window_resized)
 	file_window.file_selected.connect(on_file_selected)
 	put_away.pressed.connect(do_put_away)
-	debug_tool.mask.pressed.connect(do_hide)
 
 # 显示弹窗
 func do_show():
@@ -63,7 +47,6 @@ func do_show():
 		debug_tool.check_camera()
 		popup()
 		tree.show_tree(debug_tool.brush._draw_node)
-		# debug_tool.brush.set_draw_node(debug_tool.brush._draw_node)
 		debug_tool.brush.set_show_text(false)
 	pass
 
@@ -156,12 +139,14 @@ func _on_window_resized():
 
 # 保存窗口状态（位置和大小）
 func _save_window_state():
+	var data := {
+		"position": position,
+		"size": size
+	}
+	_cached_window_state = data
+	
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file != null:
-		var data := {
-			"position": position,
-			"size": size
-		}
 		file.store_string(var_to_str(data))
 		file.close()
 	else:
@@ -175,24 +160,9 @@ func _load_window_state():
 			var content := file.get_as_text()
 			file.close()
 			var data := str_to_var(content)
-			if data is Dictionary:
-				if data.has("position") and data.has("size"):
-					var dataPos: Vector2 = data.position
-					var dataSize: Vector2 = data.size
-					
-					# 确保窗口在屏幕范围内
-					var clamped_pos := _clamp_window_to_screen(dataPos, dataSize)
-					position = clamped_pos
-					size = dataSize
-					
-					# 如果位置被修正，保存回配置文件
-					if clamped_pos != dataPos:
-						call_deferred("_save_window_state")
-
-# 确保窗口在屏幕范围内
-func _clamp_window_to_screen(pos: Vector2, size: Vector2) -> Vector2:
-	var vp := get_viewport().get_visible_rect().size
-	# 确保窗口不会超出屏幕边界
-	pos.x = clamp(pos.x, 0, max(0, vp.x - size.x))
-	pos.y = clamp(pos.y, 0, max(0, vp.y - size.y))
-	return pos
+			if data is Dictionary and data.has("position") and data.has("size"):
+				_cached_window_state = data
+				var dataPos: Vector2 = _cached_window_state.position
+				var dataSize: Vector2 = _cached_window_state.size
+				position = dataPos
+				size = dataSize
