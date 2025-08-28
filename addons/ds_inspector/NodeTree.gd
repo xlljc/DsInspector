@@ -278,7 +278,7 @@ func delete_selected():
 			item.free()
 
 			# 刷新场景树
-			_update_children(parent, parent.get_metadata(0))
+			# _update_children(parent, parent.get_metadata(0))
 			return
 	pass
 

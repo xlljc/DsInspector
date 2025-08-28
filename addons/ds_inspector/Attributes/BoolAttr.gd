@@ -24,4 +24,4 @@ func set_value(value: bool):
 	check_box.button_pressed = value
 
 func _on_pressed():
-	_node.set(_attr, check_box.pressed)
+	_node.set(_attr, check_box.button_pressed)
