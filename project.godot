@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DsInspector="*res://addons/ds_inspector_gd3/DsInspector.tscn"
+DsInspector="*res://addons/ds_inspector/DsInspector.tscn"
 
 [display]
 
@@ -26,4 +26,4 @@ window/size/viewport_height=1080
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/ds_inspector_gd3/plugin.cfg")
+enabled=PackedStringArray("res://addons/ds_inspector/plugin.cfg")

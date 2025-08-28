@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bi3tgesxwq7lg"]
+
+[ext_resource type="FontFile" path="res://addons/ds_inspector/DebugFont.tres" id="2"]
+
+[resource]
+default_font = ExtResource("2")
