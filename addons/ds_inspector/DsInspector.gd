@@ -391,6 +391,12 @@ func get_node_path(node: Node) -> String:
 func on_tip_anim_finished(_name: String):
 	_tips_finish_count += 1
 
+### 添加作弊按钮
 func add_cheat_button(title: String, target: Node, method: String):
 	cheat.add_cheat_button(title, target, method)
+	pass
+
+### 添加作弊按钮
+func add_cheat_button_callable(title: String, callable: Callable):
+	cheat.add_cheat_button_callable(title, callable)
 	pass

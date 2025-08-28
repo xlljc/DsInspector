@@ -109,10 +109,10 @@ script = ExtResource("4")
 window = NodePath("WindowDialog")
 brush = NodePath("Brush")
 mask = NodePath("Mask")
-inspector = NodePath("WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/InspectorContainer")
+inspector = NodePath("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/Container/InspectorContainer")
 tips = NodePath("Tips")
 tips_anim = NodePath("Tips/AnimationPlayer")
-cheat = NodePath("WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat")
+cheat = NodePath("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat")
 
 [node name="Mask" type="Control" parent="."]
 visible = false
@@ -125,76 +125,89 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "file_window", "put_away")]
 title = "DsInspector"
-position = Vector2i(100, 100)
+position = Vector2i(100, 24)
 size = Vector2i(500, 600)
 visible = false
 always_on_top = true
 popup_window = true
 theme = ExtResource("6")
 script = ExtResource("17")
-tree = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
-exclude_list = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
-select_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
-save_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
-delete_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control/DeleteNode")
-hide_border_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/HideBorderNode")
-play_btn = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PlayNode")
+tree = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
+exclude_list = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
+select_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
+save_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
+delete_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control/DeleteNode")
+hide_border_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/HideBorderNode")
+play_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PlayNode")
 file_window = NodePath("../SaveFileDialog")
-put_away = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
+put_away = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="WindowDialog"]
+[node name="Bg" type="ColorRect" parent="WindowDialog"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.113725, 0.133333, 0.160784, 1)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="WindowDialog/Bg"]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="MarginContainer" type="MarginContainer" parent="WindowDialog/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="WindowDialog/Bg/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SelectNode" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="SelectNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "拣选节点"
 
-[node name="HideBorderNode" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="HideBorderNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "隐藏边框"
 
-[node name="PutAwayNode" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="PutAwayNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "收起节点"
 
-[node name="PlayNode" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="PlayNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "暂停游戏"
 
-[node name="SaveNode" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="SaveNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "保存成场景"
 
-[node name="Control" type="MarginContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="Control" type="MarginContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DeleteNode" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control"]
+[node name="DeleteNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control"]
 layout_mode = 2
 size_flags_horizontal = 8
 text = "删除节点"
 
-[node name="HSplitContainer" type="HSplitContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TreeContainer" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="TreeContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("10")
@@ -204,30 +217,30 @@ search_input_path = NodePath("HBoxContainer/SearchInput")
 node_tree_path = NodePath("NodeTree")
 search_tree_path = NodePath("SerachTree")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 layout_mode = 2
 
-[node name="SearchInput" type="LineEdit" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer"]
+[node name="SearchInput" type="LineEdit" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "请输入节点名称"
 
-[node name="Search" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer"]
+[node name="Search" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer"]
 layout_mode = 2
 text = "搜索"
 
-[node name="ClearSearch" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer"]
+[node name="ClearSearch" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer"]
 layout_mode = 2
 text = "清除"
 
-[node name="NodeTree" type="Tree" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
+[node name="NodeTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 hide_root = true
 script = ExtResource("15")
 
-[node name="SerachTree" type="Tree" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
+[node name="SerachTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
@@ -235,74 +248,91 @@ hide_root = true
 script = ExtResource("9")
 node_tree_path = NodePath("../NodeTree")
 
-[node name="TabContainer" type="TabContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
+[node name="TabContainer" type="TabContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
 script = ExtResource("8")
 tab_names = ["检查器", "排除路径", "作弊"]
 
-[node name="Inspector" type="ScrollContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+[node name="Inspector" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 metadata/_tab_index = 0
 
-[node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
+[node name="Container" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0.129412, 0.14902, 0.180392, 1)
+
+[node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/Container"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("5")
 
-[node name="ExcludeContainer" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+[node name="ExcludeContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
 layout_mode = 2
 
-[node name="AddButton" type="Button" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/HBoxContainer"]
+[node name="AddButton" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/HBoxContainer"]
 layout_mode = 2
 text = "添加选中的节点"
 
-[node name="Label" type="Label" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/HBoxContainer"]
 layout_mode = 2
 text = "被排除的节点不会在拣选时被选中。"
 
-[node name="Exclude" type="Tree" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
+[node name="Exclude" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 hide_root = true
 script = ExtResource("2")
 add_btn_path = NodePath("../HBoxContainer/AddButton")
 
-[node name="Cheat" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+[node name="Cheat" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer" node_paths=PackedStringArray("cheat_list")]
 visible = false
 layout_mode = 2
 script = ExtResource("12")
 cheat_package_scene = ExtResource("11")
+cheat_list = NodePath("Container/Scroll/CheatList")
 metadata/_tab_index = 2
 
-[node name="CheatTips" type="Label" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
+[node name="CheatTips" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
 layout_mode = 2
 text = "使用 DsInspector.add_cheat_button() 添加做弊按钮"
 
-[node name="Line" type="ColorRect" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
-layout_mode = 2
-color = Color(0.901961, 0.901961, 0.901961, 1)
-
-[node name="Scroll" type="ScrollContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
+[node name="Container" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
 layout_mode = 2
 size_flags_vertical = 3
+color = Color(0.129412, 0.14902, 0.180392, 1)
 
-[node name="CheatList" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat/Scroll"]
+[node name="Scroll" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat/Container"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="CheatList" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat/Container/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
 initial_position = 1
-size = Vector2i(441, 175)
-theme = ExtResource("6")
+size = Vector2i(500, 500)
 access = 2
 filters = PackedStringArray("*.tscn")
 
