@@ -163,7 +163,7 @@ func _create_node_attr(prop) -> AttrItem:
 	add_child(attr)
 
 	attr.set_node(_curr_node)
-	attr.set_name(prop.name)
+	attr.set_title(prop.name)
 	attr.set_value(v)
 	# print(prop.name, "   ", typeof(v))
 	return AttrItem.new(attr, prop.name, prop.usage, prop.type)
@@ -172,7 +172,7 @@ func _create_label_attr(node: Node, title: String, value: String) -> void:
 	var attr: LabelAttr = label_attr.instantiate()
 	add_child(attr)
 	attr.set_node(node)
-	attr.set_name(title)
+	attr.set_title(title)
 	attr.set_value(value)
 
 func _update_node_attr():

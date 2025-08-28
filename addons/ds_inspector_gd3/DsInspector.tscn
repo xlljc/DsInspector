@@ -23,19 +23,19 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:rect_scale")
+tracks/0/path = NodePath(".:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(1e-05, 1e-05)]
+"values": [Vector2(1, 1)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:rect_rotation")
+tracks/1/path = NodePath(".:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -63,7 +63,7 @@ length = 5.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:rect_scale")
+tracks/0/path = NodePath(".:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -75,7 +75,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath(".:rect_rotation")
+tracks/1/path = NodePath(".:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -124,9 +124,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="."]
-initial_position = 3
+initial_position = 4
 size = Vector2i(500, 600)
-current_screen = 0
 visible = false
 theme = ExtResource("6")
 script = ExtResource("17")
@@ -318,12 +317,22 @@ layout_mode = 2
 text = "Path:a/b/c"
 
 [node name="Tips" type="Label" parent="."]
+visible = false
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -141.0
+offset_right = 240.0
+offset_bottom = -87.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 0
 theme = ExtResource("6")
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Tips"]
 libraries = {

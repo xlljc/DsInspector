@@ -21,7 +21,7 @@ func _ready():
 func set_node(node: Node):
 	_node = node
 
-func set_name(name: String):
+func set_title(name: String):
 	_attr = name
 	label.text = name
 
