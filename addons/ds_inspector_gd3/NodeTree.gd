@@ -172,11 +172,11 @@ var _hide_icon: Texture = preload("res://addons/ds_inspector_gd3/Hide.png")
 
 func _ready():
 	# 选中item信号
-	connect("item_selected", Callable(self,"_on_item_selected"))
+	item_selected.connect(_on_item_selected)
 	# item按钮按下信号
-	connect("button_pressed", Callable(self,"_on_button_pressed"))
+	button_clicked.connect(_on_button_pressed)
 	# 展开收起节点信号
-	connect("item_collapsed", Callable(self,"_on_item_collapsed"))
+	item_collapsed.connect(_on_item_collapsed)
 
 func _process(delta):
 	if _is_show:
@@ -372,7 +372,7 @@ func create_node_item(node: Node, parent: TreeItem, add_slot: bool = true) -> Tr
 	item.set_icon(0, load(icon_mapping.get_icon(node.get_class())))
 
 	var btn_index: int = 0
-	if node.filename != "":
+	if node.scene_file_path != "":
 		node_data.scene_icon_index = btn_index
 		item.add_button(0, _scene_icon)  # 添场景按钮
 		btn_index += 1
@@ -401,7 +401,7 @@ func _on_item_selected():
 			debug_tool.inspector.set_view_node(data.node)
 
 ## 点击按钮节点
-func _on_button_pressed(_item: TreeItem, _column: int, _id: int):
+func _on_button_pressed(_item: TreeItem, _column: int, _id: int, mouse_button_index: int):
 	if !_item:
 		return
 	# 获取按钮对应的节点
@@ -422,7 +422,7 @@ func _on_button_pressed(_item: TreeItem, _column: int, _id: int):
 				var res_path: String = script.get_path()  # 得到 res://path/to/file.gd
 				_open_file(res_path)
 		elif _id == data.scene_icon_index: # 按下场景按钮
-			_open_file(data.node.filename)
+			_open_file(data.node.scene_file_path)
 			pass
 			
 func _open_file(res_path: String):
@@ -444,7 +444,7 @@ func _on_item_collapsed(item: TreeItem):
 	if children.size() == 0: # 没有子节点
 		var data: NodeData = item.get_metadata(0)
 		if data and data.node.get_child_count() > 0: # 加载子节点
-			call_deferred("_load_children_item", item, null)
+			call_deferred("_load_children_item", item, null, true)
 		return
 	var item1 = children[0]
 	var data: NodeData = item1.get_metadata(0)
@@ -452,7 +452,7 @@ func _on_item_collapsed(item: TreeItem):
 		if _is_in_select_func:
 			_load_children_item(item, item1)
 		else:
-			call_deferred("_load_children_item", item, children)
+			call_deferred("_load_children_item", item, item1, true)
 	else: # 执行更新子节点
 		if _is_in_select_func:
 			_update_children(item, item.get_metadata(0))

@@ -124,8 +124,9 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="."]
-initial_position = 2
+initial_position = 3
 size = Vector2i(500, 600)
+current_screen = 0
 visible = false
 theme = ExtResource("6")
 script = ExtResource("17")
@@ -291,6 +292,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
+initial_position = 1
 size = Vector2i(441, 156)
 theme = ExtResource("6")
 access = 2
@@ -329,7 +331,11 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
+offset_right = 48.0
+offset_bottom = 48.0
 texture_normal = ExtResource("16")
 texture_pressed = ExtResource("19")
 texture_hover = ExtResource("18")
+ignore_texture_size = true
+stretch_mode = 5
 script = ExtResource("1")

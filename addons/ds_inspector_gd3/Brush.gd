@@ -38,8 +38,8 @@ func set_draw_node(node: Node) -> void:
 	_icon = load(icon_path)
 	icon_tex_rect.texture = _icon
 	
-	path_label.rect_size.x = 0
-	control.rect_size.x = 0
+	path_label.size.x = 0
+	control.size.x = 0
 	path_label.text = debug_tool.get_node_path(node) if debug_tool else ""
 	pass
 
@@ -75,7 +75,7 @@ func _draw():
 
 		if _show_text:
 			var view_size: Vector2 = get_viewport().size
-			var con_size: Vector2 = control.rect_size
+			var con_size: Vector2 = control.size
 			var pos: Vector2 = op
 			# 限制在屏幕内
 			if pos.x + con_size.x > view_size.x:

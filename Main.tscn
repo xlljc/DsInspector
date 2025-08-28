@@ -4,3 +4,7 @@
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_nbeu8")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="ppp" type="Node2D" parent="."]

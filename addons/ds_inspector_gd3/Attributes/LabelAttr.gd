@@ -16,4 +16,4 @@ func set_name(name: String):
 
 func set_value(value):
 	text.text = str(value)
-	text.hint_tooltip = name
+	text.tooltip_text = name

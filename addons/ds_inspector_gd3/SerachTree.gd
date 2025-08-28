@@ -18,9 +18,9 @@ var _root_item: TreeItem
 
 func _ready():
 	# 选中item信号
-	connect("item_selected", Callable(self, "_on_item_selected"))
+	item_selected.connect(_on_item_selected)
 	# item按钮按下信号
-	connect("button_pressed", Callable(node_tree, "_on_button_pressed"))
+	button_clicked.connect(node_tree._on_button_pressed)
 	_root_item = create_item()
 
 ## 选中节点
@@ -46,7 +46,7 @@ func _create_node_item(node: Node):
 	item.set_icon(0, load(node_tree.icon_mapping.get_icon(node.get_class())))
 	
 	var btn_index: int = 0
-	if node.filename != "":
+	if node.scene_file_path != "":
 		node_data.scene_icon_index = btn_index
 		item.add_button(0, _scene_icon)  # 添场景按钮
 		btn_index += 1

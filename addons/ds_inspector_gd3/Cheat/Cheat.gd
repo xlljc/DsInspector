@@ -2,7 +2,7 @@ extends VBoxContainer
 
 @export
 var cheat_package_scene: PackedScene;
-@export
+@onready
 var cheat_list: VBoxContainer = $Scroll/CheatList
 
 func add_cheat_button(title: String, target: Node, method: String):

@@ -69,7 +69,7 @@ func set_view_node(node: Node):
 	pass
 
 func _init_node_attr():
-	var title = line.instance();
+	var title = line.instantiate();
 	add_child(title)
 	title.set_title("基础属性")
 
@@ -87,8 +87,8 @@ func _init_node_attr():
 	
 	_create_label_attr(_curr_node, "路径：", path)
 	
-	if _curr_node.filename != "":
-		_create_label_attr(_curr_node, "场景：", _curr_node.filename)
+	if _curr_node.scene_file_path != "":
+		_create_label_attr(_curr_node, "场景：", _curr_node.scene_file_path)
 	
 	var props = _curr_node.get_property_list()
 
@@ -96,7 +96,7 @@ func _init_node_attr():
 	if script != null:
 		_create_label_attr(_curr_node, "脚本：", script.get_path())
 
-		var title2 = line.instance();
+		var title2 = line.instantiate();
 		add_child(title2)
 		title2.set_title("脚本导出属性")
 		
@@ -104,7 +104,7 @@ func _init_node_attr():
 			if prop.usage & PROPERTY_USAGE_SCRIPT_VARIABLE and prop.usage & PROPERTY_USAGE_EDITOR: # PROPERTY_USAGE_STORAGE   PROPERTY_USAGE_SCRIPT_VARIABLE
 				_attr_list.append(_create_node_attr(prop))
 		
-		var title4 = line.instance();
+		var title4 = line.instantiate();
 		add_child(title4)
 		title4.set_title("脚本属性")
 		
@@ -112,7 +112,7 @@ func _init_node_attr():
 			if prop.usage & PROPERTY_USAGE_SCRIPT_VARIABLE and not prop.usage & PROPERTY_USAGE_EDITOR: # PROPERTY_USAGE_STORAGE   PROPERTY_USAGE_SCRIPT_VARIABLE
 				_attr_list.append(_create_node_attr(prop))
 	
-	var title3 = line.instance();
+	var title3 = line.instantiate();
 	add_child(title3)
 	title3.set_title("内置属性")
 
@@ -121,7 +121,7 @@ func _init_node_attr():
 			_attr_list.append(_create_node_attr(prop))
 			
 	var c: Control = Control.new()
-	c.rect_min_size = Vector2(0, 100)
+	c.custom_minimum_size = Vector2(0, 100)
 	add_child(c)
 	pass
 
@@ -132,34 +132,34 @@ func _create_node_attr(prop) -> AttrItem:
 	# ------------- 特殊处理 -----------------
 	if _curr_node is AnimatedSprite2D:
 		if prop.name == "frames":
-			attr = sprite_frames_attr.instance()
+			attr = sprite_frames_attr.instantiate()
 	# ---------------------------------------
 	if attr == null:
 		if v == null:
-			attr = label_attr.instance()
+			attr = label_attr.instantiate()
 		else:
 			match typeof(v):
 				TYPE_BOOL:
-					attr = bool_attr.instance()
+					attr = bool_attr.instantiate()
 				TYPE_INT:
-					attr = number_attr.instance()
+					attr = number_attr.instantiate()
 				TYPE_FLOAT:
-					attr = number_attr.instance()
+					attr = number_attr.instantiate()
 				TYPE_VECTOR2:
-					attr = vector2_attr.instance()
+					attr = vector2_attr.instantiate()
 				TYPE_COLOR:
-					attr = color_attr.instance()
+					attr = color_attr.instantiate()
 				TYPE_RECT2:
-					attr = rect_attr.instance()
+					attr = rect_attr.instantiate()
 				TYPE_STRING:
-					attr = string_attr.instance()
+					attr = string_attr.instantiate()
 				TYPE_OBJECT:
 					if v is Texture:
-						attr = texture_attr.instance()
+						attr = texture_attr.instantiate()
 					else:
-						attr = label_attr.instance()
+						attr = label_attr.instantiate()
 				_:
-					attr = label_attr.instance()
+					attr = label_attr.instantiate()
 	add_child(attr)
 
 	attr.set_node(_curr_node)
@@ -169,7 +169,7 @@ func _create_node_attr(prop) -> AttrItem:
 	return AttrItem.new(attr, prop.name, prop.usage, prop.type)
 
 func _create_label_attr(node: Node, title: String, value: String) -> void:
-	var attr: LabelAttr = label_attr.instance()
+	var attr: LabelAttr = label_attr.instantiate()
 	add_child(attr)
 	attr.set_node(node)
 	attr.set_name(title)
