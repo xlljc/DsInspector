@@ -6,17 +6,17 @@
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspector.gd" id="4"]
 [ext_resource type="Script" path="res://addons/ds_inspector/InspectorContainer.gd" id="5"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="6"]
-[ext_resource type="Texture2D" uid="uid://cco68u6bv8ghm" path="res://addons/ds_inspector/node_icon/icon_animated_sprite.svg" id="7"]
 [ext_resource type="Script" path="res://addons/ds_inspector/DebugTab.gd" id="8"]
 [ext_resource type="Script" path="res://addons/ds_inspector/SerachTree.gd" id="9"]
 [ext_resource type="Script" path="res://addons/ds_inspector/TreeContainer.gd" id="10"]
 [ext_resource type="PackedScene" uid="uid://d2qnsha516yor" path="res://addons/ds_inspector/Cheat/CheatItem.tscn" id="11"]
 [ext_resource type="Script" path="res://addons/ds_inspector/Cheat/Cheat.gd" id="12"]
+[ext_resource type="Texture2D" uid="uid://k6nfbn6oroyw" path="res://addons/ds_inspector/node_icon/AnimatedSprite2D.svg" id="13_ai5ie"]
+[ext_resource type="Texture2D" uid="uid://cltttr2pcd537" path="res://addons/ds_inspector/icon/Icon.png" id="14_tq6i3"]
 [ext_resource type="Script" path="res://addons/ds_inspector/NodeTree.gd" id="15"]
-[ext_resource type="Texture2D" uid="uid://cltttr2pcd537" path="res://addons/ds_inspector/Icon.png" id="16"]
+[ext_resource type="Texture2D" uid="uid://cpfmuxcanm03r" path="res://addons/ds_inspector/icon/Icon_Pressed.png" id="15_fc6o8"]
+[ext_resource type="Texture2D" uid="uid://df6spnjut8st4" path="res://addons/ds_inspector/icon/Icon_Hover.png" id="16_kgm8u"]
 [ext_resource type="Script" path="res://addons/ds_inspector/DebugDialog.gd" id="17"]
-[ext_resource type="Texture2D" uid="uid://df6spnjut8st4" path="res://addons/ds_inspector/Icon_Hover.png" id="18"]
-[ext_resource type="Texture2D" uid="uid://cpfmuxcanm03r" path="res://addons/ds_inspector/Icon_Pressed.png" id="19"]
 
 [sub_resource type="Animation" id="3"]
 length = 0.001
@@ -310,12 +310,14 @@ path_label = NodePath("../Control/Path")
 theme = ExtResource("6")
 
 [node name="ColorRect" type="ColorRect" parent="Control"]
+custom_minimum_size = Vector2(22, 22)
 layout_mode = 2
 color = Color(0.203922, 0.203922, 0.203922, 1)
 
 [node name="Icon" type="TextureRect" parent="Control/ColorRect"]
+custom_minimum_size = Vector2(22, 22)
 layout_mode = 0
-texture = ExtResource("7")
+texture = ExtResource("13_ai5ie")
 expand_mode = 1
 
 [node name="Path" type="Label" parent="Control"]
@@ -347,9 +349,9 @@ libraries = {
 [node name="HoverIcon" type="TextureButton" parent="."]
 offset_right = 48.0
 offset_bottom = 48.0
-texture_normal = ExtResource("16")
-texture_pressed = ExtResource("19")
-texture_hover = ExtResource("18")
+texture_normal = ExtResource("14_tq6i3")
+texture_pressed = ExtResource("15_fc6o8")
+texture_hover = ExtResource("16_kgm8u")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("1")

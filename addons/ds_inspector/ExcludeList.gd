@@ -11,7 +11,7 @@ var debug_tool: CanvasLayer = get_node("/root/DsInspector")
 var _list: Array = []
 var _root_item: TreeItem
 @onready
-var _delete_icon: Texture = preload("res://addons/ds_inspector/node_icon/delete.svg")
+var _delete_icon: Texture = preload("res://addons/ds_inspector/icon/delete.svg")
 
 const SAVE_PATH := "user://exclude_select.json"
 

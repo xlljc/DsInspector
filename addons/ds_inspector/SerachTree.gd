@@ -4,13 +4,13 @@ extends Tree
 var node_tree_path: NodePath
 
 @onready
-var _script_icon: Texture = preload("res://addons/ds_inspector/node_icon/icon_script.svg")
+var _script_icon: Texture = preload("res://addons/ds_inspector/icon/icon_script.svg")
 @onready
-var _scene_icon: Texture = preload("res://addons/ds_inspector/node_icon/icon_play_scene.svg")
+var _scene_icon: Texture = preload("res://addons/ds_inspector/icon/icon_play_scene.svg")
 @onready
-var _visible_icon: Texture = preload("res://addons/ds_inspector/Visible.png")
+var _visible_icon: Texture = preload("res://addons/ds_inspector/Icon/Visible.png")
 @onready
-var _hide_icon: Texture = preload("res://addons/ds_inspector/Hide.png")
+var _hide_icon: Texture = preload("res://addons/ds_inspector/Icon/Hide.png")
 
 @onready
 var node_tree: NodeTree = get_node(node_tree_path)
