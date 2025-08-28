@@ -108,7 +108,7 @@ layer = 128
 script = ExtResource("4")
 window = NodePath("WindowDialog")
 brush = NodePath("Brush")
-mask = NodePath("")
+mask = NodePath("Mask")
 inspector = NodePath("WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/InspectorContainer")
 tips = NodePath("Tips")
 tips_anim = NodePath("Tips/AnimationPlayer")
@@ -300,8 +300,11 @@ theme = ExtResource("6")
 access = 2
 filters = PackedStringArray("*.tscn")
 
-[node name="Brush" type="Node2D" parent="."]
+[node name="Brush" type="Node2D" parent="." node_paths=PackedStringArray("control", "icon_tex_rect", "path_label")]
 script = ExtResource("3")
+control = NodePath("../Control")
+icon_tex_rect = NodePath("../Control/ColorRect/Icon")
+path_label = NodePath("../Control/Path")
 
 [node name="Control" type="HBoxContainer" parent="."]
 theme = ExtResource("6")

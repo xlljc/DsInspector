@@ -200,9 +200,7 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 			return node
 	else:
 		var op: Vector2 = Vector2.ZERO
-		if node is Control:
-			op = node.rect_global_position
-		elif node is Node2D:
+		if node is Control or node is Node2D:
 			op = node.global_position
 		if !in_canvaslayer:
 			op = scene_to_ui(op)
@@ -274,8 +272,8 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 		var curr_node: Node = node
 		while curr_node != null:
 			if curr_node is Control:
-				r += deg_to_rad(curr_node.rect_rotation)
-				s *= curr_node.rect_scale
+				r += deg_to_rad(curr_node.rotation)
+				s *= curr_node.scale
 			elif curr_node is CanvasItem:
 				r += curr_node.global_rotation
 				s *= curr_node.global_scale

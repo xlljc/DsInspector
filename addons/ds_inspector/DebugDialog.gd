@@ -38,6 +38,11 @@ func _ready():
 	size_changed.connect(_on_window_resized)
 	file_window.file_selected.connect(on_file_selected)
 	put_away.pressed.connect(do_put_away)
+	focus_exited.connect(_on_focus_exited)
+
+# 当窗口失去焦点时关闭窗口
+func _on_focus_exited():
+	do_hide()
 
 # 显示弹窗
 func do_show():

@@ -7,12 +7,12 @@ var node_tree
 var _draw_node: Node = null
 var _in_canvaslayer: bool = false
 
-@onready
-var control: Control = $"../Control"
-@onready
-var icon_tex_rect: TextureRect = $"../Control/ColorRect/Icon"
-@onready
-var path_label: Label = $"../Control/Path"
+@export
+var control: Control# = $"../Control"
+@export
+var icon_tex_rect: TextureRect# = $"../Control/ColorRect/Icon"
+@export
+var path_label: Label# = $"../Control/Path"
 @onready
 var debug_tool = get_node("/root/DsInspector")
 
@@ -55,9 +55,7 @@ func _draw():
 			return
 		var op: Vector2 = Vector2.ZERO
 		# c.rect_global_position
-		if _draw_node is Control:
-			op = _draw_node.rect_global_position
-		elif _draw_node is Node2D:
+		if _draw_node is Control or _draw_node is Node2D:
 			op = _draw_node.global_position
 		else:
 			op = op
@@ -86,7 +84,7 @@ func _draw():
 				pos.y = view_size.y - con_size.y
 			elif  pos.y < 0:
 				pos.y = 0
-			control.rect_position = pos
+			control.position = pos
 	pass
 
 func _draw_node_shape(op):
