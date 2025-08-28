@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://addons/ds_inspector_gd3/DebugTab.gd" id="8"]
 [ext_resource type="Script" path="res://addons/ds_inspector_gd3/SerachTree.gd" id="9"]
 [ext_resource type="Script" path="res://addons/ds_inspector_gd3/TreeContainer.gd" id="10"]
-[ext_resource type="PackedScene" path="res://addons/ds_inspector_gd3/Cheat/CheatItem.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://d2qnsha516yor" path="res://addons/ds_inspector_gd3/Cheat/CheatItem.tscn" id="11"]
 [ext_resource type="Script" path="res://addons/ds_inspector_gd3/Cheat/Cheat.gd" id="12"]
 [ext_resource type="Script" path="res://addons/ds_inspector_gd3/NodeTree.gd" id="15"]
 [ext_resource type="Texture2D" uid="uid://cltttr2pcd537" path="res://addons/ds_inspector_gd3/Icon.png" id="16"]
@@ -120,9 +120,13 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="."]
-size = Vector2i(600, 800)
+initial_position = 2
+size = Vector2i(500, 600)
+visible = false
 theme = ExtResource("6")
 script = ExtResource("17")
 tree_path = NodePath("ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
@@ -288,7 +292,6 @@ size_flags_vertical = 3
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
 size = Vector2i(441, 156)
-visible = true
 theme = ExtResource("6")
 access = 2
 filters = PackedStringArray("*.tscn")

@@ -132,13 +132,17 @@ func get_check_node() -> Node:
 
 	# 优先检测碰撞体
 	if !_has_exclude_coll:
-		var space_state: Physics2DDirectSpaceState = brush.get_world_2d().direct_space_state
+		var space_state: PhysicsDirectSpaceState2D = brush.get_viewport().get_world_2d().direct_space_state
 		var pos: Vector2
 		if main_camera:
 			pos = main_camera.get_global_mouse_position()
 		else:
 			pos = mousePos
-		_coll_list = space_state.intersect_point(pos, 32, [], 2147483647, true, true)
+		var query = PhysicsPointQueryParameters2D.new()
+		query.position = pos
+		query.collision_mask = 2147483647
+		query.collide_with_areas = true
+		_coll_list = space_state.intersect_point(query)
 		_has_exclude_coll = _coll_list.size() > 0
 	
 	if _has_exclude_coll:

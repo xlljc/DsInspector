@@ -290,9 +290,9 @@ func locate_selected(select_node: Node):
 		if curr_item == null:
 			curr_item = get_root()
 		else: # 一路往下寻找
-			var child_item: TreeItem = curr_item.get_children()
+			var ch := curr_item.get_children()
 			var flag: bool = false
-			while child_item:
+			for child_item in ch:
 				var node_data: NodeData = child_item.get_metadata(0)
 				if !node_data: # 没有数据，错误
 					_is_in_select_func = false
@@ -303,7 +303,6 @@ func locate_selected(select_node: Node):
 						child_item.collapsed = false
 					curr_item = child_item
 					break
-				child_item = child_item.get_next()
 			
 			if !flag: # 找不到，就创建
 				curr_item = create_node_item(node, curr_item, false)
@@ -329,12 +328,11 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 		return
 
 	var existing_node: Dictionary = {}
-	var current: TreeItem = parent_item.get_children()
-	while current:
+	var ch := parent_item.get_children()
+	for current in ch:
 		var node_data: NodeData = current.get_metadata(0)
 		if node_data:
 			existing_node[node_data.node] = TreeItemData.new(node_data, current)  # 存储现有节点
-		current = current.get_next()
 
 	# 遍历场景树的子节点
 	for child_node in parent_data.node.get_children():
@@ -431,27 +429,28 @@ func _open_file(res_path: String):
 	var project_root: String = ProjectSettings.globalize_path("res://")
 	var file_path: String = res_path.replace("res://", project_root).replace("/", "\\")
 	if OS.get_name() == "Windows":
-		OS.execute("cmd.exe", ["/c", "explorer.exe /select,\"" + file_path + "\""], false)
+		OS.execute("cmd.exe", ["/c", "explorer.exe /select,\"" + file_path + "\""], [], false)
 	elif OS.get_name() == "OSX":
 		# 打开指定文件夹
 		var mac_path = res_path.replace("res://", project_root)
 		# Finder 选中文件
-		OS.execute("open", ["-R", mac_path], false)
+		OS.execute("open", ["-R", mac_path], [], false)
 
 ## 展开收起物体
 func _on_item_collapsed(item: TreeItem):
 	if item.collapsed:
 		return
-	var children: TreeItem = item.get_children()
-	if !children: # 没有子节点
+	var children := item.get_children()
+	if children.size() == 0: # 没有子节点
 		var data: NodeData = item.get_metadata(0)
 		if data and data.node.get_child_count() > 0: # 加载子节点
 			call_deferred("_load_children_item", item, null)
 		return
-	var data: NodeData = children.get_metadata(0)
+	var item1 = children[0]
+	var data: NodeData = item1.get_metadata(0)
 	if !data: # 没有data，说明没有初始化数据，这里也有加载子节点
 		if _is_in_select_func:
-			_load_children_item(item, children)
+			_load_children_item(item, item1)
 		else:
 			call_deferred("_load_children_item", item, children)
 	else: # 执行更新子节点

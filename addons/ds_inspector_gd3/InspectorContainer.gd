@@ -92,7 +92,7 @@ func _init_node_attr():
 	
 	var props = _curr_node.get_property_list()
 
-	var script: Reference = _curr_node.get_script()
+	var script: Script = _curr_node.get_script()
 	if script != null:
 		_create_label_attr(_curr_node, "脚本：", script.get_path())
 
@@ -130,7 +130,7 @@ func _create_node_attr(prop) -> AttrItem:
 	var attr: BaseAttr
 
 	# ------------- 特殊处理 -----------------
-	if _curr_node is AnimatedSprite:
+	if _curr_node is AnimatedSprite2D:
 		if prop.name == "frames":
 			attr = sprite_frames_attr.instance()
 	# ---------------------------------------
@@ -143,7 +143,7 @@ func _create_node_attr(prop) -> AttrItem:
 					attr = bool_attr.instance()
 				TYPE_INT:
 					attr = number_attr.instance()
-				TYPE_REAL:
+				TYPE_FLOAT:
 					attr = number_attr.instance()
 				TYPE_VECTOR2:
 					attr = vector2_attr.instance()
@@ -161,6 +161,7 @@ func _create_node_attr(prop) -> AttrItem:
 				_:
 					attr = label_attr.instance()
 	add_child(attr)
+
 	attr.set_node(_curr_node)
 	attr.set_name(prop.name)
 	attr.set_value(v)

@@ -112,11 +112,17 @@ func do_put_away():
 
 func _each_and_put_away(tree_item: TreeItem):
 	# tree_item.collapsed = false
-	var ch: TreeItem = tree_item.get_children()
-	while ch != null:
-		ch.collapsed = true
-		_each_and_put_away(ch)
-		ch = ch.get_next()
+	# var ch: TreeItem = tree_item.get_children()
+	# while ch != null:
+	# 	ch.collapsed = true
+	# 	_each_and_put_away(ch)
+	# 	ch = ch.get_next()
+	# pass
+
+	var ch := tree_item.get_children()
+	for item in ch:
+		item.collapsed = true
+		_each_and_put_away(item)
 	pass
 
 func save_node_as_scene(node: Node, path: String) -> void:
@@ -130,8 +136,7 @@ func save_node_as_scene(node: Node, path: String) -> void:
 		node.owner = o
 		return
 	
-	var _file = File.new()
-	var _err: int = ResourceSaver.save(path, scene)
+	var _err: int = ResourceSaver.save(scene, path)
 	if _err == OK:
 		print("保存成功: ", path)
 	else:
@@ -149,42 +154,42 @@ func _on_window_resized():
 
 # 保存窗口状态（位置和大小）
 func _save_window_state():
-	var file := File.new()
-	if file.open(SAVE_PATH, File.WRITE) == OK:
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file != null:
 		var data := {
-			"position": rect_global_position,
-			"size": rect_size
+			"position": position,
+			"size": size
 		}
-		file.store_string(var2str(data))
+		file.store_string(var_to_str(data))
 		file.close()
 	else:
 		print("无法保存窗口状态到 ", SAVE_PATH)
 
 # 加载窗口状态（位置和大小）
 func _load_window_state():
-	var file := File.new()
-	if file.file_exists(SAVE_PATH):
-		if file.open(SAVE_PATH, File.READ) == OK:
+	if FileAccess.file_exists(SAVE_PATH):
+		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+		if file != null:
 			var content := file.get_as_text()
 			file.close()
-			var data = str2var(content)
+			var data := str_to_var(content)
 			if data is Dictionary:
 				if data.has("position") and data.has("size"):
-					var pos: Vector2 = data.position
-					var size: Vector2 = data.size
+					var dataPos: Vector2 = data.position
+					var dataSize: Vector2 = data.size
 					
 					# 确保窗口在屏幕范围内
-					var clamped_pos := _clamp_window_to_screen(pos, size)
-					rect_global_position = clamped_pos
-					rect_size = size
+					var clamped_pos := _clamp_window_to_screen(dataPos, dataSize)
+					position = clamped_pos
+					size = dataSize
 					
 					# 如果位置被修正，保存回配置文件
-					if clamped_pos != pos:
+					if clamped_pos != dataPos:
 						call_deferred("_save_window_state")
 
 # 确保窗口在屏幕范围内
 func _clamp_window_to_screen(pos: Vector2, size: Vector2) -> Vector2:
-	var vp := get_viewport().size
+	var vp := get_viewport().get_visible_rect().size
 	# 确保窗口不会超出屏幕边界
 	pos.x = clamp(pos.x, 0, max(0, vp.x - size.x))
 	pos.y = clamp(pos.y, 0, max(0, vp.y - size.y))
