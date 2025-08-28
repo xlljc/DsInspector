@@ -245,6 +245,7 @@ tab_names = ["检查器", "排除路径", "作弊"]
 [node name="Inspector" type="ScrollContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+metadata/_tab_index = 0
 
 [node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2
@@ -254,6 +255,7 @@ script = ExtResource("5")
 [node name="ExcludeContainer" type="VBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 visible = false
 layout_mode = 2
+metadata/_tab_index = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
 layout_mode = 2
@@ -278,6 +280,7 @@ visible = false
 layout_mode = 2
 script = ExtResource("12")
 cheat_package_scene = ExtResource("11")
+metadata/_tab_index = 2
 
 [node name="CheatTips" type="Label" parent="WindowDialog/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
 layout_mode = 2
@@ -298,7 +301,7 @@ size_flags_vertical = 3
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
 initial_position = 1
-size = Vector2i(441, 156)
+size = Vector2i(441, 175)
 theme = ExtResource("6")
 access = 2
 filters = PackedStringArray("*.tscn")
