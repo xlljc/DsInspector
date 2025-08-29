@@ -12,6 +12,9 @@ height = 176.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3lrc0"]
 size = Vector2(103.5, 95.5)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6lvdg"]
+polygon = PackedVector2Array(-48, 41, 108, 55, 135, -78, 43, -45, 4, -88, -58, -56, -187, -116, -218, -41, -126, -18, -130, 110)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_3kwrp"]
 animations = [{
 "frames": [{
@@ -25,9 +28,6 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6lvdg"]
-polygon = PackedVector2Array(-48, 41, 108, 55, 135, -78, 43, -45, 4, -88, -58, -56, -187, -116, -218, -41, -126, -18, -130, 110)
 
 [node name="Main" type="Node2D"]
 position = Vector2(422, 337)
@@ -106,9 +106,67 @@ polygon = PackedVector2Array(64, 8, -45, 47, -71, -7, -4, -26, -18, 2, 43, 1)
 position = Vector2(-131, 45)
 texture = ExtResource("2_yow5e")
 
+[node name="PointLight2D2" type="PointLight2D" parent="RotAnim"]
+
+[node name="Icon" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(122, -215)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon2" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(93, -141)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon3" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(182, 9)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon4" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(183, -121)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon5" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(249, -155)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon6" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(310, -188)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon7" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(349, -144)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon8" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(442, -177)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon9" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(413, -48)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon10" type="Sprite2D" parent="RotAnim/PointLight2D2"]
+position = Vector2(263, -58)
+scale = Vector2(0.132813, 0.125)
+texture = ExtResource("2_yow5e")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="RotAnim"]
+position = Vector2(309, -101)
+occluder = SubResource("OccluderPolygon2D_6lvdg")
+
 [node name="Player" parent="." instance=ExtResource("3_2lw34")]
+position = Vector2(321, 246)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(0.75, 0.75)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(897, 224)
@@ -121,6 +179,15 @@ autoplay = "default"
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 position = Vector2(370, 48)
 
-[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
-position = Vector2(309, -101)
-occluder = SubResource("OccluderPolygon2D_6lvdg")
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(176, 295)
+polygon = PackedVector2Array(455, 111, 612, 319, 734, 69, 586, -42)
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(484, 265)
+texture = ExtResource("2_yow5e")
+
+[node name="Area2D" type="Area2D" parent="Icon"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Icon/Area2D"]
+shape = SubResource("CapsuleShape2D_s3apq")

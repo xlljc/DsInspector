@@ -68,6 +68,8 @@ func _draw():
 			_draw_node_collision_polygon(op)
 		elif _draw_node is Polygon2D:
 			_draw_node_polygon(op)
+		elif _draw_node is LightOccluder2D and _draw_node.occluder != null:
+			_draw_node_light_occluder(op)
 		else:
 			_draw_node_rect(op)
 
@@ -89,8 +91,8 @@ func _draw():
 
 func _draw_node_shape(op):
 	if _draw_node and _draw_node.shape:
-		var camera_zoom = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale / camera_zoom)
+		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
+		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
 		_draw_node.shape.draw(get_canvas_item(), Color(0, 1, 1, 0.5))
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
 
@@ -105,8 +107,8 @@ func _draw_node_collision_polygon(op):
 		var arr = []
 		arr.append_array(points)
 		arr.append(points[0])
-		var camera_zoom = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale / camera_zoom)
+		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
+		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
 		# 画填充多边形
 		draw_polygon(points, [Color(1, 0, 0, 0.3)])  # 半透明红色
 		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
@@ -124,8 +126,8 @@ func _draw_node_polygon(op):
 		for i in range(points.size()):
 			arr.append(points[i] + _draw_node.offset)
 		arr.append(arr[0])
-		var camera_zoom = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale / camera_zoom)
+		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
+		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
 		# 画填充多边形
 		draw_polygon(arr, [Color(1, 0, 0, 0.3)])  # 半透明红色
 		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
@@ -135,7 +137,25 @@ func _draw_node_polygon(op):
 	draw_circle(op, 3, Color(1, 0, 0))
 	pass
 
-func _draw_node_rect(op):
+func _draw_node_light_occluder(op):
+	if _draw_node and _draw_node.occluder and _draw_node.occluder.polygon.size() > 0:
+		var points: PackedVector2Array = _draw_node.occluder.polygon
+		# 画轮廓线
+		var arr: Array[Vector2] = []
+		arr.append_array(points)
+		arr.append(points[0])
+		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
+		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
+		# 画填充多边形
+		draw_polygon(points, [Color(0, 0, 0, 0.4)])  # 半透明红色
+		# draw_polyline(arr, Color(0, 0, 0), 2.0)  # 闭合线
+		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
+
+	# 可视化中心点（可选）
+	draw_circle(op, 3, Color(1, 0, 0))
+	pass
+
+func _draw_node_rect(op: Vector2):
 	var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
 	var rect = debug_tool.get_node_rect(_draw_node, camera_zoom , 1 if _in_canvaslayer else 0) if debug_tool else null
 	if rect:

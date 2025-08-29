@@ -181,7 +181,7 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		return null
 
 	for i in range(node.get_child_count() - 1, -1, -1):  # 从最后一个子节点到第一个子节点
-		var child = node.get_child(i)
+		var child := node.get_child(i)
 		var new_path: String
 		if path.length() > 0:
 			new_path = path + "/" + child.name
@@ -191,23 +191,32 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		if result != null:
 			return result
 
-	var rect: NodeTransInfo = get_node_rect(node, camera_zoom, 1 if in_canvaslayer else 0)
-	if rect.size == Vector2.ZERO:
-		return null
-	if rect.rotation == 0:
-		if is_in_rect(mouse_position.x, mouse_position.y, rect.position.x, rect.position.y, rect.size.x, rect.size.y):
-			# print("is_in_rotated_rect: rotation: ", rect.rotation)
-			return node
+	# 检测包含 polygon 的节点
+	if node is LightOccluder2D:
+		var occluder: OccluderPolygon2D = node.occluder
+		if occluder:
+			var polygon: PackedVector2Array = occluder.polygon
+			if polygon.size() > 0:
+				print("检测 LightOccluder2D: ", node.get_path())
+				
 	else:
-		var op: Vector2 = Vector2.ZERO
-		if node is Control or node is Node2D:
-			op = node.global_position
-		if !in_canvaslayer:
-			op = scene_to_ui(op)
-		var offset: Vector2 = op - rect.position
-		# print(mouse_position, rect.position)
-		if is_in_rotated_rect(mouse_position, Rect2(rect.position, rect.size), rect.rotation, offset):
-			return node
+		var rect: NodeTransInfo = get_node_rect(node, camera_zoom, 1 if in_canvaslayer else 0)
+		if rect.size == Vector2.ZERO:
+			return null
+		if rect.rotation == 0:
+			if is_in_rect(mouse_position.x, mouse_position.y, rect.position.x, rect.position.y, rect.size.x, rect.size.y):
+				# print("is_in_rotated_rect: rotation: ", rect.rotation)
+				return node
+		else:
+			var op: Vector2 = Vector2.ZERO
+			if node is Control or node is Node2D:
+				op = node.global_position
+			if !in_canvaslayer:
+				op = scene_to_ui(op)
+			var offset: Vector2 = op - rect.position
+			# print(mouse_position, rect.position)
+			if is_in_rotated_rect(mouse_position, Rect2(rect.position, rect.size), rect.rotation, offset):
+				return node
 	return null
 
 ## 旋转矩形检测
@@ -252,7 +261,7 @@ func get_node_rect(node: Node, camera_zoom: Vector2, in_canvaslayer: int = -1) -
 			in_canvaslayer = 1
 	if in_canvaslayer != 1: # 不是在 CanvasLayer 中
 		rect.position = scene_to_ui(rect.position)
-		rect.size /= camera_zoom
+		rect.size *= camera_zoom
 	return rect
 
 func is_in_canvaslayer(node: Node) -> bool:
@@ -314,10 +323,16 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 				var scale: Vector2 = node.global_scale;
 				var size: Vector2 = texture.get_size() * scale;
 				return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
-		elif node is LightOccluder2D:
-			var occluder: OccluderPolygon2D = node.occluder
-			if occluder:
-				var polygon: PackedVector2Array = occluder.polygon
+		# elif node is LightOccluder2D:
+		# 	var occluder: OccluderPolygon2D = node.occluder
+		# 	if occluder:
+		# 		var polygon: PackedVector2Array = occluder.polygon
+		# 		if polygon.size() > 0:
+		# 			var scale: Vector2 = node.global_scale
+		# 			var bounding_rect: Rect2 = get_polygon_bounding_rect(polygon)
+		# 			var size: Vector2 = bounding_rect.size * scale
+		# 			var pos: Vector2 = bounding_rect.position * scale + node.global_position
+		# 			return NodeTransInfo.new(pos, size, node.global_rotation)
 		elif node is TileMap:
 			var scale: Vector2 = node.global_scale;
 			var rect: Rect2 = node.get_used_rect()
@@ -332,19 +347,73 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 		return NodeTransInfo.new(node.global_position, Vector2.ZERO, node.global_rotation)
 	return NodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)
 
+## 检测点是否在多边形内部（使用射线投射算法）
+func is_point_in_polygon(point: Vector2, polygon: PackedVector2Array) -> bool:
+	if polygon.size() < 3:
+		return false
+	
+	var intersections = 0
+	var n = polygon.size()
+	
+	for i in range(n):
+		var p1 = polygon[i]
+		var p2 = polygon[(i + 1) % n]
+		
+		# 检查射线是否与边相交
+		if ((p1.y > point.y) != (p2.y > point.y)) and (point.x < (p2.x - p1.x) * (point.y - p1.y) / (p2.y - p1.y) + p1.x):
+			intersections += 1
+	
+	return intersections % 2 == 1
+
+## 计算多边形的边界矩形
+func get_polygon_bounding_rect(polygon: PackedVector2Array) -> Rect2:
+	if polygon.size() == 0:
+		return Rect2()
+	
+	var min_x = polygon[0].x
+	var max_x = polygon[0].x
+	var min_y = polygon[0].y
+	var max_y = polygon[0].y
+	
+	for point in polygon:
+		min_x = min(min_x, point.x)
+		max_x = max(max_x, point.x)
+		min_y = min(min_y, point.y)
+		max_y = max(max_y, point.y)
+	
+	return Rect2(Vector2(min_x, min_y), Vector2(max_x - min_x, max_y - min_y))
+
 func scene_to_ui(scene_position: Vector2) -> Vector2:
 	if main_camera == null or !is_instance_valid(main_camera):
 		return scene_position
-
-	var camera_offset = main_camera.get_screen_center_position()
-	# var camera_offset = main_camera.global_position + main_camera.offset #
+	
+	# Godot 4.x 的正确写法
+	var viewport = main_camera.get_viewport()
+	if viewport == null:
+		return scene_position
+	
+	# 获取视口尺寸
+	var viewport_size = viewport.get_visible_rect().size
+	
+	# 获取相机参数
+	var camera_pos = main_camera.global_position
 	var camera_zoom = main_camera.zoom
-	var size = main_camera.get_viewport_rect().size;
+	var camera_offset = main_camera.offset
 	
 	# 将场景坐标转换为屏幕坐标
-	var ui_position = (scene_position - camera_offset) / camera_zoom + size / 2
+	# 公式：屏幕坐标 = (场景坐标 - 相机位置 - 偏移) * 缩放 + 屏幕中心
+	var screen_position = (scene_position - camera_pos - camera_offset) * camera_zoom + viewport_size * 0.5
 	
-	return ui_position
+	return screen_position
+	
+	# 下面是 3x 的写法已经过时
+	# var camera_offset = main_camera.get_screen_center_position()
+	# var camera_offset = main_camera.global_position + main_camera.offset #
+	# var camera_zoom = main_camera.zoom
+	# var size = main_camera.get_viewport_rect().size;
+	# # 将场景坐标转换为屏幕坐标
+	# var ui_position = (scene_position - camera_offset) / camera_zoom + size / 2
+	# return ui_position
 
 func get_camera_zoom() -> Vector2:
 	if main_camera != null and is_instance_valid(main_camera):
