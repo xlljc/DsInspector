@@ -1,0 +1,126 @@
+[gd_scene load_steps=9 format=3 uid="uid://de6ga7m5exyll"]
+
+[ext_resource type="Script" path="res://demo/RotAnim.gd" id="1_j20sw"]
+[ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="2_yow5e"]
+[ext_resource type="PackedScene" uid="uid://b3hud3fa6sqqg" path="res://demo/Player.tscn" id="3_2lw34"]
+[ext_resource type="Texture2D" uid="uid://cba6u3in77t7p" path="res://addons/ds_inspector/icon/delete.svg" id="4_lq565"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_s3apq"]
+radius = 38.0
+height = 176.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3lrc0"]
+size = Vector2(103.5, 95.5)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3kwrp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_lq565")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_yow5e")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6lvdg"]
+polygon = PackedVector2Array(-48, 41, 108, 55, 135, -78, 43, -45, 4, -88, -58, -56, -187, -116, -218, -41, -126, -18, -130, 110)
+
+[node name="Main" type="Node2D"]
+position = Vector2(422, 337)
+
+[node name="RotAnim" type="Node2D" parent="."]
+script = ExtResource("1_j20sw")
+
+[node name="Node2D" type="Node2D" parent="RotAnim"]
+position = Vector2(-44, -18)
+
+[node name="ppp" type="Node2D" parent="RotAnim"]
+position = Vector2(-44, -18)
+
+[node name="Button" type="Button" parent="RotAnim"]
+offset_left = 22.0
+offset_top = -15.0
+offset_right = 112.0
+offset_bottom = 16.0
+text = "abcabcabc"
+
+[node name="Button" type="Button" parent="RotAnim/Button"]
+layout_mode = 0
+offset_left = 41.0
+offset_top = 13.0
+offset_right = 175.0
+offset_bottom = 158.0
+text = "abcabcabc"
+
+[node name="Button" type="Button" parent="RotAnim/Button/Button"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 21.0
+offset_right = 144.0
+offset_bottom = 174.0
+text = "abcabcabc"
+
+[node name="Button" type="Button" parent="RotAnim/Button/Button/Button"]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 33.0
+offset_right = 112.0
+offset_bottom = 190.0
+text = "abcabcabc"
+
+[node name="Icon" type="Sprite2D" parent="RotAnim"]
+position = Vector2(-22, 190)
+texture = ExtResource("2_yow5e")
+
+[node name="Area2D" type="Area2D" parent="RotAnim/Icon"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RotAnim/Icon/Area2D"]
+shape = SubResource("CapsuleShape2D_s3apq")
+
+[node name="Icon2" type="Sprite2D" parent="RotAnim"]
+position = Vector2(-8, 103)
+texture = ExtResource("2_yow5e")
+
+[node name="Area2D" type="Area2D" parent="RotAnim/Icon2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RotAnim/Icon2/Area2D"]
+position = Vector2(4, -7)
+shape = SubResource("RectangleShape2D_3lrc0")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="RotAnim"]
+position = Vector2(86, -100)
+
+[node name="Icon3" type="Sprite2D" parent="RotAnim/CharacterBody2D"]
+position = Vector2(-7, 11.5)
+scale = Vector2(1.03125, 0.460937)
+texture = ExtResource("2_yow5e")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RotAnim/CharacterBody2D"]
+polygon = PackedVector2Array(64, 8, -45, 47, -71, -7, -4, -26, -18, 2, 43, 1)
+
+[node name="PointLight2D" type="PointLight2D" parent="RotAnim"]
+position = Vector2(-131, 45)
+texture = ExtResource("2_yow5e")
+
+[node name="Player" parent="." instance=ExtResource("3_2lw34")]
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(897, 224)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(196, 438)
+sprite_frames = SubResource("SpriteFrames_3kwrp")
+autoplay = "default"
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+position = Vector2(370, 48)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(309, -101)
+occluder = SubResource("OccluderPolygon2D_6lvdg")

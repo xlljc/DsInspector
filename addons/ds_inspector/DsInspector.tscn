@@ -353,7 +353,6 @@ size_flags_vertical = 3
 title = "保存场景"
 position = Vector2i(380, 36)
 size = Vector2i(700, 500)
-always_on_top = true
 min_size = Vector2i(700, 500)
 theme = ExtResource("6")
 ok_button_text = "保存"

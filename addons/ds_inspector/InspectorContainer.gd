@@ -126,12 +126,12 @@ func _init_node_attr():
 	pass
 
 func _create_node_attr(prop) -> AttrItem:
-	var v = _curr_node.get(prop.name)
+	var v := _curr_node.get(prop.name)
 	var attr: BaseAttr
 
 	# ------------- 特殊处理 -----------------
 	if _curr_node is AnimatedSprite2D:
-		if prop.name == "frames":
+		if prop.name == "sprite_frames":
 			attr = sprite_frames_attr.instantiate()
 	# ---------------------------------------
 	if attr == null:
@@ -154,7 +154,7 @@ func _create_node_attr(prop) -> AttrItem:
 				TYPE_STRING:
 					attr = string_attr.instantiate()
 				TYPE_OBJECT:
-					if v is Texture:
+					if v is Texture2D:
 						attr = texture_attr.instantiate()
 					else:
 						attr = label_attr.instantiate()

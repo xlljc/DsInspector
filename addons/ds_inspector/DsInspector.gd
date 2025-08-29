@@ -297,10 +297,10 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 				else:
 					return NodeTransInfo.new(node.global_position + node.offset * scale, size, node.global_rotation)
 		elif node is AnimatedSprite2D:
-			var sf: SpriteFrames = node.frames
+			var sf: SpriteFrames = node.sprite_frames
 			if sf:
 				# spriteFrames.GetFrameTexture(AnimatedSprite.Animation, AnimatedSprite.Frame);
-				var curr_texture: Texture = sf.get_frame(node.animation, node.frame)
+				var curr_texture: Texture2D = sf.get_frame_texture(node.animation, node.frame)
 				if curr_texture:
 					var scale: Vector2 = node.global_scale;
 					var size: Vector2 = curr_texture.get_size() * scale;
@@ -308,12 +308,16 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 						return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
 					else:
 						return NodeTransInfo.new(node.global_position + node.offset * scale, size, node.global_rotation)
-		elif node is Light2D:
+		elif node is PointLight2D:
 			var texture: Texture = node.texture;
 			if texture:
 				var scale: Vector2 = node.global_scale;
 				var size: Vector2 = texture.get_size() * scale;
 				return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
+		elif node is LightOccluder2D:
+			var occluder: OccluderPolygon2D = node.occluder
+			if occluder:
+				var polygon: PackedVector2Array = occluder.polygon
 		elif node is TileMap:
 			var scale: Vector2 = node.global_scale;
 			var rect: Rect2 = node.get_used_rect()
@@ -332,8 +336,8 @@ func scene_to_ui(scene_position: Vector2) -> Vector2:
 	if main_camera == null or !is_instance_valid(main_camera):
 		return scene_position
 
-	var camera_offset = main_camera.get_camera_screen_center()
-	# var camera_offset = main_camera.global_position
+	var camera_offset = main_camera.get_screen_center_position()
+	# var camera_offset = main_camera.global_position + main_camera.offset #
 	var camera_zoom = main_camera.zoom
 	var size = main_camera.get_viewport_rect().size;
 	
@@ -361,17 +365,13 @@ func find_current_camera() -> Camera2D:
 	if not viewport:
 		main_camera = null
 		return null
+	var camera := get_viewport().get_camera_2d()
 	if main_camera != null and is_instance_valid(main_camera):
-		if main_camera.current and main_camera.get_viewport() == viewport:
+		if camera == main_camera:
 			return main_camera
-	var camerasGroupName = "__cameras_%d" % viewport.get_viewport_rid().get_id()
-	var cameras = get_tree().get_nodes_in_group(camerasGroupName)
-	for camera in cameras:
-		if camera is Camera2D and camera.current: 
-			main_camera = camera
-			return camera
-	main_camera = null
-	return null
+
+	main_camera = camera
+	return camera
 
 # 获取一个节点的路径
 func get_node_path(node: Node) -> String:

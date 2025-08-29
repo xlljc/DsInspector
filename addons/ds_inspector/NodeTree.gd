@@ -100,6 +100,7 @@ class IconMapping:
 		"NavigationRegion2D": "res://addons/ds_inspector/node_icon/NavigationRegion2D.svg",
 		"NinePatchRect": "res://addons/ds_inspector/node_icon/NinePatchRect.svg",
 		"Node2D": "res://addons/ds_inspector/node_icon/Node2D.svg",
+		"Node": "res://addons/ds_inspector/node_icon/Node.svg",
 		"OptionButton": "res://addons/ds_inspector/node_icon/OptionButton.svg",
 		"Panel": "res://addons/ds_inspector/node_icon/Panel.svg",
 		"PanelContainer": "res://addons/ds_inspector/node_icon/PanelContainer.svg",

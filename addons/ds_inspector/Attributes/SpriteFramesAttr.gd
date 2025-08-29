@@ -21,4 +21,4 @@ func set_value(value: SpriteFrames):
 	if value == null:
 		texture_node.texture = null
 	else:
-		texture_node.texture = value.get_frame(_node.animation, _node.frame)
+		texture_node.texture = value.get_frame_texture(_node.animation, _node.frame)
