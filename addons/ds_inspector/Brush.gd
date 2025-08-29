@@ -61,7 +61,15 @@ func _draw():
 			op = op
 		
 		if !_in_canvaslayer:
-			op = debug_tool.scene_to_ui(op) if debug_tool else op
+			# 获取相机位置和旋转
+			var camera_pos: Vector2 = debug_tool.get_camera_pos() if debug_tool else Vector2.ZERO
+			var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
+			
+			# 将世界坐标转换为相对于相机的坐标，然后应用相机旋转
+			var relative_pos = op - camera_pos
+			var rotated_pos = relative_pos.rotated(-camera_rotation)
+			op = debug_tool.scene_to_ui(rotated_pos + camera_pos) if debug_tool else op
+		
 		if _draw_node is CollisionShape2D:
 			_draw_node_shape(op)
 		elif _draw_node is CollisionPolygon2D:
@@ -92,7 +100,8 @@ func _draw():
 func _draw_node_shape(op):
 	if _draw_node and _draw_node.shape:
 		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
+		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
+		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
 		_draw_node.shape.draw(get_canvas_item(), Color(0, 1, 1, 0.5))
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
 
@@ -108,7 +117,8 @@ func _draw_node_collision_polygon(op):
 		arr.append_array(points)
 		arr.append(points[0])
 		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
+		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
+		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
 		# 画填充多边形
 		draw_polygon(points, [Color(1, 0, 0, 0.3)])  # 半透明红色
 		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
@@ -127,7 +137,8 @@ func _draw_node_polygon(op):
 			arr.append(points[i] + _draw_node.offset)
 		arr.append(arr[0])
 		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
+		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
+		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
 		# 画填充多边形
 		draw_polygon(arr, [Color(1, 0, 0, 0.3)])  # 半透明红色
 		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
@@ -145,7 +156,8 @@ func _draw_node_light_occluder(op):
 		arr.append_array(points)
 		arr.append(points[0])
 		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		draw_set_transform(op, _draw_node.global_rotation, _draw_node.global_scale * camera_zoom)
+		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
+		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
 		# 画填充多边形
 		draw_polygon(points, [Color(0, 0, 0, 0.4)])  # 半透明红色
 		# draw_polyline(arr, Color(0, 0, 0), 2.0)  # 闭合线
@@ -157,10 +169,11 @@ func _draw_node_light_occluder(op):
 
 func _draw_node_rect(op: Vector2):
 	var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
+	var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
 	var rect = debug_tool.get_node_rect(_draw_node, camera_zoom , 1 if _in_canvaslayer else 0) if debug_tool else null
 	if rect:
 		var offset: Vector2 = op - rect.position
-		_draw_rect_outline(op, rect.size, rect.rotation, offset, 2, Color.RED)
+		_draw_rect_outline(op, rect.size, rect.rotation - camera_rotation, offset, 2, Color.RED)
 
 func _draw_rect_outline(pos: Vector2, size: Vector2, rotation: float, offset: Vector2, line_width := 2, color := Color.WHITE):
 	var points: Array[Vector2] = [

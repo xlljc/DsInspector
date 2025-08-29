@@ -445,10 +445,20 @@ func ui_to_scene(ui_position: Vector2) -> Vector2:
 	
 	return scene_position
 
+func get_camera_pos() -> Vector2:
+	if main_camera != null and is_instance_valid(main_camera):
+		return main_camera.global_position
+	return Vector2.ZERO
+
 func get_camera_zoom() -> Vector2:
 	if main_camera != null and is_instance_valid(main_camera):
 		return main_camera.zoom
 	return Vector2.ONE
+
+func get_camera_rotation() -> float:
+	if main_camera != null and is_instance_valid(main_camera) and !main_camera.ignore_rotation:
+		return main_camera.global_rotation
+	return 0.0
 
 ## 遍历场景树, 在控制台打印出来
 func _each_tree(node: Node) -> void:
