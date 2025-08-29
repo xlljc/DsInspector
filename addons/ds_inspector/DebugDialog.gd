@@ -86,7 +86,7 @@ func play_btn_click():
 func save_btn_click():
 	if debug_tool and debug_tool.brush._draw_node != null:
 		do_hide()
-		file_window.call_deferred("popup")
+		file_window.call_deferred("popup", Rect2i(position, size))
 	pass
 
 func on_file_selected(path: String):

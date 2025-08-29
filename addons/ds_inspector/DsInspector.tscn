@@ -154,6 +154,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="WindowDialog/Bg/ScrollContainer"]
 layout_mode = 2
@@ -348,11 +350,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
-initial_position = 1
-size = Vector2i(500, 500)
+title = "保存场景"
+position = Vector2i(380, 36)
+size = Vector2i(700, 500)
 always_on_top = true
-min_size = Vector2i(500, 500)
+min_size = Vector2i(700, 500)
 theme = ExtResource("6")
+ok_button_text = "保存"
+cancel_button_text = "取消"
 access = 2
 filters = PackedStringArray("*.tscn")
 
