@@ -195,10 +195,11 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 	if node is LightOccluder2D:
 		var occluder: OccluderPolygon2D = node.occluder
 		if occluder:
-			var polygon: PackedVector2Array = occluder.polygon
-			if polygon.size() > 0:
-				print("检测 LightOccluder2D: ", node.get_path())
-				
+			if is_polygon_node_coll(node, in_canvaslayer, mouse_position, occluder.polygon):
+				return node
+	elif node is Polygon2D:
+		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon):
+			return node
 	else:
 		var rect: NodeTransInfo = get_node_rect(node, camera_zoom, 1 if in_canvaslayer else 0)
 		if rect.size == Vector2.ZERO:
@@ -218,6 +219,20 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 			if is_in_rotated_rect(mouse_position, Rect2(rect.position, rect.size), rect.rotation, offset):
 				return node
 	return null
+
+func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Vector2, polygon: PackedVector2Array) -> bool:
+	if polygon != null and polygon.size() > 0:
+		# 将鼠标位置转换到节点的局部坐标系
+		var local_mouse_pos: Vector2 = mouse_position
+		# 如果不在CanvasLayer中，需要将UI坐标转换回场景坐标
+		if !in_canvaslayer:
+			local_mouse_pos = ui_to_scene(mouse_position)
+		# 转换到节点的局部坐标系
+		local_mouse_pos = node.to_local(local_mouse_pos)
+		# 使用Godot内置的几何检测函数
+		if Geometry2D.is_point_in_polygon(local_mouse_pos, polygon):
+			return true
+	return false
 
 ## 旋转矩形检测
 func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float, offset: Vector2) -> bool:
@@ -347,23 +362,24 @@ func _calc_node_rect(node: Node) -> NodeTransInfo:
 		return NodeTransInfo.new(node.global_position, Vector2.ZERO, node.global_rotation)
 	return NodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)
 
-## 检测点是否在多边形内部（使用射线投射算法）
+## 检测点是否在多边形内部（支持变换的版本）
+func is_point_in_polygon_transformed(point: Vector2, polygon: PackedVector2Array, node_transform: Transform2D) -> bool:
+	if polygon.size() < 3:
+		return false
+	
+	# 将点转换到多边形的局部坐标系
+	var local_point = node_transform.affine_inverse() * point
+	
+	# 使用Godot内置的几何检测函数
+	return Geometry2D.is_point_in_polygon(local_point, polygon)
+
+## 检测点是否在多边形内部（原有函数保持兼容）
 func is_point_in_polygon(point: Vector2, polygon: PackedVector2Array) -> bool:
 	if polygon.size() < 3:
 		return false
 	
-	var intersections = 0
-	var n = polygon.size()
-	
-	for i in range(n):
-		var p1 = polygon[i]
-		var p2 = polygon[(i + 1) % n]
-		
-		# 检查射线是否与边相交
-		if ((p1.y > point.y) != (p2.y > point.y)) and (point.x < (p2.x - p1.x) * (point.y - p1.y) / (p2.y - p1.y) + p1.x):
-			intersections += 1
-	
-	return intersections % 2 == 1
+	# 直接使用Godot内置的几何检测函数
+	return Geometry2D.is_point_in_polygon(point, polygon)
 
 ## 计算多边形的边界矩形
 func get_polygon_bounding_rect(polygon: PackedVector2Array) -> Rect2:
@@ -405,15 +421,29 @@ func scene_to_ui(scene_position: Vector2) -> Vector2:
 	var screen_position = (scene_position - camera_pos - camera_offset) * camera_zoom + viewport_size * 0.5
 	
 	return screen_position
+
+# 将UI坐标转换回场景坐标（scene_to_ui的逆操作）
+func ui_to_scene(ui_position: Vector2) -> Vector2:
+	if main_camera == null or !is_instance_valid(main_camera):
+		return ui_position
 	
-	# 下面是 3x 的写法已经过时
-	# var camera_offset = main_camera.get_screen_center_position()
-	# var camera_offset = main_camera.global_position + main_camera.offset #
-	# var camera_zoom = main_camera.zoom
-	# var size = main_camera.get_viewport_rect().size;
-	# # 将场景坐标转换为屏幕坐标
-	# var ui_position = (scene_position - camera_offset) / camera_zoom + size / 2
-	# return ui_position
+	var viewport = main_camera.get_viewport()
+	if viewport == null:
+		return ui_position
+	
+	# 获取视口尺寸
+	var viewport_size = viewport.get_visible_rect().size
+	
+	# 获取相机参数
+	var camera_pos = main_camera.global_position
+	var camera_zoom = main_camera.zoom
+	var camera_offset = main_camera.offset
+	
+	# 将屏幕坐标转换为场景坐标
+	# 公式：场景坐标 = (屏幕坐标 - 屏幕中心) / 缩放 + 相机位置 + 偏移
+	var scene_position = (ui_position - viewport_size * 0.5) / camera_zoom + camera_pos + camera_offset
+	
+	return scene_position
 
 func get_camera_zoom() -> Vector2:
 	if main_camera != null and is_instance_valid(main_camera):

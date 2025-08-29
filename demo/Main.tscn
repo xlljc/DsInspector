@@ -163,13 +163,12 @@ position = Vector2(309, -101)
 occluder = SubResource("OccluderPolygon2D_6lvdg")
 
 [node name="Player" parent="." instance=ExtResource("3_2lw34")]
-position = Vector2(321, 246)
+position = Vector2(325, 201)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+rotation = 0.197222
+ignore_rotation = false
 zoom = Vector2(0.75, 0.75)
-
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(897, 224)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(196, 438)
@@ -191,3 +190,11 @@ texture = ExtResource("2_yow5e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Icon/Area2D"]
 shape = SubResource("CapsuleShape2D_s3apq")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(827, 133)
+polygon = PackedVector2Array(-113, 45, -47, 45, -59, 6, -6, -53, 87, -5, 82, 70, 149, 164, 203, 100, 163, 36, 228, -57, 151, -146, 64, -187, -40, -146, -111, -201, -147, -76, -91, -123, -13, -112, 112, -123, 80, -87, -16, -83, -100, -48)
+
+[node name="Icon2" type="Sprite2D" parent="CollisionPolygon2D"]
+position = Vector2(14, 22)
+texture = ExtResource("2_yow5e")
