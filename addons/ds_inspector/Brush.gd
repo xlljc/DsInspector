@@ -33,14 +33,14 @@ func set_draw_node(node: Node) -> void:
 		set_show_text(false)
 		return
 	_draw_node = node
-	_in_canvaslayer = debug_tool.is_in_canvaslayer(node) if debug_tool else false
+	_in_canvaslayer = debug_tool.is_in_canvaslayer(node)
 	var icon_path = node_tree.icon_mapping.get_icon(_draw_node.get_class())
 	_icon = load(icon_path)
 	icon_tex_rect.texture = _icon
 	
 	path_label.size.x = 0
 	control.size.x = 0
-	path_label.text = debug_tool.get_node_path(node) if debug_tool else ""
+	path_label.text = debug_tool.get_node_path(node)
 	pass
 
 func set_show_text(flag: bool):
@@ -53,146 +53,73 @@ func _draw():
 		if !is_instance_valid(_draw_node):
 			_draw_node = null
 			return
-		var op: Vector2 = Vector2.ZERO
-		# c.rect_global_position
-		if _draw_node is Control or _draw_node is Node2D:
-			op = _draw_node.global_position
-		else:
-			op = op
 		
-		if !_in_canvaslayer:
-			# 获取相机位置和旋转
-			var camera_pos: Vector2 = debug_tool.get_camera_pos() if debug_tool else Vector2.ZERO
-			var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
-			
-			# 将世界坐标转换为相对于相机的坐标，然后应用相机旋转
-			var relative_pos = op - camera_pos
-			var rotated_pos = relative_pos.rotated(-camera_rotation)
-			op = debug_tool.scene_to_ui(rotated_pos + camera_pos) if debug_tool else op
+		var camera_trans: CameraTransInfo = debug_tool.get_camera_trans()
+		var node_trans: NodeTransInfo = debug_tool.calc_node_rect(_draw_node, camera_trans.zoom)
+		var ui_pos: Vector2 = debug_tool.scene_to_ui(node_trans.position)
 		
 		if _draw_node is CollisionShape2D:
-			_draw_node_shape(op)
-		elif _draw_node is CollisionPolygon2D:
-			_draw_node_collision_polygon(op)
-		elif _draw_node is Polygon2D:
-			_draw_node_polygon(op)
-		elif _draw_node is LightOccluder2D and _draw_node.occluder != null:
-			_draw_node_light_occluder(op)
+			_draw_node_shape(_draw_node.shape, ui_pos, node_trans, camera_trans)
+		elif _draw_node is CollisionPolygon2D or _draw_node is Polygon2D:
+			_draw_node_polygon(_draw_node.polygon, ui_pos, node_trans, camera_trans)
+		elif _draw_node is LightOccluder2D:
+			if _draw_node.occluder != null:
+				_draw_node_polygon(_draw_node.occluder.polygon, ui_pos, node_trans, camera_trans)
+			else:
+				_draw_node_rect(ui_pos, node_trans, camera_trans)
 		else:
-			_draw_node_rect(op)
+			_draw_node_rect(ui_pos, node_trans, camera_trans)
 
-		if _show_text:
-			var view_size: Vector2 = get_viewport().size
-			var con_size: Vector2 = control.size
-			var pos: Vector2 = op
-			# 限制在屏幕内
-			if pos.x + con_size.x > view_size.x:
-				pos.x = view_size.x - con_size.x
-			elif pos.x < 0:
-				pos.x = 0
-			if pos.y + con_size.y > view_size.y:
-				pos.y = view_size.y - con_size.y
-			elif  pos.y < 0:
-				pos.y = 0
-			control.position = pos
+		# if _show_text:
+		control.visible = true
+		var view_size: Vector2 = get_viewport().size
+		var con_size: Vector2 = control.size
+		var pos: Vector2 = ui_pos + Vector2(0, 5)
+		# 限制在屏幕内
+		if pos.x + con_size.x > view_size.x:
+			pos.x = view_size.x - con_size.x
+		elif pos.x < 0:
+			pos.x = 0
+		if pos.y + con_size.y > view_size.y:
+			pos.y = view_size.y - con_size.y
+		elif  pos.y < 0:
+			pos.y = 0
+		control.position = pos
 	pass
 
-func _draw_node_shape(op):
-	if _draw_node and _draw_node.shape:
-		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
-		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
-		_draw_node.shape.draw(get_canvas_item(), Color(0, 1, 1, 0.5))
+func _draw_node_shape(shape: Shape2D, ui_pos: Vector2, node_trans: NodeTransInfo, camera_trans: CameraTransInfo):
+	if shape != null:
+		draw_set_transform(ui_pos, node_trans.rotation - camera_trans.rotation, camera_trans.zoom)
+		shape.draw(get_canvas_item(), Color(0, 1, 1, 0.5))
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
-
-	# 可视化中心点（可选）
-	draw_circle(op, 3, Color(1, 0, 0))
 	pass
 
-func _draw_node_collision_polygon(op):
-	if _draw_node and _draw_node.polygon.size() > 0:
-		var points = _draw_node.polygon
-		# 画轮廓线
-		var arr = []
-		arr.append_array(points)
-		arr.append(points[0])
-		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
-		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
-		# 画填充多边形
-		draw_polygon(points, [Color(1, 0, 0, 0.3)])  # 半透明红色
-		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
-		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
-
-	# 可视化中心点（可选）
-	draw_circle(op, 3, Color(1, 0, 0))
-	pass
-
-func _draw_node_polygon(op):
-	if _draw_node and _draw_node.polygon.size() > 0:
-		var points = _draw_node.polygon
-		# 画轮廓线
-		var arr = []
-		for i in range(points.size()):
-			arr.append(points[i] + _draw_node.offset)
-		arr.append(arr[0])
-		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
-		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
-		# 画填充多边形
-		draw_polygon(arr, [Color(1, 0, 0, 0.3)])  # 半透明红色
-		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
-		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
-
-	# 可视化中心点（可选）
-	draw_circle(op, 3, Color(1, 0, 0))
-	pass
-
-func _draw_node_light_occluder(op):
-	if _draw_node and _draw_node.occluder and _draw_node.occluder.polygon.size() > 0:
-		var points: PackedVector2Array = _draw_node.occluder.polygon
+func _draw_node_polygon(polygon: PackedVector2Array, ui_pos: Vector2, node_trans: NodeTransInfo, camera_trans: CameraTransInfo):
+	if polygon and polygon.size() > 0:
 		# 画轮廓线
 		var arr: Array[Vector2] = []
-		arr.append_array(points)
-		arr.append(points[0])
-		var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-		var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
-		draw_set_transform(op, _draw_node.global_rotation - camera_rotation, _draw_node.global_scale * camera_zoom)
+		arr.append_array(polygon)
+		arr.append(polygon[0])
+		draw_set_transform(ui_pos, node_trans.rotation - camera_trans.rotation, camera_trans.zoom)
 		# 画填充多边形
-		draw_polygon(points, [Color(0, 0, 0, 0.4)])  # 半透明红色
-		# draw_polyline(arr, Color(0, 0, 0), 2.0)  # 闭合线
+		draw_polygon(polygon, [Color(1, 0, 0, 0.3)])  # 半透明红色
+		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
 
 	# 可视化中心点（可选）
-	draw_circle(op, 3, Color(1, 0, 0))
+	draw_circle(ui_pos, 3, Color(1, 0, 0))
 	pass
 
-func _draw_node_rect(op: Vector2):
-	var camera_zoom: Vector2 = debug_tool.get_camera_zoom() if debug_tool else Vector2.ONE
-	var camera_rotation: float = debug_tool.get_camera_rotation() if debug_tool else 0.0
-	var rect = debug_tool.get_node_rect(_draw_node, camera_zoom , 1 if _in_canvaslayer else 0) if debug_tool else null
-	if rect:
-		var offset: Vector2 = op - rect.position
-		_draw_rect_outline(op, rect.size, rect.rotation - camera_rotation, offset, 2, Color.RED)
-
-func _draw_rect_outline(pos: Vector2, size: Vector2, rotation: float, offset: Vector2, line_width := 2, color := Color.WHITE):
-	var points: Array[Vector2] = [
-		- offset,
-		- offset + Vector2(size.x, 0),
-		- offset + Vector2(size.x, size.y),
-		- offset + Vector2(0, size.y),
-	]
-
-	# 应用旋转和平移
-	var final_points = []
-	for p in points:
-		final_points.append(pos + p.rotated(rotation))
-
-	# 绘制边框线段
-	for i in range(4):
-		var a = final_points[i]
-		var b = final_points[(i + 1) % 4]
-		draw_line(a, b, color, line_width)
-	
-	# 可视化中心点（可选）
-	draw_circle(pos, 3, Color(1, 0, 0))
+func _draw_node_rect(ui_pos: Vector2, node_trans: NodeTransInfo, camera_trans: CameraTransInfo):
+	# 获取 UI 坐标
+	var pos: Vector2 = debug_tool.scene_to_ui(node_trans.position)
+	if node_trans.size == Vector2.ZERO:
+		draw_circle(pos, 3, Color(1, 0, 0))
+	# draw_circle(pos, 3, Color(1, 0, 0))
+	# 设置绘制变换
+	draw_set_transform(pos, node_trans.rotation - camera_trans.rotation, camera_trans.zoom)
+	# 绘制矩形
+	var rect = Rect2(Vector2.ZERO, node_trans.size)
+	draw_rect(rect, Color(1,0,0), false, 2)
+	# 重置变换
+	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)

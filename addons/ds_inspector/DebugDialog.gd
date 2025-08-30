@@ -49,7 +49,7 @@ func do_show():
 	if debug_tool:
 		debug_tool.mask.visible = false
 		debug_tool._is_open_check_ui = false
-		debug_tool.check_camera()
+		debug_tool.find_current_camera()
 		popup()
 		tree.show_tree(debug_tool.brush._draw_node)
 		debug_tool.brush.set_show_text(false)
@@ -102,14 +102,6 @@ func do_put_away():
 	pass
 
 func _each_and_put_away(tree_item: TreeItem):
-	# tree_item.collapsed = false
-	# var ch: TreeItem = tree_item.get_children()
-	# while ch != null:
-	# 	ch.collapsed = true
-	# 	_each_and_put_away(ch)
-	# 	ch = ch.get_next()
-	# pass
-
 	var ch := tree_item.get_children()
 	for item in ch:
 		item.collapsed = true
@@ -146,7 +138,6 @@ func _on_window_resized():
 # 保存窗口状态（位置和大小）
 func _save_window_state():
 	var data := {
-		"position": position,
 		"size": size
 	}
 	_cached_window_state = data
@@ -166,9 +157,7 @@ func _load_window_state():
 			var content := file.get_as_text()
 			file.close()
 			var data := str_to_var(content)
-			if data is Dictionary and data.has("position") and data.has("size"):
+			if data is Dictionary and data.has("size"):
 				_cached_window_state = data
-				var dataPos: Vector2 = _cached_window_state.position
 				var dataSize: Vector2 = _cached_window_state.size
-				position = dataPos
 				size = dataSize

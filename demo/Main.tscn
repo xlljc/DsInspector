@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://de6ga7m5exyll"]
+[gd_scene load_steps=11 format=3 uid="uid://de6ga7m5exyll"]
 
 [ext_resource type="Script" path="res://demo/RotAnim.gd" id="1_j20sw"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="2_yow5e"]
@@ -28,6 +28,76 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8p0r6"]
+texture = ExtResource("2_yow5e")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+7:6/0 = 0
+0:7/0 = 0
+1:7/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
+5:7/0 = 0
+6:7/0 = 0
+7:7/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_pwjis"]
+sources/0 = SubResource("TileSetAtlasSource_8p0r6")
 
 [node name="Main" type="Node2D"]
 position = Vector2(422, 337)
@@ -103,7 +173,7 @@ texture = ExtResource("2_yow5e")
 polygon = PackedVector2Array(64, 8, -45, 47, -71, -7, -4, -26, -18, 2, 43, 1)
 
 [node name="PointLight2D" type="PointLight2D" parent="RotAnim"]
-position = Vector2(-131, 45)
+position = Vector2(-9, 105)
 texture = ExtResource("2_yow5e")
 
 [node name="PointLight2D2" type="PointLight2D" parent="RotAnim"]
@@ -198,3 +268,69 @@ polygon = PackedVector2Array(-113, 45, -47, 45, -59, 6, -6, -53, 87, -5, 82, 70,
 [node name="Icon2" type="Sprite2D" parent="CollisionPolygon2D"]
 position = Vector2(14, 22)
 texture = ExtResource("2_yow5e")
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 437.0
+offset_top = 467.0
+offset_right = 500.0
+offset_bottom = 498.0
+rotation = -0.340339
+text = "123456"
+
+[node name="Button" type="Button" parent="Button2"]
+offset_left = 48.5051
+offset_top = -23.1357
+offset_right = 111.505
+offset_bottom = 7.86432
+rotation = -0.226893
+scale = Vector2(2.5, 1)
+text = "123456"
+
+[node name="Icon2" type="Sprite2D" parent="."]
+position = Vector2(82, 582)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon3" type="Sprite2D" parent="."]
+position = Vector2(241, 580)
+rotation = 0.338812
+texture = ExtResource("2_yow5e")
+
+[node name="Icon4" type="Sprite2D" parent="."]
+position = Vector2(463, 593)
+rotation = 0.394747
+scale = Vector2(2, 1)
+texture = ExtResource("2_yow5e")
+
+[node name="Icon5" type="Sprite2D" parent="."]
+position = Vector2(647, 514)
+rotation = 0.394747
+scale = Vector2(2, 1)
+texture = ExtResource("2_yow5e")
+centered = false
+
+[node name="Icon6" type="Sprite2D" parent="."]
+position = Vector2(917, 461)
+rotation = 0.394747
+scale = Vector2(2, 1)
+texture = ExtResource("2_yow5e")
+centered = false
+offset = Vector2(100, -10)
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+position = Vector2(1070.4, 420.284)
+rotation = -0.977183
+scale = Vector2(0.469253, 0.920936)
+
+[node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="BackBufferCopy"]
+position = Vector2(110.785, 17.4776)
+scale = Vector2(2.49619, 4.67573)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="BackBufferCopy"]
+position = Vector2(-80.5698, 3.44183)
+scale = Vector2(9.05698, 1.34418)
+
+[node name="TileMap" type="TileMap" parent="."]
+position = Vector2(1226, 172)
+tile_set = SubResource("TileSet_pwjis")
+format = 2
+layer_0/tile_data = PackedInt32Array(-2, 131072, 3, 65534, 131072, 4, 131070, 131072, 5, -1, 196608, 3, 65535, 196608, 4, 131071, 196608, 5, -65536, 262144, 3, 0, 262144, 4, 65536, 262144, 5, -65535, 327680, 3, 1, 327680, 4, 65537, 327680, 5, 196606, 131072, 3, 262142, 131072, 4, 327678, 131072, 5, 196607, 196608, 3, 262143, 196608, 4, 327679, 196608, 5, 131072, 262144, 3, 196608, 262144, 4, 262144, 262144, 5, 131073, 327680, 3, 196609, 327680, 4, 262145, 327680, 5, 131074, 131072, 3, 196610, 131072, 4, 262146, 131072, 5, 131075, 196608, 3, 196611, 196608, 4, 262147, 196608, 5, 131076, 262144, 3, 196612, 262144, 4, 262148, 262144, 5, 131077, 327680, 3, 196613, 327680, 4, 262149, 327680, 5, -65532, 131072, 3, 4, 131072, 4, 65540, 131072, 5, -65531, 196608, 3, 5, 196608, 4, 65541, 196608, 5, -65530, 262144, 3, 6, 262144, 4, 65542, 262144, 5, -65529, 327680, 3, 7, 327680, 4, 65543, 327680, 5, 327684, 131072, 3, 393220, 131072, 4, 458756, 131072, 5, 327685, 196608, 3, 393221, 196608, 4, 458757, 196608, 5, 327686, 262144, 3, 393222, 262144, 4, 458758, 262144, 5, 327687, 327680, 3, 393223, 327680, 4, 458759, 327680, 5, 393214, 131072, 3, 458750, 131072, 4, 524286, 131072, 5, 393215, 196608, 3, 458751, 196608, 4, 524287, 196608, 5, 327680, 262144, 3, 393216, 262144, 4, 458752, 262144, 5, 327681, 327680, 3, 393217, 327680, 4, 458753, 327680, 5, 327688, 131072, 3, 393224, 131072, 4, 458760, 131072, 5, 327689, 196608, 3, 393225, 196608, 4, 458761, 196608, 5, 327690, 262144, 3, 393226, 262144, 4, 458762, 262144, 5, 327691, 327680, 3, 393227, 327680, 4, 458763, 327680, 5)

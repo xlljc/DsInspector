@@ -31,15 +31,7 @@ var _prev_mouse_position: Vector2 = Vector2.ZERO
 var _is_open_check_ui: bool = false
 var _mouse_in_hover_btn: bool = false
 
-class NodeTransInfo:
-	var position: Vector2
-	var size: Vector2
-	var rotation: float
-	func _init(_position: Vector2, _size: Vector2, _rotation: float):
-		position = _position
-		size = _size
-		rotation = _rotation
-	pass
+
 
 func _ready():
 	brush.node_tree = window.tree
@@ -48,16 +40,16 @@ func _ready():
 
 ## func _on_idle_frame() -> void:
 func _process(delta: float) -> void:
-	######################### 拣选Ui相关 
-	if _is_open_check_ui:
-		if main_camera == null or !is_instance_valid(main_camera):
+	if window.visible:
+		if main_camera == null or !is_instance_valid(main_camera) or !main_camera.is_current():
 			main_camera = null
 		_check_camer_timer -= delta
 		if _check_camer_timer <= 0:
 			## print("重新开始检测Camer相机")
 			_check_camer_timer = 1.0
-			check_camera()
-
+			find_current_camera()
+	######################### 拣选Ui相关 
+	if _is_open_check_ui:
 		if !_mouse_in_hover_btn and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			if !prev_click:
 				prev_click = true
@@ -100,12 +92,6 @@ func show_panel():
 	window.do_show()
 	pass
 
-func check_camera():
-	find_current_camera()
-	# if main_camera != null:
-	#	print("找到 Camera2D 节点: ", main_camera.get_path())
-	pass
-
 ## 获取鼠标点击选中的节点
 func get_check_node() -> Node:
 	var mousePos: Vector2 = brush.get_global_mouse_position()
@@ -139,15 +125,15 @@ func get_check_node() -> Node:
 			if collider and is_instance_valid(collider) and !(collider is TileMap):
 				var collision_shape = _find_collision_shape(collider)
 				var node_path: String = get_node_path(collision_shape)
-				# print("选中碰撞体: ", node_path)
 				if !_is_path_excluded(node_path):
 					return collision_shape
 	
-	var camera_zoom: Vector2 = get_camera_zoom()
-	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_zoom, false, _exclude_list);
-	if node != null:
-		_exclude_list.append(node)
-	return node
+	# var camera_zoom: Vector2 = get_camera_zoom()
+	# var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_zoom, false, _exclude_list);
+	# if node != null:
+	# 	_exclude_list.append(node)
+	# return node
+	return null;
 
 func _find_collision_shape(node: Node):
 	if node == null:
@@ -268,7 +254,7 @@ func is_in_rect(targetX: float, targetY: float, x: float, y: float, w: float, h:
 
 ## in_canvaslayer: -1 自动判断是不是在 CanvasLayer 中, 1 是在 CanvasLayer 中, 0 是不在 CanvasLayer 中
 func get_node_rect(node: Node, camera_zoom: Vector2, in_canvaslayer: int = -1) -> NodeTransInfo:
-	var rect: NodeTransInfo = _calc_node_rect(node)
+	var rect: NodeTransInfo = calc_node_rect(node, camera_zoom)
 	if rect.size.x == 0 or rect.size.y == 0:
 		return rect
 	if in_canvaslayer == -1:
@@ -287,79 +273,60 @@ func is_in_canvaslayer(node: Node) -> bool:
 		parent = parent.get_parent()
 	return false
 
-func _calc_node_rect(node: Node) -> NodeTransInfo:
+func calc_node_rect(node: Node, camera_zoom: Vector2) -> NodeTransInfo:
 	## 获取节点的矩形范围
 	if node is Control:
-		var rect = node.get_global_rect()
-		var r = 0
-		var s: Vector2 = Vector2.ONE
-		var curr_node: Node = node
-		while curr_node != null:
-			if curr_node is Control:
-				r += deg_to_rad(curr_node.rotation)
-				s *= curr_node.scale
-			elif curr_node is CanvasItem:
-				r += curr_node.global_rotation
-				s *= curr_node.global_scale
-				break
-			curr_node = curr_node.get_parent()
-		
-		rect.size *= s
-		return NodeTransInfo.new(rect.position, rect.size, r)
+		var trans: Transform2D = node.get_global_transform()
+		var rect: Rect2 = node.get_global_rect()
+		return NodeTransInfo.new(rect.position, rect.size, trans.get_rotation())
 	elif node is Node2D:
+		var pos: Vector2 = node.global_position
+		var rot: float = node.global_rotation
 		if node is Sprite2D:
-			var texture: Texture = node.texture;
+			var texture: Texture = node.texture
 			if texture:
-				var scale: Vector2 = node.global_scale;
-				var size: Vector2
-				if node.region_enabled:
-					size = node.region_rect.size * scale
-				else:
-					size = texture.get_size() * scale;
+				var scale: Vector2 = node.global_scale
+				var offset: Vector2 = node.offset * scale
+				var size: Vector2 = texture.get_size() * scale
 				if node.centered:
-					return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
-				else:
-					return NodeTransInfo.new(node.global_position + node.offset * scale, size, node.global_rotation)
+					pos -= (size * 0.5).rotated(rot)
+				pos += offset.rotated(rot)
+				return NodeTransInfo.new(pos, size, rot)
 		elif node is AnimatedSprite2D:
 			var sf: SpriteFrames = node.sprite_frames
 			if sf:
-				# spriteFrames.GetFrameTexture(AnimatedSprite.Animation, AnimatedSprite.Frame);
 				var curr_texture: Texture2D = sf.get_frame_texture(node.animation, node.frame)
 				if curr_texture:
-					var scale: Vector2 = node.global_scale;
-					var size: Vector2 = curr_texture.get_size() * scale;
+					var scale: Vector2 = node.global_scale
+					var size: Vector2 = curr_texture.get_size() * scale
+					var offset: Vector2 = node.offset * scale
 					if node.centered:
-						return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
-					else:
-						return NodeTransInfo.new(node.global_position + node.offset * scale, size, node.global_rotation)
+						pos -= (size * 0.5).rotated(rot)
+					pos += offset.rotated(rot)
+					return NodeTransInfo.new(pos, size, rot)
 		elif node is PointLight2D:
 			var texture: Texture = node.texture;
 			if texture:
-				var scale: Vector2 = node.global_scale;
+				var scale: Vector2 = node.global_scale
 				var size: Vector2 = texture.get_size() * scale;
-				return NodeTransInfo.new(node.global_position - size * 0.5 + node.offset * scale, size, node.global_rotation)
-		# elif node is LightOccluder2D:
-		# 	var occluder: OccluderPolygon2D = node.occluder
-		# 	if occluder:
-		# 		var polygon: PackedVector2Array = occluder.polygon
-		# 		if polygon.size() > 0:
-		# 			var scale: Vector2 = node.global_scale
-		# 			var bounding_rect: Rect2 = get_polygon_bounding_rect(polygon)
-		# 			var size: Vector2 = bounding_rect.size * scale
-		# 			var pos: Vector2 = bounding_rect.position * scale + node.global_position
-		# 			return NodeTransInfo.new(pos, size, node.global_rotation)
+				var offset: Vector2 = node.offset * scale
+				pos += (offset - size * 0.5).rotated(rot)
+				return NodeTransInfo.new(pos, size, rot)
 		elif node is TileMap:
-			var scale: Vector2 = node.global_scale;
-			var rect: Rect2 = node.get_used_rect()
-			var size: Vector2 = rect.size * scale * node.cell_size
-			var pos: Vector2 = rect.position * scale * node.cell_size
-			return NodeTransInfo.new(pos + node.global_position, size, node.global_rotation)
+			var ts: TileSet = node.tile_set;
+			if ts != null:
+				var scale: Vector2 = node.global_scale;
+				var rect: Rect2 = node.get_used_rect()
+				var tile_size: Vector2 = Vector2(ts.tile_size)
+				var size: Vector2 = rect.size * scale * tile_size
+				pos += (rect.position * scale * tile_size).rotated(rot)
+				return NodeTransInfo.new(pos, size, rot)
 		elif node is BackBufferCopy or node is VisibleOnScreenEnabler2D or node is VisibleOnScreenNotifier2D:
 			var scale: Vector2 = node.global_scale;
-			var rect: Rect2 = node.rect
-			return NodeTransInfo.new(node.global_position + rect.position, rect.size * scale, node.global_rotation)
-
-		return NodeTransInfo.new(node.global_position, Vector2.ZERO, node.global_rotation)
+			var rect: Rect2 = node.rect;
+			pos -= (rect.size * 0.5 * scale).rotated(rot)
+			return NodeTransInfo.new(pos, rect.size * scale, rot)
+		return NodeTransInfo.new(pos, Vector2.ZERO, rot)
 	return NodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)
 
 ## 检测点是否在多边形内部（支持变换的版本）
@@ -403,22 +370,14 @@ func scene_to_ui(scene_position: Vector2) -> Vector2:
 	if main_camera == null or !is_instance_valid(main_camera):
 		return scene_position
 	
-	# Godot 4.x 的正确写法
 	var viewport = main_camera.get_viewport()
 	if viewport == null:
 		return scene_position
 	
-	# 获取视口尺寸
-	var viewport_size = viewport.get_visible_rect().size
-	
-	# 获取相机参数
-	var camera_pos = main_camera.global_position
-	var camera_zoom = main_camera.zoom
-	var camera_offset = main_camera.offset
-	
-	# 将场景坐标转换为屏幕坐标
-	# 公式：屏幕坐标 = (场景坐标 - 相机位置 - 偏移) * 缩放 + 屏幕中心
-	var screen_position = (scene_position - camera_pos - camera_offset) * camera_zoom + viewport_size * 0.5
+	# 使用 Godot 4 内置的坐标转换
+	# 先将世界坐标转换为画布坐标，再转换为屏幕坐标
+	var canvas_transform = main_camera.get_canvas_transform()
+	var screen_position = canvas_transform * scene_position
 	
 	return screen_position
 
@@ -431,34 +390,21 @@ func ui_to_scene(ui_position: Vector2) -> Vector2:
 	if viewport == null:
 		return ui_position
 	
-	# 获取视口尺寸
-	var viewport_size = viewport.get_visible_rect().size
-	
-	# 获取相机参数
-	var camera_pos = main_camera.global_position
-	var camera_zoom = main_camera.zoom
-	var camera_offset = main_camera.offset
-	
-	# 将屏幕坐标转换为场景坐标
-	# 公式：场景坐标 = (屏幕坐标 - 屏幕中心) / 缩放 + 相机位置 + 偏移
-	var scene_position = (ui_position - viewport_size * 0.5) / camera_zoom + camera_pos + camera_offset
+	# 使用 Godot 4 内置的坐标转换
+	# 获取画布变换的逆变换，将屏幕坐标转换回场景坐标
+	var canvas_transform = main_camera.get_canvas_transform()
+	var scene_position = canvas_transform.affine_inverse() * ui_position
 	
 	return scene_position
 
-func get_camera_pos() -> Vector2:
+# 获取相机位置信息
+func get_camera_trans() -> CameraTransInfo:
 	if main_camera != null and is_instance_valid(main_camera):
-		return main_camera.global_position
-	return Vector2.ZERO
-
-func get_camera_zoom() -> Vector2:
-	if main_camera != null and is_instance_valid(main_camera):
-		return main_camera.zoom
-	return Vector2.ONE
-
-func get_camera_rotation() -> float:
-	if main_camera != null and is_instance_valid(main_camera) and !main_camera.ignore_rotation:
-		return main_camera.global_rotation
-	return 0.0
+		if main_camera.ignore_rotation:
+			return CameraTransInfo.new(main_camera.global_position, main_camera.zoom, 0.0, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
+		else:
+			return CameraTransInfo.new(main_camera.global_position, main_camera.zoom, main_camera.global_rotation, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
+	return CameraTransInfo.new(Vector2.ZERO, Vector2.ONE, 0.0, Vector2.ZERO, true)
 
 ## 遍历场景树, 在控制台打印出来
 func _each_tree(node: Node) -> void:

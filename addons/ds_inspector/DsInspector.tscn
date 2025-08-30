@@ -125,7 +125,7 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "file_window", "put_away")]
 title = "DsInspector"
-position = Vector2i(100, 24)
+position = Vector2i(50, 50)
 size = Vector2i(500, 600)
 visible = false
 always_on_top = true
