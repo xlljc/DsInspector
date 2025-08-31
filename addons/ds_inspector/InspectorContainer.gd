@@ -216,9 +216,11 @@ func _filter_attributes(filter_text: String):
 		for item in _attr_list:
 			item.attr.visible = true
 	else:
-		# 过滤属性（不区分大小写）
-		var filter_lower = filter_text.to_lower()
+		# 过滤属性（不区分大小写，忽略下划线）
+		var filter_lower = filter_text.to_lower().replace("_", "")
 		for item in _attr_list:
-			var matches = item.title.to_lower().contains(filter_lower) or item.name.to_lower().contains(filter_lower)
+			var title_lower = item.title.to_lower().replace("_", "")
+			var name_lower = item.name.to_lower().replace("_", "")
+			var matches = title_lower.contains(filter_lower) or name_lower.contains(filter_lower)
 			item.attr.visible = matches
 	pass

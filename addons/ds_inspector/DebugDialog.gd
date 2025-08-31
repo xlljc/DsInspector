@@ -20,6 +20,8 @@ var play_btn: Button
 var file_window: FileDialog
 @export
 var put_away: Button
+@export
+var confirmation: ConfirmationDialog
 
 # 缓存的窗口状态
 var _cached_window_state: Dictionary = {}
@@ -30,7 +32,8 @@ var debug_tool = get_node("/root/DsInspector")
 func _ready():
 	_load_window_state()
 	select_btn.pressed.connect(select_btn_click)
-	delete_btn.pressed.connect(delete_btn_click)
+	# 修改为弹出确认框
+	delete_btn.pressed.connect(_on_delete_btn_pressed)
 	hide_border_btn.pressed.connect(hide_border_btn_click)
 	play_btn.pressed.connect(play_btn_click)
 	save_btn.pressed.connect(save_btn_click)
@@ -39,6 +42,7 @@ func _ready():
 	file_window.file_selected.connect(on_file_selected)
 	put_away.pressed.connect(do_put_away)
 	# focus_exited.connect(_on_focus_exited)
+	confirmation.confirmed.connect(_on_delete_confirmed) # 连接确认事件
 
 # 当窗口失去焦点时关闭窗口
 func _on_focus_exited():
@@ -68,9 +72,14 @@ func select_btn_click():
 		debug_tool.mask.visible = true
 		debug_tool._is_open_check_ui = true
 
-func delete_btn_click():
-	tree.delete_selected();
-	pass
+# 删除按钮点击，弹出确认框
+func _on_delete_btn_pressed():
+	confirmation.dialog_text = "确定要删除选中的节点吗？"
+	confirmation.popup_centered()
+
+# 确认框确认后执行删除
+func _on_delete_confirmed():
+	tree.delete_selected()
 
 func hide_border_btn_click():
 	if debug_tool:

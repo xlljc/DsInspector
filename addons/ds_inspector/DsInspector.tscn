@@ -124,22 +124,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "file_window", "put_away")]
+[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
 position = Vector2i(50, 50)
 size = Vector2i(500, 600)
-visible = false
 theme = ExtResource("6")
 script = ExtResource("17")
 tree = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
 exclude_list = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
 select_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
 save_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
-delete_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control/DeleteNode")
+delete_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/DeleteNode")
 hide_border_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/HideBorderNode")
 play_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PlayNode")
 file_window = NodePath("../SaveFileDialog")
 put_away = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
+confirmation = NodePath("../ConfirmationDialog")
 
 [node name="Bg" type="ColorRect" parent="WindowDialog"]
 anchors_preset = 15
@@ -195,13 +195,8 @@ text = "暂停游戏"
 layout_mode = 2
 text = "保存成场景"
 
-[node name="Control" type="MarginContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="DeleteNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="DeleteNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control"]
-layout_mode = 2
-size_flags_horizontal = 8
 text = "删除节点"
 
 [node name="HSplitContainer" type="HSplitContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer"]
@@ -369,6 +364,13 @@ ok_button_text = "保存"
 cancel_button_text = "取消"
 access = 2
 filters = PackedStringArray("*.tscn")
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = "你确定吗？"
+initial_position = 1
+size = Vector2i(200, 158)
+ok_button_text = "确定"
+cancel_button_text = "取消"
 
 [node name="Brush" type="Node2D" parent="." node_paths=PackedStringArray("control", "icon_tex_rect", "path_label")]
 script = ExtResource("3")
