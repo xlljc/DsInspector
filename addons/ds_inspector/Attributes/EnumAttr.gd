@@ -17,7 +17,7 @@ func set_node(node: Node):
 	_node = node
 
 func set_enum_options(options: String):
-#	option_button.clear()
+	option_button.clear()
 	var opts = options.split(",")
 	for i in opts.size():
 		option_button.add_item(opts[i])
@@ -28,7 +28,8 @@ func set_title(name: String):
 	label.text = name
 
 func set_value(value: int):
-	option_button.select(value)
+	if not option_button.has_focus():
+		option_button.select(value)
 	pass
 
 func _on_item_selected(index: int):

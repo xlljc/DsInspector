@@ -351,3 +351,6 @@ popup/item_0/text = "123"
 popup/item_0/id = 0
 popup/item_1/text = "234234"
 popup/item_1/id = 1
+
+[node name="Window" type="Window" parent="."]
+position = Vector2i(200, 400)

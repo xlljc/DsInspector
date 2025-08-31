@@ -88,10 +88,6 @@ func _process(delta: float) -> void:
 			prev_click = false
 	##################################################
 
-func show_panel():
-	window.do_show()
-	pass
-
 ## 获取鼠标点击选中的节点
 func get_check_node() -> Node:
 	var mousePos: Vector2 = brush.get_global_mouse_position()

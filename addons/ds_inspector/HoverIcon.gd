@@ -51,7 +51,11 @@ func _input(event):
 func _on_HoverIcon_pressed():
 	if !drag_move_flag:
 		if debug_tool:
-			debug_tool.show_panel()
+			if !debug_tool.window.visible:
+				debug_tool.window.do_show()
+			else:
+				debug_tool.window.do_hide()
+			
 	pass
 
 

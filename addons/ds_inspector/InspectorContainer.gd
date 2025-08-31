@@ -146,8 +146,6 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 			attr = sprite_frames_attr.instantiate()
 	# ---------------------------------------
 
-	# if prop.type == TYPE_INT and prop.hint == PROPERTY_HINT_ENUM:
-	# 	print("属性", prop.name, "是枚举类型，选项为：", prop.hint_string, "，当前值下标：", _curr_node.get(prop.name))
 	if attr == null:
 		if v == null:
 			attr = label_attr.instantiate()
@@ -158,7 +156,6 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 				TYPE_INT:
 					if prop.hint == PROPERTY_HINT_ENUM:
 						attr = enum_attr.instantiate()
-						attr.call_deferred("set_enum_options", prop.hint_string)
 					else:
 						attr = number_attr.instantiate()
 				TYPE_FLOAT:
@@ -182,6 +179,10 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 
 	attr.set_node(_curr_node)
 	attr.set_title(prop.name)
+	
+	if attr is EnumAttr:
+		attr.set_enum_options(prop.hint_string)
+	
 	attr.set_value(v)
 	# print(prop.name, "   ", typeof(v))
 	return AttrItem.new(attr, prop.name, prop.usage, prop.type, prop.name)
