@@ -128,8 +128,8 @@ func get_check_node() -> Node:
 				if !_is_path_excluded(node_path):
 					return collision_shape
 	
-	var camera_zoom: Vector2 = main_camera.zoom if main_camera != null else Vector2.ONE
-	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_zoom, false, _exclude_list);
+	var camera_trans: CameraTransInfo = get_camera_trans()
+	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_trans.zoom, false, _exclude_list);
 	if node != null:
 		_exclude_list.append(node)
 	return node
@@ -190,24 +190,13 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		var rect: NodeTransInfo = calc_node_rect(node)
 		if rect.size == Vector2.ZERO:
 			return null
-		if rect.rotation == 0:
-			var mpos: Vector2
-			if in_canvaslayer:
-				mpos = mouse_position
-			else:
-				mpos = ui_to_scene(mouse_position)
-			if is_in_rect(mpos.x, mpos.y, rect.position.x, rect.position.y, rect.size.x, rect.size.y):
-				# print("is_in_rotated_rect: rotation: ", rect.rotation)
-				return node
+		var mpos: Vector2
+		if in_canvaslayer:
+			mpos = mouse_position
 		else:
-			var mpos: Vector2
-			if in_canvaslayer:
-				mpos = mouse_position
-			else:
-				mpos = ui_to_scene(mouse_position)
-			# print(mouse_position, rect.position)
-			if is_in_rotated_rect(mouse_position, Rect2(rect.position, rect.size), rect.rotation):
-				return node
+			mpos = ui_to_scene(mouse_position)
+		if is_in_rotated_rect(mpos, Rect2(rect.position.x, rect.position.y, rect.size.x, rect.size.y), rect.rotation, Vector2.ZERO):
+			return node
 	return null
 
 func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Vector2, polygon: PackedVector2Array) -> bool:
@@ -225,9 +214,9 @@ func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Ve
 	return false
 
 ## 旋转矩形检测
-func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float) -> bool:
+func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float, offset: Vector2) -> bool:
 	# 计算旋转中心点（世界坐标）
-	var pivot = rect.position
+	var pivot = rect.position + offset
 	
 	# 将 mouse_pos 转换到矩形局部坐标系（反向旋转）
 	var local_pos = (mouse_pos - pivot).rotated(-rotation)
@@ -255,19 +244,6 @@ func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float) -> boo
 ## 判断点 (targetX, targetY) 是否在矩形区域 (x, y, w, h) 内
 func is_in_rect(targetX: float, targetY: float, x: float, y: float, w: float, h: float) -> bool:
 	return targetX >= x and targetX <= x + w and targetY >= y and targetY <= y + h
-
-# ## in_canvaslayer: -1 自动判断是不是在 CanvasLayer 中, 1 是在 CanvasLayer 中, 0 是不在 CanvasLayer 中
-# func get_node_rect(node: Node, camera_zoom: Vector2, in_canvaslayer: int = -1) -> NodeTransInfo:
-# 	var rect: NodeTransInfo = calc_node_rect(node)
-# 	if rect.size.x == 0 or rect.size.y == 0:
-# 		return rect
-# 	if in_canvaslayer == -1:
-# 		if is_in_canvaslayer(node):
-# 			in_canvaslayer = 1
-# 	if in_canvaslayer != 1: # 不是在 CanvasLayer 中
-# 		rect.position = scene_to_ui(rect.position)
-# 		rect.size *= camera_zoom
-# 	return rect
 
 func is_in_canvaslayer(node: Node) -> bool:
 	var parent: Node = node.get_parent()

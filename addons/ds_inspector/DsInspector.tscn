@@ -366,22 +366,41 @@ control = NodePath("../Control")
 icon_tex_rect = NodePath("../Control/ColorRect/Icon")
 path_label = NodePath("../Control/Path")
 
-[node name="Control" type="HBoxContainer" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 127.0
+offset_bottom = 27.0
 theme = ExtResource("6")
 
 [node name="ColorRect" type="ColorRect" parent="Control"]
-custom_minimum_size = Vector2(22, 22)
+custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+offset_right = 30.0
+offset_bottom = 30.0
 color = Color(0.203922, 0.203922, 0.203922, 1)
 
 [node name="Icon" type="TextureRect" parent="Control/ColorRect"]
 custom_minimum_size = Vector2(22, 22)
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("13_ai5ie")
-expand_mode = 1
+stretch_mode = 5
 
 [node name="Path" type="Label" parent="Control"]
 layout_mode = 2
+offset_left = 34.0
+offset_top = 2.0
+offset_right = 117.0
+offset_bottom = 32.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_outline_size = 2
 text = "Path:a/b/c"
 
 [node name="Tips" type="Label" parent="."]
@@ -399,6 +418,10 @@ grow_vertical = 0
 pivot_offset = Vector2(240, 34)
 size_flags_vertical = 0
 theme = ExtResource("6")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 5
+theme_override_constants/shadow_outline_size = 3
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 vertical_alignment = 2

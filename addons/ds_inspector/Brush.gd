@@ -76,9 +76,11 @@ func _draw():
 			if _draw_node.occluder != null:
 				_draw_node_polygon(_draw_node.occluder.polygon, pos, scale, rot)
 			else:
-				_draw_node_rect(pos, scale, node_trans.size, rot)
+				_draw_node_rect(pos, scale, node_trans.size, rot, false)
+		elif _draw_node is VisibleOnScreenEnabler2D or _draw_node is VisibleOnScreenNotifier2D:
+			_draw_node_rect(pos, scale, node_trans.size, rot, true)
 		else:
-			_draw_node_rect(pos, scale, node_trans.size, rot)
+			_draw_node_rect(pos, scale, node_trans.size, rot, false)
 
 		if _show_text:
 			control.visible = true
@@ -98,14 +100,15 @@ func _draw():
 	pass
 
 func _draw_node_shape(shape: Shape2D, pos: Vector2, scale: Vector2, rot: float):
+	draw_circle(pos, 3, Color(1, 0, 0))
 	if shape != null:
 		draw_set_transform(pos, rot, scale)
 		shape.draw(get_canvas_item(), Color(0, 1, 1, 0.5))
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
-	pass
 
 func _draw_node_polygon(polygon: PackedVector2Array, pos: Vector2, scale: Vector2, rot: float):
-	if polygon and polygon.size() > 0:
+	draw_circle(pos, 3, Color(1, 0, 0))
+	if polygon != null and polygon.size() > 0:
 		# 画轮廓线
 		var arr: Array[Vector2] = []
 		arr.append_array(polygon)
@@ -116,17 +119,16 @@ func _draw_node_polygon(polygon: PackedVector2Array, pos: Vector2, scale: Vector
 		draw_polyline(arr, Color(1, 0, 0), 2.0)  # 闭合线
 		draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
 
-	# 可视化中心点（可选）
+func _draw_node_rect(pos: Vector2, scale: Vector2, size: Vector2, rot: float, filled: bool):
 	draw_circle(pos, 3, Color(1, 0, 0))
-	pass
-
-func _draw_node_rect(pos: Vector2, scale: Vector2, size: Vector2, rot: float):
 	if size == Vector2.ZERO:
-		draw_circle(pos, 3, Color(1, 0, 0))
+		return
 	# 设置绘制变换
 	draw_set_transform(pos, rot, scale)
 	# 绘制矩形
 	var rect = Rect2(Vector2.ZERO, size)
+	if filled:
+		draw_rect(rect, Color(1,0,0,0.3), true)
 	draw_rect(rect, Color(1,0,0), false, 2)
 	# 重置变换
 	draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)

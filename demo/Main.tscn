@@ -9,6 +9,26 @@
 radius = 38.0
 height = 176.0
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_3kwrp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_lq565")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_yow5e")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3lrc0"]
+size = Vector2(103.5, 95.5)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6lvdg"]
+polygon = PackedVector2Array(-48, 41, 108, 55, 135, -78, 43, -45, 4, -88, -58, -56, -187, -116, -218, -41, -126, -18, -130, 110)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8p0r6"]
 texture = ExtResource("2_yow5e")
 0:0/0 = 0
@@ -79,26 +99,6 @@ texture = ExtResource("2_yow5e")
 [sub_resource type="TileSet" id="TileSet_pwjis"]
 sources/0 = SubResource("TileSetAtlasSource_8p0r6")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3lrc0"]
-size = Vector2(103.5, 95.5)
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6lvdg"]
-polygon = PackedVector2Array(-48, 41, 108, 55, 135, -78, 43, -45, 4, -88, -58, -56, -187, -116, -218, -41, -126, -18, -130, 110)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_3kwrp"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("4_lq565")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_yow5e")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
 [node name="Main" type="Node2D"]
 position = Vector2(422, 337)
 
@@ -109,7 +109,8 @@ position = Vector2(370, 48)
 position = Vector2(325, 201)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
-rotation = 0.197222
+rotation = -0.378736
+ignore_rotation = false
 zoom = Vector2(0.75, 0.75)
 
 [node name="Icon" type="Sprite2D" parent="."]
@@ -120,10 +121,6 @@ texture = ExtResource("2_yow5e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Icon/Area2D"]
 shape = SubResource("CapsuleShape2D_s3apq")
-
-[node name="Icon2" type="Sprite2D" parent="."]
-position = Vector2(82, 582)
-texture = ExtResource("2_yow5e")
 
 [node name="Icon3" type="Sprite2D" parent="."]
 position = Vector2(241, 580)
@@ -144,14 +141,6 @@ scale = Vector2(2, 1)
 texture = ExtResource("2_yow5e")
 centered = false
 
-[node name="Icon6" type="Sprite2D" parent="."]
-position = Vector2(917, 461)
-rotation = 0.394747
-scale = Vector2(2, 1)
-texture = ExtResource("2_yow5e")
-centered = false
-offset = Vector2(100, -10)
-
 [node name="BackBufferCopy" type="BackBufferCopy" parent="."]
 position = Vector2(1070.4, 420.284)
 rotation = -0.977183
@@ -165,15 +154,33 @@ scale = Vector2(2.49619, 4.67573)
 position = Vector2(-80.5698, 3.44183)
 scale = Vector2(9.05698, 1.34418)
 
-[node name="TileMap" type="TileMap" parent="."]
-position = Vector2(1226, 172)
-tile_set = SubResource("TileSet_pwjis")
-format = 2
-layer_0/tile_data = PackedInt32Array(-2, 131072, 3, 65534, 131072, 4, 131070, 131072, 5, -1, 196608, 3, 65535, 196608, 4, 131071, 196608, 5, -65536, 262144, 3, 0, 262144, 4, 65536, 262144, 5, -65535, 327680, 3, 1, 327680, 4, 65537, 327680, 5, 196606, 131072, 3, 262142, 131072, 4, 327678, 131072, 5, 196607, 196608, 3, 262143, 196608, 4, 327679, 196608, 5, 131072, 262144, 3, 196608, 262144, 4, 262144, 262144, 5, 131073, 327680, 3, 196609, 327680, 4, 262145, 327680, 5, 131074, 131072, 3, 196610, 131072, 4, 262146, 131072, 5, 131075, 196608, 3, 196611, 196608, 4, 262147, 196608, 5, 131076, 262144, 3, 196612, 262144, 4, 262148, 262144, 5, 131077, 327680, 3, 196613, 327680, 4, 262149, 327680, 5, -65532, 131072, 3, 4, 131072, 4, 65540, 131072, 5, -65531, 196608, 3, 5, 196608, 4, 65541, 196608, 5, -65530, 262144, 3, 6, 262144, 4, 65542, 262144, 5, -65529, 327680, 3, 7, 327680, 4, 65543, 327680, 5, 327684, 131072, 3, 393220, 131072, 4, 458756, 131072, 5, 327685, 196608, 3, 393221, 196608, 4, 458757, 196608, 5, 327686, 262144, 3, 393222, 262144, 4, 458758, 262144, 5, 327687, 327680, 3, 393223, 327680, 4, 458759, 327680, 5, 393214, 131072, 3, 458750, 131072, 4, 524286, 131072, 5, 393215, 196608, 3, 458751, 196608, 4, 524287, 196608, 5, 327680, 262144, 3, 393216, 262144, 4, 458752, 262144, 5, 327681, 327680, 3, 393217, 327680, 4, 458753, 327680, 5, 327688, 131072, 3, 393224, 131072, 4, 458760, 131072, 5, 327689, 196608, 3, 393225, 196608, 4, 458761, 196608, 5, 327690, 262144, 3, 393226, 262144, 4, 458762, 262144, 5, 327691, 327680, 3, 393227, 327680, 4, 458763, 327680, 5)
-
 [node name="Polygon2D" type="Polygon2D" parent="."]
 position = Vector2(176, 295)
+rotation = -0.383972
 polygon = PackedVector2Array(455, 111, 612, 319, 734, 69, 586, -42)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(196, 438)
+sprite_frames = SubResource("SpriteFrames_3kwrp")
+autoplay = "default"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 437.0
+offset_top = 467.0
+offset_right = 500.0
+offset_bottom = 498.0
+rotation = -0.340339
+text = "123456"
+
+[node name="Button" type="Button" parent="Button2"]
+layout_mode = 0
+offset_left = 48.5051
+offset_top = -23.1357
+offset_right = 111.505
+offset_bottom = 7.86432
+rotation = -0.226893
+scale = Vector2(2.5, 1)
+text = "123456"
 
 [node name="RotAnim" type="Node2D" parent="."]
 script = ExtResource("1_j20sw")
@@ -305,35 +312,32 @@ texture = ExtResource("2_yow5e")
 position = Vector2(309, -101)
 occluder = SubResource("OccluderPolygon2D_6lvdg")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(196, 438)
-sprite_frames = SubResource("SpriteFrames_3kwrp")
-autoplay = "default"
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Button2" type="Button" parent="."]
-offset_left = 437.0
-offset_top = 467.0
-offset_right = 500.0
-offset_bottom = 498.0
-rotation = -0.340339
-text = "123456"
+[node name="Icon2" type="Sprite2D" parent="CanvasLayer"]
+position = Vector2(504, 919)
+texture = ExtResource("2_yow5e")
 
-[node name="Button" type="Button" parent="Button2"]
-layout_mode = 0
-offset_left = 48.5051
-offset_top = -23.1357
-offset_right = 111.505
-offset_bottom = 7.86432
-rotation = -0.226893
-scale = Vector2(2.5, 1)
-text = "123456"
+[node name="Icon6" type="Sprite2D" parent="CanvasLayer"]
+position = Vector2(1339, 798)
+rotation = 0.394747
+scale = Vector2(2, 1)
+texture = ExtResource("2_yow5e")
+centered = false
+offset = Vector2(100, -10)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-position = Vector2(827, 133)
+[node name="CharacterBody2D" type="CharacterBody2D" parent="CanvasLayer"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CanvasLayer/CharacterBody2D"]
+position = Vector2(1249, 470)
 polygon = PackedVector2Array(-113, 45, -47, 45, -59, 6, -6, -53, 87, -5, 82, 70, 149, 164, 203, 100, 163, 36, 228, -57, 151, -146, 64, -187, -40, -146, -111, -201, -147, -76, -91, -123, -13, -112, 112, -123, 80, -87, -16, -83, -100, -48)
 
-[node name="Icon2" type="Sprite2D" parent="CollisionPolygon2D"]
+[node name="Icon2" type="Sprite2D" parent="CanvasLayer/CharacterBody2D/CollisionPolygon2D"]
 position = Vector2(14, 22)
 texture = ExtResource("2_yow5e")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="TileMap" type="TileMap" parent="CanvasLayer"]
+position = Vector2(1648, 509)
+tile_set = SubResource("TileSet_pwjis")
+format = 2
+layer_0/tile_data = PackedInt32Array(-2, 131072, 3, 65534, 131072, 4, 131070, 131072, 5, -1, 196608, 3, 65535, 196608, 4, 131071, 196608, 5, -65536, 262144, 3, 0, 262144, 4, 65536, 262144, 5, -65535, 327680, 3, 1, 327680, 4, 65537, 327680, 5, 196606, 131072, 3, 262142, 131072, 4, 327678, 131072, 5, 196607, 196608, 3, 262143, 196608, 4, 327679, 196608, 5, 131072, 262144, 3, 196608, 262144, 4, 262144, 262144, 5, 131073, 327680, 3, 196609, 327680, 4, 262145, 327680, 5, 131074, 131072, 3, 196610, 131072, 4, 262146, 131072, 5, 131075, 196608, 3, 196611, 196608, 4, 262147, 196608, 5, 131076, 262144, 3, 196612, 262144, 4, 262148, 262144, 5, 131077, 327680, 3, 196613, 327680, 4, 262149, 327680, 5, -65532, 131072, 3, 4, 131072, 4, 65540, 131072, 5, -65531, 196608, 3, 5, 196608, 4, 65541, 196608, 5, -65530, 262144, 3, 6, 262144, 4, 65542, 262144, 5, -65529, 327680, 3, 7, 327680, 4, 65543, 327680, 5, 327684, 131072, 3, 393220, 131072, 4, 458756, 131072, 5, 327685, 196608, 3, 393221, 196608, 4, 458757, 196608, 5, 327686, 262144, 3, 393222, 262144, 4, 458758, 262144, 5, 327687, 327680, 3, 393223, 327680, 4, 458759, 327680, 5, 393214, 131072, 3, 458750, 131072, 4, 524286, 131072, 5, 393215, 196608, 3, 458751, 196608, 4, 524287, 196608, 5, 327680, 262144, 3, 393216, 262144, 4, 458752, 262144, 5, 327681, 327680, 3, 393217, 327680, 4, 458753, 327680, 5, 327688, 131072, 3, 393224, 131072, 4, 458760, 131072, 5, 327689, 196608, 3, 393225, 196608, 4, 458761, 196608, 5, 327690, 262144, 3, 393226, 262144, 4, 458762, 262144, 5, 327691, 327680, 3, 393227, 327680, 4, 458763, 327680, 5)
