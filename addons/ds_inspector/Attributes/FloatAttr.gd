@@ -1,5 +1,5 @@
 extends BaseAttr
-class_name NumberAttr
+class_name FloatAttr
 
 @export
 var label: Label
@@ -26,7 +26,7 @@ func set_title(name: String):
 	label.text = name
 
 func set_value(value):
-	if not value is float:
+	if not value is float and not value is int:
 		return
 	if _focus_flag:
 		_temp_value = value
@@ -34,7 +34,12 @@ func set_value(value):
 	line_edit.text = str(value)
 
 func _on_text_changed(new_str: String):
-	_temp_value = float(new_str)
+	if new_str == "":
+		_temp_value = 0.0
+	else:
+		_temp_value = float(new_str)
+	if is_instance_valid(_node):
+		_node.set(_attr, _temp_value)
 	if is_instance_valid(_node):
 		_node.set(_attr, _temp_value)
 

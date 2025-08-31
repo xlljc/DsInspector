@@ -1,12 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://yjjndhaxkb5f"]
+[gd_scene load_steps=2 format=3 uid="uid://tgrqqplfgobx"]
 
-[ext_resource type="Script" path="res://addons/ds_inspector/Attributes/NumberAttr.gd" id="1_x1p62"]
+[ext_resource type="Script" path="res://addons/ds_inspector/Attributes/IntAttr.gd" id="1_f3jth"]
 
-[node name="NumberAttr" type="HBoxContainer" node_paths=PackedStringArray("label", "line_edit")]
+[node name="IntAttr" type="HBoxContainer" node_paths=PackedStringArray("label", "line_edit")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_x1p62")
+script = ExtResource("1_f3jth")
 label = NodePath("Name")
 line_edit = NodePath("LineEdit")
 

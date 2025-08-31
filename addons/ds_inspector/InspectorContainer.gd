@@ -19,13 +19,23 @@ var label_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Labe
 @onready
 var bool_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/BoolAttr.tscn")
 @onready
-var number_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/NumberAttr.tscn")
+var float_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/FloatAttr.tscn")
+@onready
+var int_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/IntAttr.tscn")
 @onready
 var vector2_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Vector2Attr.tscn")
+@onready
+var vector2I_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Vector2IAttr.tscn")
+@onready
+var vector3_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Vector3Attr.tscn") # 新增
+@onready
+var vector3I_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Vector3IAttr.tscn") # 新增
 @onready
 var color_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ColorAttr.tscn")
 @onready
 var rect_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/RectAttr.tscn")
+@onready
+var recti_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/RectIAttr.tscn")
 @onready
 var string_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/StringAttr.tscn")
 @onready
@@ -157,15 +167,23 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 					if prop.hint == PROPERTY_HINT_ENUM:
 						attr = enum_attr.instantiate()
 					else:
-						attr = number_attr.instantiate()
+						attr = int_attr.instantiate()
 				TYPE_FLOAT:
-					attr = number_attr.instantiate()
+					attr = float_attr.instantiate()
 				TYPE_VECTOR2:
 					attr = vector2_attr.instantiate()
+				TYPE_VECTOR2I:
+					attr = vector2I_attr.instantiate()
+				TYPE_VECTOR3:
+					attr = vector3_attr.instantiate() # 新增
+				TYPE_VECTOR3I:
+					attr = vector3I_attr.instantiate() # 新增
 				TYPE_COLOR:
 					attr = color_attr.instantiate()
 				TYPE_RECT2:
 					attr = rect_attr.instantiate()
+				TYPE_RECT2I:
+					attr = recti_attr.instantiate()
 				TYPE_STRING:
 					attr = string_attr.instantiate()
 				TYPE_OBJECT:
