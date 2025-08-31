@@ -1,10 +1,10 @@
 extends BaseAttr
 class_name BoolAttr
 
-@onready
-var label: Label = $Name
-@onready
-var check_box: CheckBox = $CheckBox
+@export
+var label: Label
+@export
+var check_box: CheckBox
 
 var _attr: String
 var _node: Node

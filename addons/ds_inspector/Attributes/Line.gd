@@ -1,7 +1,7 @@
 extends MarginContainer
 
-@onready
-var _title: Label = $HBoxContainer/Title
+@export
+var _title: Label
 
 func set_title(title: String):
 	_title.text = title

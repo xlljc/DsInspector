@@ -32,6 +32,8 @@ var string_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Str
 var texture_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/TextureAttr.tscn")
 @onready
 var sprite_frames_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/SpriteFramesAttr.tscn")
+@onready
+var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumAttr.tscn")
 
 class AttrItem:
 	var attr: BaseAttr
@@ -99,7 +101,7 @@ func _init_node_attr():
 	if _curr_node.scene_file_path != "":
 		_create_label_attr(_curr_node, "场景：", _curr_node.scene_file_path)
 	
-	var props = _curr_node.get_property_list()
+	var props: Array[Dictionary] = _curr_node.get_property_list()
 
 	var script: Script = _curr_node.get_script()
 	if script != null:
@@ -134,7 +136,7 @@ func _init_node_attr():
 	add_child(c)
 	pass
 
-func _create_node_attr(prop) -> AttrItem:
+func _create_node_attr(prop: Dictionary) -> AttrItem:
 	var v := _curr_node.get(prop.name)
 	var attr: BaseAttr
 
@@ -143,6 +145,9 @@ func _create_node_attr(prop) -> AttrItem:
 		if prop.name == "sprite_frames":
 			attr = sprite_frames_attr.instantiate()
 	# ---------------------------------------
+
+	# if prop.type == TYPE_INT and prop.hint == PROPERTY_HINT_ENUM:
+	# 	print("属性", prop.name, "是枚举类型，选项为：", prop.hint_string, "，当前值下标：", _curr_node.get(prop.name))
 	if attr == null:
 		if v == null:
 			attr = label_attr.instantiate()
@@ -151,7 +156,11 @@ func _create_node_attr(prop) -> AttrItem:
 				TYPE_BOOL:
 					attr = bool_attr.instantiate()
 				TYPE_INT:
-					attr = number_attr.instantiate()
+					if prop.hint == PROPERTY_HINT_ENUM:
+						attr = enum_attr.instantiate()
+						attr.call_deferred("set_enum_options", prop.hint_string)
+					else:
+						attr = number_attr.instantiate()
 				TYPE_FLOAT:
 					attr = number_attr.instantiate()
 				TYPE_VECTOR2:

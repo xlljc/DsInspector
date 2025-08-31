@@ -1,12 +1,12 @@
 extends BaseAttr
 class_name Vector2Attr
 
-@onready
-var label: Label = $Name
-@onready
-var x_line_edit: LineEdit = $HBoxContainer/XLineEdit
-@onready
-var y_line_edit: LineEdit = $HBoxContainer/YLineEdit
+@export
+var label: Label
+@export
+var x_line_edit: LineEdit
+@export
+var y_line_edit: LineEdit
 
 var _attr: String
 var _node: Node

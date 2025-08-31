@@ -2,16 +2,16 @@ extends BaseAttr
 class_name ColorAttr
 
 
-@onready
-var label: Label = $Name
-@onready
-var r_line_edit: LineEdit = $VBoxContainer/HBoxContainer/RLineEdit
-@onready
-var g_line_edit: LineEdit = $VBoxContainer/HBoxContainer/GLineEdit
-@onready
-var b_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/BLineEdit
-@onready
-var a_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/ALineEdit
+@export
+var label: Label
+@export
+var r_line_edit: LineEdit
+@export
+var g_line_edit: LineEdit
+@export
+var b_line_edit: LineEdit
+@export
+var a_line_edit: LineEdit
 
 var _attr: String
 var _node: Node

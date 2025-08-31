@@ -1,10 +1,10 @@
 extends BaseAttr
 class_name LabelAttr
 
-@onready
-var label: Label = $Name
-@onready
-var text: Label = $Text
+@export
+var label: Label
+@export
+var text: Label
 
 var _node: Node
 

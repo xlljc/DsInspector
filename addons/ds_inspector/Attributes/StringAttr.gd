@@ -1,10 +1,10 @@
 extends BaseAttr
 class_name StringAttr
 
-@onready
-var label: Label = $Name
-@onready
-var line_edit: LineEdit = $LineEdit
+@export
+var label: Label
+@export
+var line_edit: LineEdit
 
 var _attr: String
 var _node: Node

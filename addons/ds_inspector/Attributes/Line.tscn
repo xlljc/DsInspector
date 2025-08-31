@@ -2,10 +2,11 @@
 
 [ext_resource type="Script" path="res://addons/ds_inspector/Attributes/Line.gd" id="1_k8jxx"]
 
-[node name="Line" type="MarginContainer"]
+[node name="Line" type="MarginContainer" node_paths=PackedStringArray("_title")]
 anchors_preset = 10
 anchor_right = 1.0
 script = ExtResource("1_k8jxx")
+_title = NodePath("HBoxContainer/Title")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

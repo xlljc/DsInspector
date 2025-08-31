@@ -2,16 +2,16 @@ extends BaseAttr
 class_name RectAttr
 
 
-@onready
-var label: Label = $Name
-@onready
-var x_line_edit: LineEdit = $VBoxContainer/HBoxContainer/XLineEdit
-@onready
-var y_line_edit: LineEdit = $VBoxContainer/HBoxContainer/YLineEdit
-@onready
-var w_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/WLineEdit
-@onready
-var h_line_edit: LineEdit = $VBoxContainer/HBoxContainer2/HLineEdit
+@export
+var label: Label
+@export
+var x_line_edit: LineEdit
+@export
+var y_line_edit: LineEdit
+@export
+var w_line_edit: LineEdit
+@export
+var h_line_edit: LineEdit
 
 var _attr: String
 var _node: Node

@@ -1,10 +1,10 @@
 extends BaseAttr
 class_name SpriteFramesAttr
 
-@onready
-var label: Label = $Name
-@onready
-var texture_node: TextureRect = $Texture
+@export
+var label: Label
+@export
+var texture_node: TextureRect
 
 var _attr: String
 var _node: Node

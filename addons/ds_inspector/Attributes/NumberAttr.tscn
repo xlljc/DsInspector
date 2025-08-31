@@ -2,11 +2,13 @@
 
 [ext_resource type="Script" path="res://addons/ds_inspector/Attributes/NumberAttr.gd" id="1_x1p62"]
 
-[node name="NumberAttr" type="HBoxContainer"]
+[node name="NumberAttr" type="HBoxContainer" node_paths=PackedStringArray("label", "line_edit")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource("1_x1p62")
+label = NodePath("Name")
+line_edit = NodePath("LineEdit")
 
 [node name="Name" type="Label" parent="."]
 layout_mode = 2
