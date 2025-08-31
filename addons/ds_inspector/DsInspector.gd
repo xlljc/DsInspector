@@ -128,11 +128,11 @@ func get_check_node() -> Node:
 				if !_is_path_excluded(node_path):
 					return collision_shape
 	
-	# var camera_zoom: Vector2 = get_camera_zoom()
-	# var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_zoom, false, _exclude_list);
-	# if node != null:
-	# 	_exclude_list.append(node)
-	# return node
+	var camera_zoom: Vector2 = main_camera.zoom if main_camera != null else Vector2.ONE
+	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_zoom, false, _exclude_list);
+	if node != null:
+		_exclude_list.append(node)
+	return node
 	return null;
 
 func _find_collision_shape(node: Node):
@@ -187,22 +187,26 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon):
 			return node
 	else:
-		var rect: NodeTransInfo = get_node_rect(node, camera_zoom, 1 if in_canvaslayer else 0)
+		var rect: NodeTransInfo = calc_node_rect(node)
 		if rect.size == Vector2.ZERO:
 			return null
 		if rect.rotation == 0:
-			if is_in_rect(mouse_position.x, mouse_position.y, rect.position.x, rect.position.y, rect.size.x, rect.size.y):
+			var mpos: Vector2
+			if in_canvaslayer:
+				mpos = mouse_position
+			else:
+				mpos = ui_to_scene(mouse_position)
+			if is_in_rect(mpos.x, mpos.y, rect.position.x, rect.position.y, rect.size.x, rect.size.y):
 				# print("is_in_rotated_rect: rotation: ", rect.rotation)
 				return node
 		else:
-			var op: Vector2 = Vector2.ZERO
-			if node is Control or node is Node2D:
-				op = node.global_position
-			if !in_canvaslayer:
-				op = scene_to_ui(op)
-			var offset: Vector2 = op - rect.position
+			var mpos: Vector2
+			if in_canvaslayer:
+				mpos = mouse_position
+			else:
+				mpos = ui_to_scene(mouse_position)
 			# print(mouse_position, rect.position)
-			if is_in_rotated_rect(mouse_position, Rect2(rect.position, rect.size), rect.rotation, offset):
+			if is_in_rotated_rect(mouse_position, Rect2(rect.position, rect.size), rect.rotation):
 				return node
 	return null
 
@@ -221,9 +225,9 @@ func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Ve
 	return false
 
 ## 旋转矩形检测
-func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float, offset: Vector2) -> bool:
+func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float) -> bool:
 	# 计算旋转中心点（世界坐标）
-	var pivot = rect.position + offset
+	var pivot = rect.position
 	
 	# 将 mouse_pos 转换到矩形局部坐标系（反向旋转）
 	var local_pos = (mouse_pos - pivot).rotated(-rotation)
@@ -252,18 +256,18 @@ func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, rotation: float, offset
 func is_in_rect(targetX: float, targetY: float, x: float, y: float, w: float, h: float) -> bool:
 	return targetX >= x and targetX <= x + w and targetY >= y and targetY <= y + h
 
-## in_canvaslayer: -1 自动判断是不是在 CanvasLayer 中, 1 是在 CanvasLayer 中, 0 是不在 CanvasLayer 中
-func get_node_rect(node: Node, camera_zoom: Vector2, in_canvaslayer: int = -1) -> NodeTransInfo:
-	var rect: NodeTransInfo = calc_node_rect(node, camera_zoom)
-	if rect.size.x == 0 or rect.size.y == 0:
-		return rect
-	if in_canvaslayer == -1:
-		if is_in_canvaslayer(node):
-			in_canvaslayer = 1
-	if in_canvaslayer != 1: # 不是在 CanvasLayer 中
-		rect.position = scene_to_ui(rect.position)
-		rect.size *= camera_zoom
-	return rect
+# ## in_canvaslayer: -1 自动判断是不是在 CanvasLayer 中, 1 是在 CanvasLayer 中, 0 是不在 CanvasLayer 中
+# func get_node_rect(node: Node, camera_zoom: Vector2, in_canvaslayer: int = -1) -> NodeTransInfo:
+# 	var rect: NodeTransInfo = calc_node_rect(node)
+# 	if rect.size.x == 0 or rect.size.y == 0:
+# 		return rect
+# 	if in_canvaslayer == -1:
+# 		if is_in_canvaslayer(node):
+# 			in_canvaslayer = 1
+# 	if in_canvaslayer != 1: # 不是在 CanvasLayer 中
+# 		rect.position = scene_to_ui(rect.position)
+# 		rect.size *= camera_zoom
+# 	return rect
 
 func is_in_canvaslayer(node: Node) -> bool:
 	var parent: Node = node.get_parent()
@@ -273,7 +277,7 @@ func is_in_canvaslayer(node: Node) -> bool:
 		parent = parent.get_parent()
 	return false
 
-func calc_node_rect(node: Node, camera_zoom: Vector2) -> NodeTransInfo:
+func calc_node_rect(node: Node) -> NodeTransInfo:
 	## 获取节点的矩形范围
 	if node is Control:
 		var trans: Transform2D = node.get_global_transform()
