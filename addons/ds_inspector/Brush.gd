@@ -8,7 +8,7 @@ var _draw_node: Node = null
 var _in_canvaslayer: bool = false
 
 @export
-var control: Control# = $"../Control"
+var node_path_tips: Control# = $"../Control"
 @export
 var icon_tex_rect: TextureRect# = $"../Control/ColorRect/Icon"
 @export
@@ -20,7 +20,7 @@ var _icon: Texture
 var _show_text: bool = false
 
 func _ready():
-	control.visible = false
+	node_path_tips.visible = false
 	pass
 
 func _process(_delta):
@@ -39,13 +39,13 @@ func set_draw_node(node: Node) -> void:
 	icon_tex_rect.texture = _icon
 	
 	path_label.size.x = 0
-	control.size.x = 0
+	node_path_tips.size.x = 0
 	path_label.text = debug_tool.get_node_path(node)
 	pass
 
 func set_show_text(flag: bool):
 	_show_text = flag
-	control.visible = flag
+	node_path_tips.visible = flag
 	pass
 
 func _draw():
@@ -83,20 +83,25 @@ func _draw():
 			_draw_node_rect(pos, scale, node_trans.size, rot, false)
 
 		if _show_text:
-			control.visible = true
+			node_path_tips.visible = true
 			var view_size: Vector2 = get_viewport().size
-			var con_size: Vector2 = control.size
+			var label_size: Vector2 = path_label.size
+			var tips_size: Vector2 = node_path_tips.size
+			var text_size: Vector2 = Vector2(
+				max(label_size.x, tips_size.x),
+				max(label_size.y, tips_size.y)
+		 	)
 			var text_pos: Vector2 = pos + Vector2(0, 5)
-			# 限制在屏幕内
-			if text_pos.x + con_size.x > view_size.x:
-				text_pos.x = view_size.x - con_size.x
+			# 限制在屏幕内，结合 path_label 的大小
+			if text_pos.x + text_size.x > view_size.x:
+				text_pos.x = view_size.x - text_size.x
 			elif text_pos.x < 0:
 				text_pos.x = 0
-			if text_pos.y + con_size.y > view_size.y:
-				text_pos.y = view_size.y - con_size.y
-			elif  text_pos.y < 0:
+			if text_pos.y + text_size.y > view_size.y:
+				text_pos.y = view_size.y - text_size.y
+			elif text_pos.y < 0:
 				text_pos.y = 0
-			control.position = text_pos
+			node_path_tips.position = text_pos
 	pass
 
 func _draw_node_shape(shape: Shape2D, pos: Vector2, scale: Vector2, rot: float):

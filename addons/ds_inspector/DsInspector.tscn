@@ -373,27 +373,27 @@ size = Vector2i(200, 158)
 ok_button_text = "确定"
 cancel_button_text = "取消"
 
-[node name="Brush" type="Node2D" parent="." node_paths=PackedStringArray("control", "icon_tex_rect", "path_label")]
+[node name="Brush" type="Node2D" parent="." node_paths=PackedStringArray("node_path_tips", "icon_tex_rect", "path_label")]
 script = ExtResource("3")
-control = NodePath("../Control")
-icon_tex_rect = NodePath("../Control/ColorRect/Icon")
-path_label = NodePath("../Control/Path")
+node_path_tips = NodePath("../NodePathTips")
+icon_tex_rect = NodePath("../NodePathTips/ColorRect/Icon")
+path_label = NodePath("../NodePathTips/Path")
 
-[node name="Control" type="Control" parent="."]
+[node name="NodePathTips" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 127.0
 offset_bottom = 27.0
 theme = ExtResource("6")
 
-[node name="ColorRect" type="ColorRect" parent="Control"]
+[node name="ColorRect" type="ColorRect" parent="NodePathTips"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 offset_right = 30.0
 offset_bottom = 30.0
 color = Color(0.203922, 0.203922, 0.203922, 1)
 
-[node name="Icon" type="TextureRect" parent="Control/ColorRect"]
+[node name="Icon" type="TextureRect" parent="NodePathTips/ColorRect"]
 custom_minimum_size = Vector2(22, 22)
 layout_mode = 1
 anchors_preset = 15
@@ -404,7 +404,7 @@ grow_vertical = 2
 texture = ExtResource("13_ai5ie")
 stretch_mode = 5
 
-[node name="Path" type="Label" parent="Control"]
+[node name="Path" type="Label" parent="NodePathTips"]
 layout_mode = 2
 offset_left = 34.0
 offset_top = 2.0
