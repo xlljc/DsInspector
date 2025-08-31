@@ -55,7 +55,6 @@ func _on_HoverIcon_pressed():
 				debug_tool.window.do_show()
 			else:
 				debug_tool.window.do_hide()
-			
 	pass
 
 

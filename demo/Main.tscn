@@ -345,12 +345,10 @@ layer_0/tile_data = PackedInt32Array(-2, 131072, 3, 65534, 131072, 4, 131070, 13
 offset_left = 88.0
 offset_top = 68.0
 offset_right = 311.0
-offset_bottom = 176.0
+offset_bottom = 117.0
 item_count = 2
+selected = 0
 popup/item_0/text = "123"
 popup/item_0/id = 0
 popup/item_1/text = "234234"
 popup/item_1/id = 1
-
-[node name="Window" type="Window" parent="."]
-position = Vector2i(200, 400)
