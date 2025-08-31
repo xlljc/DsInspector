@@ -27,7 +27,9 @@ func set_title(name: String):
 	_attr = name
 	label.text = name
 
-func set_value(value: int):
+func set_value(value):
+	if not value is int:
+		return
 	if not option_button.has_focus():
 		option_button.select(value)
 	pass

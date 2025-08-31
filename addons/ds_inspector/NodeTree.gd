@@ -223,7 +223,7 @@ func init_tree():
 		root_item.add_button(0, get_visible_icon(root_data.visible))  # 添加显示/隐藏按钮
 	
 	# 递归添加子节点
-	for child in root.get_children():
+	for child in root.get_children(true):
 		if debug_tool and child == debug_tool:
 			continue  # 跳过 DsInspector 节点
 		create_node_item(child, root_item)
@@ -351,7 +351,7 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 			existing_node[node_data.node] = TreeItemData.new(node_data, current)  # 存储现有节点
 
 	# 遍历场景树的子节点
-	for child_node in parent_data.node.get_children():
+	for child_node in parent_data.node.get_children(true):
 		if debug_tool and child_node == debug_tool:
 			continue
 		
@@ -401,7 +401,7 @@ func create_node_item(node: Node, parent: TreeItem, add_slot: bool = true) -> Tr
 		node_data.visible = node.visible
 		item.add_button(0, get_visible_icon(node_data.visible))  # 添加显示/隐藏按钮
 		btn_index += 1
-	if add_slot and node.get_child_count() > 0:
+	if add_slot and node.get_child_count(true) > 0:
 		create_item(item)  # 创建一个子节点项以便展开
 	return item
 
@@ -459,7 +459,7 @@ func _on_item_collapsed(item: TreeItem):
 	var children := item.get_children()
 	if children.size() == 0: # 没有子节点
 		var data: NodeData = item.get_metadata(0)
-		if data and data.node.get_child_count() > 0: # 加载子节点
+		if data and data.node.get_child_count(true) > 0: # 加载子节点
 			call_deferred("_load_children_item", item, null, true)
 		return
 	var item1 = children[0]
@@ -482,7 +482,7 @@ func _load_children_item(item: TreeItem, slot: TreeItem, add_slot: bool = true):
 	if data:
 		if !is_instance_valid(data.node): # 节点可能已被删除
 			return
-		for child in data.node.get_children():
+		for child in data.node.get_children(true):
 			create_node_item(child, item, add_slot)
 			
 func get_visible_icon(v: bool) -> Texture:

@@ -20,7 +20,9 @@ func set_title(name: String):
 	_attr = name
 	label.text = name
 
-func set_value(value: bool):
+func set_value(value):
+	if not value is bool:
+		return
 	check_box.button_pressed = value
 
 func _on_pressed():

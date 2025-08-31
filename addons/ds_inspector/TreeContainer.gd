@@ -50,7 +50,7 @@ func _do_clear_serach():
 
 func _get_search_node_list(text: String) -> Array:
 	var arr: Array = []
-	for ch in get_tree().root.get_children():
+	for ch in get_tree().root.get_children(true):
 		if debug_tool and ch == debug_tool:
 			continue
 		_each_node(ch, text, arr)
@@ -60,6 +60,6 @@ func _each_node(node: Node, text: String, arr: Array):
 	var n: String = node.name.to_lower()
 	if text in n:
 		arr.append(node)
-	for ch in node.get_children():
+	for ch in node.get_children(true):
 		_each_node(ch, text, arr)
 	pass

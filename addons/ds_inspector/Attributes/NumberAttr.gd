@@ -25,7 +25,9 @@ func set_title(name: String):
 	_attr = name
 	label.text = name
 
-func set_value(value: float):
+func set_value(value):
+	if not value is float:
+		return
 	if _focus_flag:
 		_temp_value = value
 		return

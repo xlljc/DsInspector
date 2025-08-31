@@ -32,7 +32,9 @@ func set_title(name: String):
 	_attr = name
 	label.text = name
 
-func set_value(value: Vector2):
+func set_value(value):
+	if not value is Vector2:
+		return
 	if _focus_flag:
 		_temp_value = value
 		return

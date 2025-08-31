@@ -136,7 +136,7 @@ func save_node_as_scene(node: Node, path: String) -> void:
 	node.owner = o
 
 func _recursion_set_owner(node: Node, owner: Node):
-	for ch in node.get_children():
+	for ch in node.get_children(true):
 		ch.owner = owner
 		_recursion_set_owner(ch, owner)
 

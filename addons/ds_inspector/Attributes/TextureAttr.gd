@@ -16,5 +16,10 @@ func set_title(name: String):
 	_attr = name
 	label.text = name
 
-func set_value(value: Texture):
+func set_value(value):
+	if value == null:
+		texture_node.texture = null
+		return
+	elif not value is Texture:
+		return
 	texture_node.texture = value

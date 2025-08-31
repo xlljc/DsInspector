@@ -162,8 +162,8 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 	if exclude_list.has(node) or (node is Control and !node.visible) or (node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible):
 		return null
 
-	for i in range(node.get_child_count() - 1, -1, -1):  # 从最后一个子节点到第一个子节点
-		var child := node.get_child(i)
+	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
+		var child := node.get_child(i, true)
 		var new_path: String
 		if path.length() > 0:
 			new_path = path + "/" + child.name
@@ -384,9 +384,9 @@ func get_camera_trans() -> CameraTransInfo:
 
 ## 遍历场景树, 在控制台打印出来
 func _each_tree(node: Node) -> void:
-	var count := node.get_child_count()
+	var count := node.get_child_count(true)
 	for i in range(count):
-		var child := node.get_child(i)
+		var child := node.get_child(i, true)
 		print(child.name, " ", child.get_class(), " ", child.get_path())
 		_each_tree(child)
 	pass
