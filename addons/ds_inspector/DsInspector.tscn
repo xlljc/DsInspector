@@ -104,12 +104,13 @@ _data = {
 }
 
 [node name="DsInspector" type="CanvasLayer" node_paths=PackedStringArray("window", "brush", "mask", "inspector", "tips", "tips_anim", "cheat")]
+process_mode = 3
 layer = 128
 script = ExtResource("4")
 window = NodePath("WindowDialog")
 brush = NodePath("Brush")
 mask = NodePath("Mask")
-inspector = NodePath("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/Scroll/MarginContainer/InspectorContainer")
+inspector = NodePath("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/BgColor/Scroll/MarginContainer/InspectorContainer")
 tips = NodePath("Tips")
 tips_anim = NodePath("Tips/AnimationPlayer")
 cheat = NodePath("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat")
@@ -256,13 +257,21 @@ size_flags_stretch_ratio = 2.0
 script = ExtResource("8")
 tab_names = ["检查器", "排除路径", "作弊"]
 
-[node name="Inspector" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+[node name="Inspector" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+layout_mode = 2
+
+[node name="FiltrInput" type="LineEdit" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "筛选属性"
+
+[node name="BgColor" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0.129412, 0.14902, 0.180392, 1)
 
-[node name="Scroll" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
+[node name="Scroll" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/BgColor"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -270,9 +279,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 metadata/_tab_index = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/Scroll"]
+[node name="MarginContainer" type="MarginContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/BgColor/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -281,10 +291,11 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/Scroll/MarginContainer"]
+[node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/BgColor/Scroll/MarginContainer" node_paths=PackedStringArray("filtr_input")]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("5")
+filtr_input = NodePath("../../../../FiltrInput")
 
 [node name="ExcludeContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 visible = false

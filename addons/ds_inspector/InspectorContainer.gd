@@ -3,6 +3,8 @@ class_name InspectorContainer
 
 @export
 var update_time: float = 0.2 # 更新时间
+@export
+var filtr_input: LineEdit # 过滤属性输入框
 
 var _curr_node: Node
 var _timer: float = 0
@@ -36,16 +38,19 @@ class AttrItem:
 	var name: String
 	var usage: int
 	var type: int
-	func _init(_attr: BaseAttr, _name: String, _usage: int, _type: int):
+	var title: String
+	func _init(_attr: BaseAttr, _name: String, _usage: int, _type: int, _title: String = ""):
 		attr = _attr
 		name = _name
 		usage = _usage
 		type = _type
+		title = _title if _title != "" else _name
 		pass
 	pass
 
 func _ready():
-
+	if filtr_input:
+		filtr_input.text_changed.connect(_on_filter_text_changed)
 	pass
 
 func _process(delta):
@@ -66,6 +71,10 @@ func set_view_node(node: Node):
 	_curr_node = node
 	_init_node_attr()
 	_update_node_attr()
+	
+	# 应用当前的过滤条件
+	if filtr_input and filtr_input.text != "":
+		_filter_attributes(filtr_input.text)
 	pass
 
 func _init_node_attr():
@@ -166,7 +175,7 @@ func _create_node_attr(prop) -> AttrItem:
 	attr.set_title(prop.name)
 	attr.set_value(v)
 	# print(prop.name, "   ", typeof(v))
-	return AttrItem.new(attr, prop.name, prop.usage, prop.type)
+	return AttrItem.new(attr, prop.name, prop.usage, prop.type, prop.name)
 
 func _create_label_attr(node: Node, title: String, value: String) -> void:
 	var attr: LabelAttr = label_attr.instantiate()
@@ -185,4 +194,21 @@ func _clear_node_attr():
 	_attr_list.clear()
 	for child in get_children():
 			child.queue_free()
+	pass
+
+func _on_filter_text_changed(new_text: String):
+	_filter_attributes(new_text)
+	pass
+
+func _filter_attributes(filter_text: String):
+	if filter_text == "":
+		# 显示所有属性
+		for item in _attr_list:
+			item.attr.visible = true
+	else:
+		# 过滤属性（不区分大小写）
+		var filter_lower = filter_text.to_lower()
+		for item in _attr_list:
+			var matches = item.title.to_lower().contains(filter_lower) or item.name.to_lower().contains(filter_lower)
+			item.attr.visible = matches
 	pass
