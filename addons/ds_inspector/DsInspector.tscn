@@ -405,16 +405,18 @@ texture = ExtResource("13_ai5ie")
 stretch_mode = 5
 
 [node name="Path" type="Label" parent="NodePathTips"]
+custom_minimum_size = Vector2(700, 0)
 layout_mode = 2
 offset_left = 34.0
 offset_top = 2.0
-offset_right = 117.0
+offset_right = 734.0
 offset_bottom = 32.0
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_constants/shadow_outline_size = 2
 text = "Path:a/b/c"
+autowrap_mode = 2
 
 [node name="Tips" type="Label" parent="."]
 anchors_preset = 7
