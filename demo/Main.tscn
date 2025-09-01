@@ -358,3 +358,12 @@ popup/item_0/text = "123"
 popup/item_0/id = 0
 popup/item_1/text = "234234"
 popup/item_1/id = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+offset_left = 42.0
+offset_top = 220.0
+offset_right = 266.0
+offset_bottom = 314.0
+focus_mode = 2
+text = "qwqrqwrqwrq"
+selection_enabled = true
