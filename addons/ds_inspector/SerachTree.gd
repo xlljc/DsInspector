@@ -26,8 +26,11 @@ func _ready():
 ## 选中节点
 func _on_item_selected():
 	var item: TreeItem = get_selected()
-	var node_data = item.get_metadata(0)
-	node_tree.show_tree(node_data.node)
+	var node_data := item.get_metadata(0)
+	if node_tree != null and is_instance_valid(node_data.node):
+		node_tree.show_tree(node_data.node)
+	else:
+		node_tree.show_tree()
 	pass
 
 ## 设置搜索结果列表

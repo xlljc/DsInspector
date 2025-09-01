@@ -31,8 +31,6 @@ var _prev_mouse_position: Vector2 = Vector2.ZERO
 var _is_open_check_ui: bool = false
 var _mouse_in_hover_btn: bool = false
 
-
-
 func _ready():
 	brush.node_tree = window.tree
 	tips_anim.animation_finished.connect(on_tip_anim_finished)

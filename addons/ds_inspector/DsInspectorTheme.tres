@@ -2,18 +2,17 @@
 
 [ext_resource type="FontFile" path="res://addons/ds_inspector/DebugFont.tres" id="2"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5228j"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.21, 0.24, 0.29, 1)
-border_color = Color(0.21, 0.24, 0.29, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pmuir"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.25, 0.25, 0.25, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
-corner_detail = 3
-expand_margin_bottom = 2.0
-anti_aliasing = false
+corner_detail = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1rml"]
 content_margin_left = 6.0
@@ -1206,8 +1205,8 @@ anti_aliasing = false
 
 [resource]
 default_font = ExtResource("2")
-AcceptDialog/constants/buttons_separation = 8
-AcceptDialog/styles/panel = SubResource("StyleBoxFlat_5228j")
+AcceptDialog/constants/buttons_separation = 10
+AcceptDialog/styles/panel = SubResource("StyleBoxFlat_pmuir")
 Button/colors/font_color = Color(0.8025, 0.81, 0.8225, 1)
 Button/colors/font_disabled_color = Color(1, 1, 1, 0.35)
 Button/colors/font_focus_color = Color(0.90125, 0.905, 0.91125, 1)

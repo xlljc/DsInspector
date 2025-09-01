@@ -370,6 +370,7 @@ filters = PackedStringArray("*.tscn")
 title = "你确定吗？"
 initial_position = 1
 size = Vector2i(200, 158)
+theme = ExtResource("6")
 ok_button_text = "确定"
 cancel_button_text = "取消"
 

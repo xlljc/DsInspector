@@ -1,5 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://de6ga7m5exyll"]
+[gd_scene load_steps=12 format=3 uid="uid://de6ga7m5exyll"]
 
+[ext_resource type="Script" path="res://demo/Main.gd" id="1_ghtww"]
 [ext_resource type="Script" path="res://demo/RotAnim.gd" id="1_j20sw"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="2_yow5e"]
 [ext_resource type="PackedScene" uid="uid://b3hud3fa6sqqg" path="res://demo/Player.tscn" id="3_2lw34"]
@@ -101,6 +102,7 @@ sources/0 = SubResource("TileSetAtlasSource_8p0r6")
 
 [node name="Main" type="Node2D"]
 position = Vector2(422, 337)
+script = ExtResource("1_ghtww")
 
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 position = Vector2(370, 48)

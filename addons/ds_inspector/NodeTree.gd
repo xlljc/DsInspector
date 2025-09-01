@@ -412,7 +412,7 @@ func _on_item_selected():
 	if selected_item:
 		# 获取存储的节点引用
 		var data: NodeData = selected_item.get_metadata(0)
-		if data and debug_tool:
+		if data != null and debug_tool and is_instance_valid(data.node):
 			debug_tool.brush.set_draw_node(data.node)
 			debug_tool.inspector.set_view_node(data.node)
 
