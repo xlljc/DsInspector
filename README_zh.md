@@ -5,7 +5,7 @@
 **DsInspector（Developer Support Inspector）** 是一个用于 **Godot 4** 的运行时调试插件，允许你在游戏运行时实时查看和修改场景树中的节点和属性。
 它提供类似于编辑器 Inspector 的功能，让开发者在调试和测试过程中更加方便直观。
 
-![screenshot](addons/ds_inspector/Icon/Icon.png)
+![screenshot](addons/ds_inspector/icon/Icon.png)
 
 ## 功能特性
 
@@ -33,15 +33,11 @@
    * 找到 `DsInspector` 并启用
 3. 运行游戏后会自动出现一个悬浮窗口，点击悬浮窗口即可打开检查器。
 
-
-
 如果需要插件使用原生Windows窗口，可以在启动游戏时使用以下代码开启：
 
 ```gdscript
 get_viewport().gui_embed_subwindows = false
 ```
-
-
 
 ## 预览
 
