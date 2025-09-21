@@ -280,7 +280,8 @@ func delete_selected():
 		var data: NodeData = item.get_metadata(0)
 		if data:
 			var parent: TreeItem = item.get_parent()
-			data.node.queue_free()
+			if data.node:
+				data.node.queue_free()
 			item.free()
 
 			# 刷新场景树
