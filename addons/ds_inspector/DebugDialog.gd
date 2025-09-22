@@ -29,7 +29,7 @@ var confirmation: ConfirmationDialog
 var _cached_window_state: Dictionary = {}
 
 @onready
-var debug_tool = get_node("/root/DsInspector")
+var debug_tool = get_node("/root/DsInspectorTool")
 
 @onready
 var play_icon: Texture2D = preload("res://addons/ds_inspector/icon/Play.svg")

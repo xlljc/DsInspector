@@ -15,8 +15,9 @@
 - **Node Selection Highlighting**: Locate selected nodes in the game view. After choosing “Pick Node,” click an element in the scene to select its node. If elements are stacked, clicking repeatedly will cycle through them.
 - **Exclude Paths**: Filter specified paths to quickly locate nodes.
 - **Open Script/Scene Path**: In the property panel, quickly open the associated script or locate the scene file in the file system, making it easy to jump to the source file.
-- **Save Node as Scene**: Export selected nodes and save them as new scenes (e.g., `.tscn`) for reuse and sharing.
+- **Save Node as Scene**: Export selected nodes and save them as new scenes (`.tscn`) for reuse and sharing.
 - **Cheat Button**: Quickly add cheat buttons via `DsInspector.add_cheat_button()`.
+- **Export automatic blocking plug-in**: This plug-in is only effective when the editor is running the game. After exporting the game, all functions of the plug-in will be automatically blocked without additional settings.
 
 ## Supported Versions
 

@@ -15,7 +15,7 @@ var icon_tex_rect: TextureRect# = $"../Control/ColorRect/Icon"
 @export
 var path_label: Label# = $"../Control/Path"
 @onready
-var debug_tool = get_node("/root/DsInspector")
+var debug_tool = get_node("/root/DsInspectorTool")
 
 var _icon: Texture
 var _show_text: bool = false
@@ -25,7 +25,7 @@ func _ready():
 	pass
 
 func _process(_delta):
-	if _has_draw_node and (_draw_node == null or !is_instance_valid(_draw_node)):
+	if _has_draw_node and (_draw_node == null or !is_instance_valid(_draw_node) or !_draw_node.is_inside_tree()):
 		_draw_node = null
 		_has_draw_node = false
 	queue_redraw()

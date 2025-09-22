@@ -4,7 +4,7 @@ extends EditorPlugin
 
 func _enter_tree():
 	# 添加自动加载场景
-	add_autoload_singleton("DsInspector", "res://addons/ds_inspector/DsInspector.tscn")
+	add_autoload_singleton("DsInspector", "res://addons/ds_inspector/DsInspector.gd")
 
 
 func _exit_tree():

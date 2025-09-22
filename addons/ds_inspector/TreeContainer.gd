@@ -22,7 +22,7 @@ var node_tree: Tree = get_node(node_tree_path)
 @onready
 var search_tree: Tree = get_node(search_tree_path)
 @onready
-var debug_tool = get_node("/root/DsInspector")
+var debug_tool = get_node("/root/DsInspectorTool")
 
 func _ready():
 	search_btn.pressed.connect(_do_serach)

@@ -7,7 +7,7 @@ var add_btn_path: NodePath
 @onready
 var add_btn: Button = get_node(add_btn_path)
 @onready
-var debug_tool: CanvasLayer = get_node("/root/DsInspector")
+var debug_tool: CanvasLayer = get_node("/root/DsInspectorTool")
 var _list: Array = []
 var _root_item: TreeItem
 @onready
