@@ -9,7 +9,7 @@
 
 ## Features
 
-- **Real-time Node Tree Viewer**: Displays all nodes in the currently running scene.
+- **Real-time Node Tree Viewer**: Displays all nodes in the currently running scene, only supports 2D scene inspection, not 3D scene
 - **Node Property Inspector**: Supports viewing and modifying node property values (including script-exported variables). Changes take effect immediately.
 - **Node Search**: Quickly locate target nodes.
 - **Node Selection Highlighting**: Locate selected nodes in the game view. After choosing “Pick Node,” click an element in the scene to select its node. If elements are stacked, clicking repeatedly will cycle through them.
