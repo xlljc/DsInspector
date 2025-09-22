@@ -18,6 +18,7 @@
 - **Save Node as Scene**: Export selected nodes and save them as new scenes (`.tscn`) for reuse and sharing.
 - **Cheat Button**: Quickly add cheat buttons via `DsInspector.add_cheat_button()`.
 - **Export automatic blocking plug-in**: This plug-in is only effective when the editor is running the game. After exporting the game, all functions of the plug-in will be automatically blocked without additional settings.
+- **Support for C# version**: No additional settings are required, and it can be directly imported into C# version projects, and C# scripts and `[export]` attributes are recognized normally.
 
 ## Supported Versions
 
