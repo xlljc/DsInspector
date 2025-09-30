@@ -1,3 +1,4 @@
+@tool
 extends CanvasLayer
 
 
@@ -161,8 +162,11 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 	if exclude_list.has(node) or (node is Control and !node.visible) or (node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible):
 		return null
 
+	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
 		var child := node.get_child(i, true)
+		if child is Viewport:
+			continue
 		var new_path: String
 		if path.length() > 0:
 			new_path = path + "/" + child.name

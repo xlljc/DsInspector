@@ -1,3 +1,4 @@
+@tool
 extends TextureButton
 
 var is_dragging: bool = false

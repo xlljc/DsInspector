@@ -1,3 +1,4 @@
+@tool
 extends Node2D
 class_name Brush
 
@@ -52,7 +53,7 @@ func set_draw_node(node: Node) -> void:
 	_draw_node = node
 	_has_draw_node = true
 	_in_canvaslayer = debug_tool.is_in_canvaslayer(node)
-	var icon_path = node_tree.icon_mapping.get_icon(_draw_node.get_class())
+	var icon_path = node_tree.icon_mapping.get_icon(_draw_node)
 	_icon = load(icon_path)
 	icon_tex_rect.texture = _icon
 	

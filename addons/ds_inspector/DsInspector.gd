@@ -1,3 +1,4 @@
+@tool
 extends Node
 
 var debug_tool: Node;

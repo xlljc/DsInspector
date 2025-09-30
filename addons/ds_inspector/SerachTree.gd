@@ -1,3 +1,4 @@
+@tool
 extends Tree
 
 @export
@@ -46,7 +47,7 @@ func _create_node_item(node: Node):
 	var node_data := node_tree.create_node_data(node)
 	item.set_metadata(0, node_data)  # 存储节点引用
 	item.set_text(0, node.name)
-	item.set_icon(0, load(node_tree.icon_mapping.get_icon(node.get_class())))
+	item.set_icon(0, load(node_tree.icon_mapping.get_icon(node)))
 	
 	var btn_index: int = 0
 	if node.scene_file_path != "":

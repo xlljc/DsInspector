@@ -1,3 +1,4 @@
+@tool
 extends Window
 
 const SAVE_PATH := "user://ds_inspector_window.txt"

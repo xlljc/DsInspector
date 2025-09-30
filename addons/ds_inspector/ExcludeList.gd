@@ -1,3 +1,4 @@
+@tool
 extends Tree
 class_name ExcludeList
 
