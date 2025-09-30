@@ -149,6 +149,7 @@ next_frame_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBox
 file_window = NodePath("../SaveFileDialog")
 put_away = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
 confirmation = NodePath("../ConfirmationDialog")
+debug_tool_path = NodePath("..")
 
 [node name="Bg" type="ColorRect" parent="WindowDialog"]
 anchors_preset = 15
@@ -283,6 +284,7 @@ clear_search_btn_path = NodePath("HBoxContainer/ClearSearch")
 search_input_path = NodePath("HBoxContainer/SearchInput")
 node_tree_path = NodePath("NodeTree")
 search_tree_path = NodePath("SerachTree")
+debug_tool_path = NodePath("../../../../../../..")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 layout_mode = 2
@@ -307,6 +309,7 @@ focus_mode = 0
 theme_override_font_sizes/font_size = 14
 hide_root = true
 script = ExtResource("12_n858a")
+debug_tool_path = NodePath("../../../../../../../..")
 
 [node name="SerachTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 visible = false
@@ -326,6 +329,7 @@ tab_names = ["检查器", "排除路径", "作弊"]
 
 [node name="Inspector" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 layout_mode = 2
+metadata/_tab_index = 0
 
 [node name="FiltrInput" type="LineEdit" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2
@@ -386,6 +390,7 @@ size_flags_vertical = 3
 hide_root = true
 script = ExtResource("16_lfkxp")
 add_btn_path = NodePath("../HBoxContainer/AddButton")
+debug_tool_path = NodePath("../../../../../../../../..")
 
 [node name="Cheat" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer" node_paths=PackedStringArray("cheat_list")]
 visible = false
@@ -451,6 +456,7 @@ script = ExtResource("19_1ycqc")
 node_path_tips = NodePath("../NodePathTips")
 icon_tex_rect = NodePath("../NodePathTips/ColorRect/Icon")
 path_label = NodePath("../NodePathTips/Path")
+debug_tool_path = NodePath("..")
 
 [node name="NodePathTips" type="Control" parent="."]
 layout_mode = 3
@@ -461,7 +467,7 @@ theme = ExtResource("2_rwegl")
 
 [node name="ColorRect" type="ColorRect" parent="NodePathTips"]
 custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
+layout_mode = 0
 offset_right = 30.0
 offset_bottom = 30.0
 color = Color(0.203922, 0.203922, 0.203922, 1)
@@ -479,7 +485,7 @@ stretch_mode = 5
 
 [node name="Path" type="Label" parent="NodePathTips"]
 custom_minimum_size = Vector2(700, 0)
-layout_mode = 2
+layout_mode = 0
 offset_left = 34.0
 offset_top = 2.0
 offset_right = 734.0
@@ -528,3 +534,4 @@ texture_hover = ExtResource("23_qya0n")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("24_c6x5m")
+debug_tool_path = NodePath("..")

@@ -169,6 +169,9 @@ class IconMapping:
 pass
 
 @export
+var debug_tool_path: NodePath
+
+@export
 var update_time: float = 1  # 更新间隔时间
 var _timer: float = 0.0  # 计时器
 var _is_show: bool = false
@@ -180,15 +183,15 @@ var _next_frame_select: TreeItem = null # 下一帧要选中的item
 @onready
 var icon_mapping: IconMapping = IconMapping.new()
 @onready
-var debug_tool: CanvasLayer = get_node("/root/DsInspectorTool")
+var debug_tool = get_node(debug_tool_path)
 @onready
 var _script_icon: Texture = preload("res://addons/ds_inspector/icon/icon_script.svg")
 @onready
 var _scene_icon: Texture = preload("res://addons/ds_inspector/icon/icon_play_scene.svg")
 @onready
-var _visible_icon: Texture = preload("res://addons/ds_inspector/Icon/Visible.png")
+var _visible_icon: Texture = preload("res://addons/ds_inspector/icon/Visible.png")
 @onready
-var _hide_icon: Texture = preload("res://addons/ds_inspector/Icon/Hide.png")
+var _hide_icon: Texture = preload("res://addons/ds_inspector/icon/Hide.png")
 
 func _ready():
 	# 选中item信号

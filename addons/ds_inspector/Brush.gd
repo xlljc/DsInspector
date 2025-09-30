@@ -14,8 +14,11 @@ var node_path_tips: Control# = $"../Control"
 var icon_tex_rect: TextureRect# = $"../Control/ColorRect/Icon"
 @export
 var path_label: Label# = $"../Control/Path"
+@export
+var debug_tool_path: NodePath
+
 @onready
-var debug_tool = get_node("/root/DsInspectorTool")
+var debug_tool = get_node(debug_tool_path)
 
 var _icon: Texture
 var _show_text: bool = false

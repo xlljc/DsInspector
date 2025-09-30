@@ -7,8 +7,11 @@ var drag_move_flag: bool = false
 
 const SAVE_PATH := "user://ds_inspector_icon.txt"
 
+@export
+var debug_tool_path: NodePath
+
 @onready
-var debug_tool = get_node("/root/DsInspectorTool")
+var debug_tool = get_node(debug_tool_path)
 
 func _ready():
 	_load_pos()

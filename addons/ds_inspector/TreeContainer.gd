@@ -10,6 +10,8 @@ var search_input_path: NodePath
 var node_tree_path: NodePath
 @export
 var search_tree_path: NodePath
+@export
+var debug_tool_path: NodePath
 
 @onready
 var search_btn: Button = get_node(search_btn_path)
@@ -22,7 +24,7 @@ var node_tree: Tree = get_node(node_tree_path)
 @onready
 var search_tree: Tree = get_node(search_tree_path)
 @onready
-var debug_tool = get_node("/root/DsInspectorTool")
+var debug_tool = get_node(debug_tool_path)
 
 func _ready():
 	search_btn.pressed.connect(_do_serach)
