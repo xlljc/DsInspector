@@ -252,6 +252,16 @@ func is_in_canvaslayer(node: Node) -> bool:
 		parent = parent.get_parent()
 	return false
 
+# 工具函数：递归向上查找 Viewport，但排除 root
+func is_under_inner_viewport(n: Node) -> bool:
+	var current = n
+	var root_viewport = get_tree().root
+	while current != null:
+		if current is Viewport and current != root_viewport:
+			return true
+		current = current.get_parent()
+	return false
+
 func calc_node_rect(node: Node) -> NodeTransInfo:
 	## 获取节点的矩形范围
 	if node is Control:

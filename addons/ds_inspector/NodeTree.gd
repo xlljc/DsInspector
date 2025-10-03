@@ -327,7 +327,7 @@ func init_tree():
 	
 	# 递归添加子节点
 	for child in root.get_children(true):
-		if debug_tool and child == debug_tool:
+		if debug_tool and child == debug_tool and !Engine.is_editor_hint():
 			continue  # 跳过 DsInspectorTool 节点
 		create_node_item(child, root_item, true)
 
@@ -467,7 +467,7 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 
 	# 遍历场景树的子节点
 	for child_node in parent_data.node.get_children(true):
-		if debug_tool and child_node == debug_tool:
+		if debug_tool and child_node == debug_tool and !Engine.is_editor_hint():
 			continue
 		
 		var child_data: TreeItemData = existing_node.get(child_node, null)
