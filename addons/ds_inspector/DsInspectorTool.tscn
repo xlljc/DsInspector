@@ -133,8 +133,8 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(2392, 518)
-size = Vector2i(1802, 1404)
+position = Vector2i(100, 100)
+size = Vector2i(800, 600)
 visible = false
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
