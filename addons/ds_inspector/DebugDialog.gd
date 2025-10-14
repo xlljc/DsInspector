@@ -154,22 +154,29 @@ func _each_and_put_away(tree_item: TreeItem):
 	pass
 
 func save_node_as_scene(node: Node, path: String) -> void:
+	# 确保路径以 .tscn 结尾
+	if not path.ends_with(".tscn"):
+		path += ".tscn"
+	
 	var o: Node = node.owner
 	node.owner = null
 	_recursion_set_owner(node, node)
-	var scene: PackedScene = PackedScene.new()
-	var result: int = scene.pack(node)
+	
+	var scene := PackedScene.new()
+	var result := scene.pack(node)
 	if result != OK:
 		print("打包失败，错误码：", result)
 		node.owner = o
 		return
 	
-	var _err: int = ResourceSaver.save(scene, path)
-	if _err == OK:
+	var err := ResourceSaver.save(scene, path)
+	if err == OK:
 		print("保存成功: ", path)
 	else:
-		print("保存失败，错误码：", _err)
+		print("保存失败，错误码：", err)
+	
 	node.owner = o
+
 
 func _recursion_set_owner(node: Node, owner: Node):
 	for ch in node.get_children(true):
