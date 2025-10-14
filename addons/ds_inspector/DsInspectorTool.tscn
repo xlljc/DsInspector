@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=29 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
@@ -24,6 +24,7 @@
 [ext_resource type="Texture2D" uid="uid://cpfmuxcanm03r" path="res://addons/ds_inspector/icon/Icon_Pressed.png" id="22_0afkq"]
 [ext_resource type="Texture2D" uid="uid://df6spnjut8st4" path="res://addons/ds_inspector/icon/Icon_Hover.png" id="23_qya0n"]
 [ext_resource type="Script" path="res://addons/ds_inspector/HoverIcon.gd" id="24_c6x5m"]
+[ext_resource type="Script" path="res://addons/ds_inspector/SaveConfig.gd" id="25_icne6"]
 
 [sub_resource type="Animation" id="3"]
 length = 0.001
@@ -131,7 +132,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
+[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation", "save_config")]
 title = "DsInspector"
 position = Vector2i(2262, 464)
 size = Vector2i(2030, 1540)
@@ -150,6 +151,7 @@ file_window = NodePath("../SaveFileDialog")
 put_away = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
 confirmation = NodePath("../ConfirmationDialog")
 debug_tool_path = NodePath("..")
+save_config = NodePath("../SaveConfig")
 
 [node name="Bg" type="ColorRect" parent="WindowDialog"]
 anchors_preset = 15
@@ -384,13 +386,14 @@ text = "添加选中的节点"
 layout_mode = 2
 text = "被排除的节点不会在拣选时被选中。"
 
-[node name="Exclude" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
+[node name="Exclude" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer" node_paths=PackedStringArray("save_config")]
 layout_mode = 2
 size_flags_vertical = 3
 hide_root = true
 script = ExtResource("16_lfkxp")
 add_btn_path = NodePath("../HBoxContainer/AddButton")
 debug_tool_path = NodePath("../../../../../../../../..")
+save_config = NodePath("../../../../../../../../../SaveConfig")
 
 [node name="Cheat" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer" node_paths=PackedStringArray("cheat_list")]
 visible = false
@@ -528,7 +531,7 @@ libraries = {
 "": SubResource("AnimationLibrary_qg7va")
 }
 
-[node name="HoverIcon" type="TextureButton" parent="."]
+[node name="HoverIcon" type="TextureButton" parent="." node_paths=PackedStringArray("save_config")]
 offset_right = 48.0
 offset_bottom = 48.0
 texture_normal = ExtResource("21_pv2ua")
@@ -538,3 +541,7 @@ ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("24_c6x5m")
 debug_tool_path = NodePath("..")
+save_config = NodePath("../SaveConfig")
+
+[node name="SaveConfig" type="Node" parent="."]
+script = ExtResource("25_icne6")
