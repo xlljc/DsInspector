@@ -26,9 +26,6 @@ var confirmation: ConfirmationDialog
 @export
 var debug_tool_path: NodePath
 
-@export
-var save_config: SaveConfig
-
 @onready
 var debug_tool = get_node(debug_tool_path)
 
@@ -185,11 +182,11 @@ func _on_window_resized():
 
 # 保存窗口状态（位置和大小）
 func _save_window_state():
-	if save_config:
-		save_config.save_window_state(size, position)
+	if debug_tool.save_config:
+		debug_tool.save_config.save_window_state(size, position)
 
 # 加载窗口状态（位置和大小）
 func _load_window_state():
-	if save_config:
-		size = save_config.get_window_size()
-		position = save_config.get_window_position()
+	if debug_tool.save_config:
+		size = debug_tool.save_config.get_window_size()
+		position = debug_tool.save_config.get_window_position()

@@ -8,9 +8,6 @@ var drag_move_flag: bool = false
 @export
 var debug_tool_path: NodePath
 
-@export
-var save_config: SaveConfig
-
 @onready
 var debug_tool = get_node(debug_tool_path)
 
@@ -60,8 +57,8 @@ func _on_HoverIcon_pressed():
 
 
 func _save_pos():
-	if save_config:
-		save_config.save_hover_icon_position(global_position)
+	if debug_tool.save_config:
+		debug_tool.save_config.save_hover_icon_position(global_position)
 	pass
 
 func _clamp_to_screen(pos: Vector2) -> Vector2:
@@ -74,9 +71,9 @@ func _clamp_to_screen(pos: Vector2) -> Vector2:
 	return pos
 
 func _load_pos():
-	if save_config:
-		var raw_pos := save_config.get_hover_icon_position()
-		var clamped := _clamp_to_screen(raw_pos)
+	if debug_tool.save_config:
+		var raw_pos = debug_tool.save_config.get_hover_icon_position()
+		var clamped = _clamp_to_screen(raw_pos)
 		global_position = clamped
 		# 如果位置被修正，保存回配置文件以持久化
 		if clamped != raw_pos:

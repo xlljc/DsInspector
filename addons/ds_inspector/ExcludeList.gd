@@ -8,9 +8,6 @@ var add_btn_path: NodePath
 @export
 var debug_tool_path: NodePath
 
-@export
-var save_config: SaveConfig
-
 @onready
 var add_btn: Button = get_node(add_btn_path)
 @onready
@@ -30,8 +27,8 @@ func _ready():
 	pass
 
 func has_excludeL_path(s: String) -> bool:
-	if save_config:
-		return save_config.has_exclude_path(s)
+	if debug_tool.save_config:
+		return debug_tool.save_config.has_exclude_path(s)
 	return _list.has(s)
 
 # 添加排除路径
@@ -43,9 +40,9 @@ func add_excludeL_path(s: String) -> void:
 	var item: TreeItem = create_item(_root_item)
 	item.set_text(0, s)
 	item.add_button(0, _delete_icon)
-	
-	if save_config:
-		save_config.add_exclude_path(s)
+
+	if debug_tool.save_config:
+		debug_tool.save_config.add_exclude_path(s)
 	pass
 
 func _on_add_click():
@@ -62,14 +59,14 @@ func _on_button_pressed(item: TreeItem, column: int, id: int, mouse_button_index
 	var index: int = _list.find(s)
 	if index >= 0:
 		_list.remove_at(index)
-		if save_config:
-			save_config.remove_exclude_path(s)
+		if debug_tool.save_config:
+			debug_tool.save_config.remove_exclude_path(s)
 	pass
 
 # 加载排除列表
 func _load_exclude_list():
-	if save_config:
-		_list = save_config.get_exclude_list()
+	if debug_tool.save_config:
+		_list = debug_tool.save_config.get_exclude_list()
 		for s in _list:
 			var item: TreeItem = create_item(_root_item)
 			item.set_text(0, s)

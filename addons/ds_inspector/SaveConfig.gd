@@ -21,14 +21,18 @@ class ConfigData:
 	var window: WindowConfig
 	var hover_icon: HoverIconConfig
 	var exclude_list: Array
+	var enable_in_editor: bool
+	var enable_in_game: bool
 	
 	func _init():
 		window = WindowConfig.new()
 		hover_icon = HoverIconConfig.new()
 		exclude_list = []
+		enable_in_editor = false
+		enable_in_game = true
 
 # 统一的配置文件路径
-const SAVE_PATH := "user://ds_inspector_config.json"
+static var save_path: String = "user://ds_inspector_config.json"
 
 # 配置数据结构
 var _config_data: ConfigData = ConfigData.new()
@@ -38,13 +42,9 @@ var _save_timer: float = 0.0
 var _needs_save: bool = false
 const SAVE_DELAY: float = 1.0
 
-# 单例引用
-static var instance: SaveConfig = null
-
 func _init():
-	if instance == null:
-		instance = self
 	_load_config()
+	pass
 
 func _process(delta: float) -> void:
 	if _needs_save:
@@ -64,7 +64,9 @@ func _serialize_value(value) -> Variant:
 		return {
 			"window": _serialize_value(value.window),
 			"hover_icon": _serialize_value(value.hover_icon),
-			"exclude_list": value.exclude_list
+			"exclude_list": value.exclude_list,
+			"enable_in_editor": value.enable_in_editor,
+			"enable_in_game": value.enable_in_game
 		}
 	elif value is WindowConfig:
 		return {
@@ -88,7 +90,6 @@ func _serialize_value(value) -> Variant:
 	else:
 		return value
 
-# 反序列化值，将字典转换为Vector2
 func _deserialize_value(value) -> Variant:
 	if value is Dictionary and value.has("x") and value.has("y"):
 		return Vector2(value.x, value.y)
@@ -97,6 +98,8 @@ func _deserialize_value(value) -> Variant:
 		config.window = _deserialize_value(value.window)
 		config.hover_icon = _deserialize_value(value.hover_icon)
 		config.exclude_list = _deserialize_value(value.exclude_list)
+		config.enable_in_editor = value.get("enable_in_editor", true)
+		config.enable_in_game = value.get("enable_in_game", true)
 		return config
 	elif value is Dictionary and value.has("size") and value.has("position"):
 		return WindowConfig.new(_deserialize_value(value.size), _deserialize_value(value.position))
@@ -117,18 +120,19 @@ func _deserialize_value(value) -> Variant:
 
 # 保存所有配置到文件
 func save_config() -> void:
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file := FileAccess.open(save_path, FileAccess.WRITE)
 	if file:
 		var serialized_data = _serialize_value(_config_data)
 		file.store_string(JSON.stringify(serialized_data, "\t"))
 		file.close()
+		print("配置已保存到 ", save_path)
 	else:
-		print("无法保存配置文件到 ", SAVE_PATH)
+		print("无法保存配置文件到 ", save_path)
 
 # 加载配置文件
 func _load_config() -> void:
-	if FileAccess.file_exists(SAVE_PATH):
-		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if FileAccess.file_exists(save_path):
+		var file := FileAccess.open(save_path, FileAccess.READ)
 		if file:
 			var content := file.get_as_text()
 			file.close()
@@ -144,7 +148,7 @@ func _load_config() -> void:
 			else:
 				print("JSON 解析错误: ", json.get_error_message())
 		else:
-			print("无法打开配置文件 ", SAVE_PATH)
+			print("无法打开配置文件 ", save_path)
 
 # 合并配置（保留默认值）
 func _merge_config(loaded: ConfigData, defaults: ConfigData) -> ConfigData:
@@ -153,6 +157,8 @@ func _merge_config(loaded: ConfigData, defaults: ConfigData) -> ConfigData:
 	result.window.position = loaded.window.position if loaded.window.position != Vector2.ZERO else defaults.window.position
 	result.hover_icon.position = loaded.hover_icon.position if loaded.hover_icon.position != Vector2.ZERO else defaults.hover_icon.position
 	result.exclude_list = loaded.exclude_list.duplicate() if loaded.exclude_list.size() > 0 else defaults.exclude_list.duplicate()
+	result.enable_in_editor = loaded.enable_in_editor
+	result.enable_in_game = loaded.enable_in_game
 	return result
 
 # 保存窗口状态
@@ -212,8 +218,22 @@ func remove_exclude_path(path: String) -> bool:
 func has_exclude_path(path: String) -> bool:
 	return _config_data.exclude_list.has(path)
 
-# ==================== 静态访问方法 ====================
+# ==================== 启用/禁用相关 ====================
 
-# 获取单例实例
-static func get_instance() -> SaveConfig:
-	return instance
+# 设置编辑器运行启用状态
+func set_enable_in_editor(enabled: bool) -> void:
+	_config_data.enable_in_editor = enabled
+	_needs_save = true
+
+# 获取编辑器运行启用状态
+func get_enable_in_editor() -> bool:
+	return _config_data.enable_in_editor
+
+# 设置游戏中运行启用状态
+func set_enable_in_game(enabled: bool) -> void:
+	_config_data.enable_in_game = enabled
+	_needs_save = true
+
+# 获取游戏中运行启用状态
+func get_enable_in_game() -> bool:
+	return _config_data.enable_in_game

@@ -3,6 +3,10 @@ extends Node2D
 
 var timer: float = 0.0
 
+func _ready():
+	get_viewport().gui_embed_subwindows = false
+	pass
+
 func _process(delta):
 	timer += delta
 	if timer >= 0.5:
