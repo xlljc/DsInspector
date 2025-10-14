@@ -1,6 +1,5 @@
+@tool
 extends Window
-
-const SAVE_PATH := "user://ds_inspector_window.txt"
 
 @export
 var tree: NodeTree
@@ -24,12 +23,11 @@ var file_window: FileDialog
 var put_away: Button
 @export
 var confirmation: ConfirmationDialog
-
-# 缓存的窗口状态
-var _cached_window_state: Dictionary = {}
+@export
+var debug_tool_path: NodePath
 
 @onready
-var debug_tool = get_node("/root/DsInspectorTool")
+var debug_tool = get_node(debug_tool_path)
 
 @onready
 var play_icon: Texture2D = preload("res://addons/ds_inspector/icon/Play.svg")
@@ -184,30 +182,11 @@ func _on_window_resized():
 
 # 保存窗口状态（位置和大小）
 func _save_window_state():
-	var data := {
-		"size": size,
-		"position": position
-	}
-	_cached_window_state = data
-	
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	if file != null:
-		file.store_string(var_to_str(data))
-		file.close()
-	else:
-		print("无法保存窗口状态到 ", SAVE_PATH)
+	if debug_tool.save_config:
+		debug_tool.save_config.save_window_state(size, position)
 
 # 加载窗口状态（位置和大小）
 func _load_window_state():
-	if FileAccess.file_exists(SAVE_PATH):
-		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
-		if file != null:
-			var content := file.get_as_text()
-			file.close()
-			var data := str_to_var(content)
-			if data is Dictionary:
-				_cached_window_state = data
-				if data.has("size"):
-					size = _cached_window_state.size
-				if data.has("position"):
-					position = _cached_window_state.position
+	if debug_tool.save_config:
+		size = debug_tool.save_config.get_window_size()
+		position = debug_tool.save_config.get_window_position()

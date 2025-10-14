@@ -133,8 +133,8 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(50, 50)
-size = Vector2i(500, 600)
+position = Vector2i(100, 100)
+size = Vector2i(800, 600)
 visible = false
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
@@ -149,6 +149,7 @@ next_frame_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBox
 file_window = NodePath("../SaveFileDialog")
 put_away = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
 confirmation = NodePath("../ConfirmationDialog")
+debug_tool_path = NodePath("..")
 
 [node name="Bg" type="ColorRect" parent="WindowDialog"]
 anchors_preset = 15
@@ -283,6 +284,7 @@ clear_search_btn_path = NodePath("HBoxContainer/ClearSearch")
 search_input_path = NodePath("HBoxContainer/SearchInput")
 node_tree_path = NodePath("NodeTree")
 search_tree_path = NodePath("SerachTree")
+debug_tool_path = NodePath("../../../../../../..")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 layout_mode = 2
@@ -304,15 +306,14 @@ text = "清除"
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
-theme_override_font_sizes/font_size = 14
 hide_root = true
 script = ExtResource("12_n858a")
+debug_tool_path = NodePath("../../../../../../../..")
 
 [node name="SerachTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 visible = false
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 14
 hide_root = true
 script = ExtResource("13_n5350")
 node_tree_path = NodePath("../NodeTree")
@@ -326,6 +327,8 @@ tab_names = ["检查器", "排除路径", "作弊"]
 
 [node name="Inspector" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 layout_mode = 2
+metadata/_tab_index = 0
+metadata/_tab_name = "检查器"
 
 [node name="FiltrInput" type="LineEdit" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2
@@ -368,6 +371,7 @@ filtr_input = NodePath("../../../../FiltrInput")
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+metadata/_tab_name = "排除路径"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer"]
 layout_mode = 2
@@ -386,6 +390,7 @@ size_flags_vertical = 3
 hide_root = true
 script = ExtResource("16_lfkxp")
 add_btn_path = NodePath("../HBoxContainer/AddButton")
+debug_tool_path = NodePath("../../../../../../../../..")
 
 [node name="Cheat" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer" node_paths=PackedStringArray("cheat_list")]
 visible = false
@@ -394,6 +399,7 @@ script = ExtResource("17_i1g1n")
 cheat_package_scene = ExtResource("18_req58")
 cheat_list = NodePath("Container/Scroll/MarginContainer/CheatList")
 metadata/_tab_index = 2
+metadata/_tab_name = "作弊"
 
 [node name="CheatTips" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat"]
 layout_mode = 2
@@ -437,6 +443,7 @@ ok_button_text = "保存"
 cancel_button_text = "取消"
 access = 2
 filters = PackedStringArray("*.tscn")
+use_native_dialog = true
 
 [node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
 title = "你确定吗？"
@@ -451,8 +458,10 @@ script = ExtResource("19_1ycqc")
 node_path_tips = NodePath("../NodePathTips")
 icon_tex_rect = NodePath("../NodePathTips/ColorRect/Icon")
 path_label = NodePath("../NodePathTips/Path")
+debug_tool_path = NodePath("..")
 
 [node name="NodePathTips" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 127.0
@@ -461,7 +470,7 @@ theme = ExtResource("2_rwegl")
 
 [node name="ColorRect" type="ColorRect" parent="NodePathTips"]
 custom_minimum_size = Vector2(30, 30)
-layout_mode = 2
+layout_mode = 0
 offset_right = 30.0
 offset_bottom = 30.0
 color = Color(0.203922, 0.203922, 0.203922, 1)
@@ -479,7 +488,7 @@ stretch_mode = 5
 
 [node name="Path" type="Label" parent="NodePathTips"]
 custom_minimum_size = Vector2(700, 0)
-layout_mode = 2
+layout_mode = 0
 offset_left = 34.0
 offset_top = 2.0
 offset_right = 734.0
@@ -528,3 +537,4 @@ texture_hover = ExtResource("23_qya0n")
 ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("24_c6x5m")
+debug_tool_path = NodePath("..")

@@ -1,3 +1,4 @@
+@tool
 extends CanvasLayer
 
 
@@ -16,6 +17,8 @@ var tips_anim: AnimationPlayer
 @export
 var cheat: VBoxContainer
 
+var save_config: SaveConfig = null
+
 var main_camera: Camera2D = null
 var prev_click: bool = false
 var _check_camer_timer: float = 0.0
@@ -30,6 +33,11 @@ var _prev_mouse_position: Vector2 = Vector2.ZERO
 # 是否开启拣选Ui
 var _is_open_check_ui: bool = false
 var _mouse_in_hover_btn: bool = false
+
+func _enter_tree():
+	if save_config == null:
+		save_config = SaveConfig.new()
+		call_deferred("add_child", save_config)
 
 func _ready():
 	brush.node_tree = window.tree
@@ -161,8 +169,11 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 	if exclude_list.has(node) or (node is Control and !node.visible) or (node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible):
 		return null
 
+	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
 		var child := node.get_child(i, true)
+		if child is Viewport:
+			continue
 		var new_path: String
 		if path.length() > 0:
 			new_path = path + "/" + child.name
@@ -246,6 +257,16 @@ func is_in_canvaslayer(node: Node) -> bool:
 		if parent is CanvasLayer:
 			return true
 		parent = parent.get_parent()
+	return false
+
+# 工具函数：递归向上查找 Viewport，但排除 root
+func is_under_inner_viewport(n: Node) -> bool:
+	var current = n
+	var root_viewport = get_tree().root
+	while current != null:
+		if current is Viewport and current != root_viewport:
+			return true
+		current = current.get_parent()
 	return false
 
 func calc_node_rect(node: Node) -> NodeTransInfo:

@@ -367,3 +367,9 @@ offset_bottom = 962.0
 focus_mode = 2
 text = "qwqrqwrqwrq"
 selection_enabled = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Icon2" type="Sprite2D" parent="SubViewport"]
+visible = false
+texture = ExtResource("2_yow5e")
