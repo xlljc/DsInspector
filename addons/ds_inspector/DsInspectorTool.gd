@@ -34,10 +34,12 @@ var _prev_mouse_position: Vector2 = Vector2.ZERO
 var _is_open_check_ui: bool = false
 var _mouse_in_hover_btn: bool = false
 
-func _ready():
+func _enter_tree():
 	if save_config == null:
 		save_config = SaveConfig.new()
-		add_child(save_config)
+		call_deferred("add_child", save_config)
+
+func _ready():
 	brush.node_tree = window.tree
 	tips_anim.animation_finished.connect(on_tip_anim_finished)
 	pass

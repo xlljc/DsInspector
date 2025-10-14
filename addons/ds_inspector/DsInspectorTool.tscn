@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=28 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
@@ -24,7 +24,6 @@
 [ext_resource type="Texture2D" uid="uid://cpfmuxcanm03r" path="res://addons/ds_inspector/icon/Icon_Pressed.png" id="22_0afkq"]
 [ext_resource type="Texture2D" uid="uid://df6spnjut8st4" path="res://addons/ds_inspector/icon/Icon_Hover.png" id="23_qya0n"]
 [ext_resource type="Script" path="res://addons/ds_inspector/HoverIcon.gd" id="24_c6x5m"]
-[ext_resource type="Script" path="res://addons/ds_inspector/SaveConfig.gd" id="25_icne6"]
 
 [sub_resource type="Animation" id="3"]
 length = 0.001
@@ -539,6 +538,3 @@ ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("24_c6x5m")
 debug_tool_path = NodePath("..")
-
-[node name="SaveConfig" type="Node" parent="."]
-script = ExtResource("25_icne6")
