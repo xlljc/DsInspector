@@ -60,6 +60,8 @@ func _process(delta):
 		_next_frame_paused_index -= 1
 		if _next_frame_paused_index == 0:
 			get_tree().paused = true
+	else:
+		refresh_icon()
 	pass
 
 # 当窗口失去焦点时关闭窗口

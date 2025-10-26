@@ -44,7 +44,7 @@ For Godot 3.x, please use this repository instead:
 3. After running the game, a floating window will appear. Click the window to open the inspector.
 4. You can also enable or disable the plugin for the editor or the game from **Project → Tools → DsInspector**.
 
-![image-20251014202144790](assets/image-20251014202144790.png)
+![image-20251014202144790](docs/image-20251014202144790.png)
 
 If you prefer the plugin to use a **native OS window**, add the following line when starting the game:
 
@@ -60,7 +60,7 @@ Pick objects directly in the scene:
 
 Inspect Godot editor nodes:
 
-![image-20251014204751994](assets/image-20251014204751994.png)
+![image-20251014204751994](do c simage-20251014204751994.png)
 
 Display collision shapes:
 
