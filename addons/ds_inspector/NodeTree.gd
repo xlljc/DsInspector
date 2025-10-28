@@ -289,6 +289,9 @@ var _visible_icon: Texture = preload("res://addons/ds_inspector/icon/Visible.png
 var _hide_icon: Texture = preload("res://addons/ds_inspector/icon/Hide.png")
 
 func _ready():
+	# 启用拖拽功能
+	set_drag_forwarding(_get_drag_data_fw, _can_drop_data_fw, _drop_data_fw)
+	
 	# 选中item信号
 	item_selected.connect(_on_item_selected)
 	# item按钮按下信号
@@ -613,3 +616,198 @@ func get_visible_icon(v: bool) -> Texture:
 
 func create_node_data(node: Node) -> NodeData:
 	return NodeData.new(node)
+
+# ==================== 拖拽功能实现 ====================
+
+
+# 执行节点移动操作
+# 参数:
+#   dragged_node: 被拖拽的节点
+#   old_parent: 原父节点
+#   target_parent: 目标父节点
+#   target_index: 目标索引位置
+func _move_node(dragged_node: Node, old_parent: Node, target_parent: Node, target_index: int) -> void:
+	# TODO: 在这里实现节点的移除、添加和移动逻辑
+	# 提示: 可以使用以下方法:
+	old_parent.remove_child(dragged_node)
+	target_parent.add_child(dragged_node)
+	target_parent.move_child(dragged_node, target_index)
+	pass
+
+# 开始拖拽时获取数据
+func _get_drag_data_fw(_position: Vector2) -> Variant:
+	var selected_item: TreeItem = get_selected()
+	if selected_item:
+		var data: NodeData = selected_item.get_metadata(0)
+		if data and is_instance_valid(data.node):
+			# 不允许拖拽根节点
+			if data.node == get_tree().root:
+				return null
+			
+			# 创建拖拽预览
+			var preview = Label.new()
+			preview.text = data.node.name
+			set_drag_preview(preview)
+			
+			# 使用 weakref 来存储节点引用,防止节点被释放后访问
+			return {"item": selected_item, "node_ref": weakref(data.node)}
+	return null
+
+# 判断是否可以放置
+func _can_drop_data_fw(position: Vector2, drag_data: Variant) -> bool:
+	if typeof(drag_data) != TYPE_DICTIONARY:
+		return false
+	
+	if !drag_data.has("node_ref") or !drag_data.has("item"):
+		return false
+	
+	# 从 weakref 获取节点
+	var node_ref: WeakRef = drag_data["node_ref"]
+	var dragged_node = node_ref.get_ref()
+	
+	# 检查节点是否已被销毁
+	if dragged_node == null or !is_instance_valid(dragged_node):
+		drop_mode_flags = DROP_MODE_DISABLED
+		return false
+	
+	# 获取目标位置的TreeItem
+	var target_item: TreeItem = get_item_at_position(position)
+	if !target_item:
+		return false
+	
+	var target_data: NodeData = target_item.get_metadata(0)
+	if !target_data or !is_instance_valid(target_data.node):
+		return false
+	
+	var target_node: Node = target_data.node
+	
+	# 不能拖拽到自己
+	if dragged_node == target_node:
+		drop_mode_flags = DROP_MODE_DISABLED
+		return false
+	
+	# 不能拖拽到自己的子节点
+	if target_node.is_ancestor_of(dragged_node):
+		drop_mode_flags = DROP_MODE_DISABLED
+		return false
+	
+	# 不能拖拽根节点
+	if dragged_node == get_tree().root:
+		drop_mode_flags = DROP_MODE_DISABLED
+		return false
+	
+	# 允许放置在节点上(作为子节点)或节点之间
+	drop_mode_flags = DROP_MODE_ON_ITEM | DROP_MODE_INBETWEEN
+	return true
+
+# 执行放置操作
+func _drop_data_fw(position: Vector2, drag_data: Variant) -> void:
+	if typeof(drag_data) != TYPE_DICTIONARY:
+		return
+	
+	if !drag_data.has("node_ref"):
+		return
+	
+	# 从 weakref 获取节点
+	var node_ref: WeakRef = drag_data["node_ref"]
+	var dragged_node = node_ref.get_ref()
+	
+	# 检查节点是否已被销毁或正在删除队列中
+	if dragged_node == null or !is_instance_valid(dragged_node):
+		return
+	
+	var dragged_item: TreeItem = drag_data.get("item", null)
+	
+	var target_item: TreeItem = get_item_at_position(position)
+	if !target_item:
+		return
+	
+	var target_data: NodeData = target_item.get_metadata(0)
+	if !target_data or !is_instance_valid(target_data.node):
+		return
+	
+	var target_node: Node = target_data.node
+	var section: int = get_drop_section_at_position(position)
+	
+	var old_parent: Node = dragged_node.get_parent()
+	# 再次检查父节点是否有效
+	if !is_instance_valid(old_parent):
+		return
+	
+	var old_index: int = dragged_node.get_index()
+	
+	# 保存世界坐标信息
+	var world_transform_2d: Transform2D
+	var world_transform_3d: Transform3D
+	var world_position: Vector2
+	var has_2d_transform: bool = false
+	var has_3d_transform: bool = false
+	var has_canvas_layer: bool = false
+	
+	if dragged_node is Node2D:
+		world_transform_2d = dragged_node.global_transform
+		has_2d_transform = true
+	elif dragged_node is Control:
+		world_position = dragged_node.global_position
+		has_2d_transform = true
+	elif dragged_node is Node3D:
+		world_transform_3d = dragged_node.global_transform
+		has_3d_transform = true
+	elif dragged_node is CanvasLayer:
+		has_canvas_layer = true
+	
+	# 计算目标索引
+	var target_parent: Node = null
+	var target_index: int = -1
+	
+	match section:
+		-1:  # 放置在目标节点之前
+			target_parent = target_node.get_parent()
+			if target_parent:
+				target_index = target_node.get_index()
+		0:   # 放置在目标节点上(作为子节点)
+			target_parent = target_node
+			target_index = target_parent.get_child_count()
+		1:   # 放置在目标节点之后
+			target_parent = target_node.get_parent()
+			if target_parent:
+				target_index = target_node.get_index() + 1
+	
+	if !target_parent:
+		return
+	
+	# 计算调整后的目标索引
+	# target_index = _calculate_drop_index(old_parent, old_index, target_parent, target_index)
+	
+	# 在移动前再次检查所有节点是否有效(因为节点可能在拖拽过程中被销毁)
+	if !is_instance_valid(dragged_node):
+		return
+	if !is_instance_valid(old_parent) or !is_instance_valid(target_parent):
+		return
+	
+	# 执行节点移动操作
+	_move_node(dragged_node, old_parent, target_parent, target_index)
+	
+	# 恢复世界坐标
+	if has_2d_transform:
+		if dragged_node is Node2D:
+			dragged_node.global_transform = world_transform_2d
+		elif dragged_node is Control:
+			dragged_node.global_position = world_position
+	elif has_3d_transform:
+		dragged_node.global_transform = world_transform_3d
+	
+	# 设置节点的所有者(保持原有的所有者)
+	if dragged_node.owner == null and old_parent.owner:
+		dragged_node.owner = old_parent.owner
+	
+	# 更新树显示
+	call_deferred("_update_tree_after_drop", dragged_node)
+
+# 拖拽后更新树
+func _update_tree_after_drop(moved_node: Node) -> void:
+	if is_instance_valid(moved_node):
+		update_tree()
+		# 重新选中移动的节点
+		call_deferred("locate_selected", moved_node)
+
