@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq48f7kbgdc6k"]
+
+[ext_resource type="Script" path="res://addons/ds_inspector/Attributes/ObjectAttr.gd" id="1_2c03v"]
+
+[node name="ObjectAttr" type="HBoxContainer" node_paths=PackedStringArray("label", "vboxcontainer")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_2c03v")
+label = NodePath("Name")
+vboxcontainer = NodePath("VBoxContainer")
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 4.0
+text = "aabbcc"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 6.0

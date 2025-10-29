@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/ds_inspector/Attributes/ColorAttr.gd" id="2"]
 
-[node name="ColorAttr" type="HBoxContainer" node_paths=PackedStringArray("label", "r_line_edit", "g_line_edit", "b_line_edit", "a_line_edit")]
+[node name="ColorAttr" type="HBoxContainer" node_paths=PackedStringArray("label", "r_line_edit", "g_line_edit", "b_line_edit", "a_line_edit", "color_picker")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,6 +12,7 @@ r_line_edit = NodePath("VBoxContainer/HBoxContainer/RLineEdit")
 g_line_edit = NodePath("VBoxContainer/HBoxContainer/GLineEdit")
 b_line_edit = NodePath("VBoxContainer/HBoxContainer2/BLineEdit")
 a_line_edit = NodePath("VBoxContainer/HBoxContainer2/ALineEdit")
+color_picker = NodePath("VBoxContainer/ColorPickerButton")
 
 [node name="Name" type="Label" parent="."]
 layout_mode = 2
@@ -77,3 +78,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 5
 size_flags_stretch_ratio = 6.0
 virtual_keyboard_type = 2
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 25)
+layout_mode = 2

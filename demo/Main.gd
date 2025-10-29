@@ -1,7 +1,14 @@
 extends Node2D
 
+class TestData:
+	var int_value: int = 0
+	var float_value: float = 0.0
+	var string_value: String = "Hello"
+	var vector3_value: Vector3 = Vector3.ZERO
+	var color_value: Color = Color.WHITE
 
 var timer: float = 0.0
+var data: TestData = TestData.new()
 
 func _ready():
 	# get_viewport().gui_embed_subwindows = false

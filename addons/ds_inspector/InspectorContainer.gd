@@ -48,6 +48,8 @@ var texture_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/Te
 var sprite_frames_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/SpriteFramesAttr.tscn")
 @onready
 var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumAttr.tscn")
+@onready
+var object_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ObjectAttr.tscn")
 
 class AttrItem:
 	var attr: BaseAttr
@@ -197,7 +199,8 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 					if v is Texture2D:
 						attr = texture_attr.instantiate()
 					else:
-						attr = rich_text_attr.instantiate()
+						# attr = rich_text_attr.instantiate()
+						attr = object_attr.instantiate()
 				_:
 					attr = rich_text_attr.instantiate()
 	add_child(attr)
