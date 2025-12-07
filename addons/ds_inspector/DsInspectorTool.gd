@@ -25,6 +25,9 @@ var main_camera: Camera2D = null
 var prev_click: bool = false
 var _check_camer_timer: float = 0.0
 
+var _request_coll_list: int = 0
+signal _coll_list_ready(coll_list)
+
 # 排除列表
 var _exclude_list: Array = []
 var _selected_list: Array = []
@@ -79,7 +82,7 @@ func _process(delta: float) -> void:
 							brush.set_show_text(true)
 							return
 				else:
-					var node := get_check_node();
+					var node := await get_check_node();
 					if node != null:
 						# print("选中节点: ", node.get_path())
 						var draw_node = brush.get_draw_node()
@@ -98,9 +101,23 @@ func _process(delta: float) -> void:
 		else:
 			prev_click = false
 	##################################################
-
+	
+func _physics_process(_delta: float) -> void:
+	if _request_coll_list > 0:
+		var coll_list = _get_check_node()
+		_coll_list_ready.emit(coll_list)
+		
 ## 获取鼠标点击选中的节点
 func get_check_node() -> Node:
+	_request_coll_list += 1
+	set_physics_process(true)
+	var coll_list = await _coll_list_ready
+	_request_coll_list -= 1
+	if _request_coll_list <= 0:
+		set_physics_process(false)
+	return coll_list
+	
+func _get_check_node() -> Node:
 	var mousePos: Vector2 = brush.get_global_mouse_position()
 	if _prev_mouse_position != mousePos:
 		_prev_mouse_position = mousePos
@@ -140,7 +157,6 @@ func get_check_node() -> Node:
 	if node != null:
 		_exclude_list.append(node)
 	return node
-	return null;
 
 func _find_collision_shape(node: Node):
 	if node == null:
