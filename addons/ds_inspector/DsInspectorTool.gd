@@ -288,8 +288,8 @@ func calc_node_rect(node: Node) -> NodeTransInfo:
 				var scale: Vector2 = node.global_scale
 				var offset: Vector2 = node.offset * scale
 				var size: Vector2 = Vector2.ZERO
-				var h := max(1, node.hframes)
-				var v := max(1, node.vframes)
+				var h = max(1, node.hframes)
+				var v = max(1, node.vframes)
 				if node.region_enabled:
 					size = node.region_rect.size
 				else:

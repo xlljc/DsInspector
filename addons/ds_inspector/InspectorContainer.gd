@@ -154,7 +154,7 @@ func _init_node_attr():
 	pass
 
 func _create_node_attr(prop: Dictionary) -> AttrItem:
-	var v := _curr_node.get(prop.name)
+	var v = _curr_node.get(prop.name)
 	var attr: BaseAttr
 
 	# ------------- 特殊处理 -----------------
