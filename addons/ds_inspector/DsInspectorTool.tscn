@@ -393,7 +393,7 @@ metadata/_tab_name = "检查器"
 [node name="FiltrInput" type="LineEdit" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "筛选属性"
+placeholder_text = "筛选属性，使用\"|\"同时筛选多个属性"
 
 [node name="BgColor" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector"]
 layout_mode = 2

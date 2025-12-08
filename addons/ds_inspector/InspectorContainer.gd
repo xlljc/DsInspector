@@ -245,11 +245,22 @@ func _filter_attributes(filter_text: String):
 		for item in _attr_list:
 			item.attr.visible = true
 	else:
+		# 按"|"分割多个搜索词
+		var filter_parts = filter_text.split("|")
+		var filter_lowers: Array[String] = []
+		for part in filter_parts:
+			var trimmed = part.strip_edges()
+			if trimmed != "":
+				filter_lowers.append(trimmed.to_lower().replace("_", ""))
+		
 		# 过滤属性（不区分大小写，忽略下划线）
-		var filter_lower = filter_text.to_lower().replace("_", "")
 		for item in _attr_list:
-			var title_lower = item.name.to_lower().replace("_", "")
 			var name_lower = item.name.to_lower().replace("_", "")
-			var matches = title_lower.contains(filter_lower) or name_lower.contains(filter_lower)
+			var matches = false
+			# 检查是否匹配任何一个搜索词（OR逻辑）
+			for filter_lower in filter_lowers:
+				if name_lower.contains(filter_lower):
+					matches = true
+					break
 			item.attr.visible = matches
 	pass

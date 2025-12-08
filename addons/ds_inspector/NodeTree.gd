@@ -422,7 +422,7 @@ func locate_selected(select_node: Node):
 					return
 				if node_data.node == node:
 					flag = true
-					if i < count: # 下面还有节点，展开节点
+					if i < count - 1: # 只展开路径上的父节点，不展开目标节点本身
 						child_item.collapsed = false
 					curr_item = child_item
 					break
