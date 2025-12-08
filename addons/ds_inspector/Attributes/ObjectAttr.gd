@@ -7,15 +7,48 @@ var expand_icon_tex: Texture2D
 var collapse_icon_tex: Texture2D
 @export
 var expand_btn: Button
+@export
+var attr_container: VBoxContainer
 
 var type: String = "object"
 
-var _node: Node
+var _node  # 父对象（可能是Node，也可能是其他Object）
+var _inspector_container
 var _attr: String
-var _value
+var _value  # 当前Object的值
 
-func set_node(node: Node):
+var _is_expanded: bool = false
+var _is_initialized: bool = false  # 是否已经初始化过子字段
+
+func _ready():
+	expand_btn.pressed.connect(on_expand_btn_pressed)
+	expand_btn.icon = collapse_icon_tex
+	attr_container.visible = false
+	_update_button_state()
+	pass
+
+func on_expand_btn_pressed():
+	_is_expanded = !_is_expanded
+	if _is_expanded:
+		expand_btn.icon = expand_icon_tex
+		attr_container.visible = true
+		# 第一次展开时才初始化子字段
+		if not _is_initialized:
+			_initialize_children()
+			_is_initialized = true
+	else:
+		expand_btn.icon = collapse_icon_tex
+		attr_container.visible = false
+		# 收起时销毁所有子字段以节约性能
+		_clear_children()
+		_is_initialized = false
+	pass
+
+
+func set_node(node, inspector_container = null):
 	_node = node
+	if inspector_container != null:
+		_inspector_container = inspector_container
 	pass
 
 func set_attr_name(attr_name: String):
@@ -24,4 +57,78 @@ func set_attr_name(attr_name: String):
 
 func set_value(value):
 	_value = value
+	_update_button_state()
 	pass
+
+# 更新按钮状态和显示文本
+func _update_button_state():
+	if _value != null:
+		var obj_class_name = _value.get_class()
+		expand_btn.text = "Object[%s]" % obj_class_name
+		expand_btn.disabled = false
+	else:
+		expand_btn.text = "Object[null]"
+		expand_btn.disabled = true
+	pass
+
+# 初始化子字段
+func _initialize_children():
+	if _value == null:
+		return
+
+	
+	# 获取对象的所有属性
+	var property_list = _value.get_property_list()
+	
+	# 需要preload AttrItem场景
+	var attr_item_scene = preload("res://addons/ds_inspector/Attributes/AttrItem.tscn")
+	
+	var has_properties = false
+	for prop in property_list:
+		# 过滤掉一些内部属性和不需要显示的属性
+		if _should_skip_property(prop):
+			continue
+		
+		has_properties = true
+		
+		# 创建AttrItem
+		var attr_item = attr_item_scene.instantiate()
+		attr_container.add_child(attr_item)
+		
+		# 设置节点和检查器容器（传递对象本身作为节点）
+		attr_item.set_node(_value, _inspector_container)
+		
+		# 设置属性
+		attr_item.set_attr(prop)
+	
+	# 如果没有可显示的属性，添加一个提示
+	if not has_properties:
+		var label = Label.new()
+		label.text = "  (无可显示属性)"
+		label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+		attr_container.add_child(label)
+
+# 清除所有子字段
+func _clear_children():
+	for child in attr_container.get_children():
+		child.queue_free()
+
+# 判断是否应该跳过某个属性
+func _should_skip_property(prop: Dictionary) -> bool:
+	# 跳过内部属性（usage标志）
+	if prop.usage & PROPERTY_USAGE_CATEGORY:
+		return true
+	if prop.usage & PROPERTY_USAGE_GROUP:
+		return true
+	if prop.usage & PROPERTY_USAGE_SUBGROUP:
+		return true
+	
+	# 只显示可编辑的属性
+	if not (prop.usage & PROPERTY_USAGE_EDITOR):
+		return true
+	
+	# 跳过脚本属性（避免递归显示）
+	if prop.name == "script":
+		return true
+	
+	return false

@@ -4,9 +4,9 @@ extends TextureRect
 var type: String = "sprite_frames"
 
 var _attr: String
-var _node: Node
+var _node  # Node或其他Object
 
-func set_node(node: Node):
+func set_node(node, inspector_container = null):
 	_node = node
 
 func set_attr_name(attr_name: String):

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="2_hj0lq"]
 [ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="2_lhutd"]
 
-[node name="ObjectAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn")]
+[node name="ObjectAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container")]
 offset_left = 770.0
 offset_right = 1920.0
 offset_bottom = 1080.0
@@ -14,10 +14,11 @@ script = ExtResource("1_2c03v")
 expand_icon_tex = ExtResource("2_hj0lq")
 collapse_icon_tex = ExtResource("2_lhutd")
 expand_btn = NodePath("ExpandBtn")
+attr_container = NodePath("AttrContainer")
 
 [node name="ExpandBtn" type="Button" parent="."]
 layout_mode = 2
-text = "Object"
+text = "Object[Node]"
 icon = ExtResource("2_lhutd")
 
 [node name="AttrContainer" type="VBoxContainer" parent="."]

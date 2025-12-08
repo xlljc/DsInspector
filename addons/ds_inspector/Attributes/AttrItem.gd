@@ -5,13 +5,13 @@ class_name DsAttrItem
 @export
 var label: Label
 
-var _curr_node: Node
+var _curr_node  # 可以是Node或任何Object
 var _inspector_container
 var _attr
 
-func set_node(node: Node, inspector_container):
-	self._curr_node = node
-	self._inspector_container = inspector_container
+func set_node(node, inspector_container):
+	_curr_node = node
+	_inspector_container = inspector_container
 
 func set_attr(prop: Dictionary):
 	if _attr != null:
@@ -67,7 +67,7 @@ func set_attr(prop: Dictionary):
 					_attr = _inspector_container.rich_text_attr.instantiate()
 	add_child(_attr)
 
-	_attr.set_node(_curr_node)
+	_attr.set_node(_curr_node, _inspector_container)
 	_attr.set_attr_name(prop.name)
 	
 	if _attr.type == "enum":

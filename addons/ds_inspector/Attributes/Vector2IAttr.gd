@@ -9,7 +9,7 @@ var y_line_edit: LineEdit
 var type: String = "vector2i"
 
 var _attr: String
-var _node: Node
+var _node  # Node或其他Object
 
 var _focus_flag: bool = false
 var _temp_value: Vector2i  # 修改为 Vector2i
@@ -25,7 +25,7 @@ func _ready():
 	y_line_edit.focus_exited.connect(_on_focus_exited)
 	pass
 
-func set_node(node: Node):
+func set_node(node, inspector_container = null):
 	_node = node
 
 func set_attr_name(attr_name: String):

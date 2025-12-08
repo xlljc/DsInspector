@@ -4,13 +4,13 @@ extends OptionButton
 var type: String = "enum"
 
 var _attr: String
-var _node: Node
+var _node  # Node或其他Object
 
 func _ready():
 	item_selected.connect(_on_item_selected)
 	pass
 
-func set_node(node: Node):
+func set_node(node, inspector_container = null):
 	_node = node
 
 func set_enum_options(options: String):

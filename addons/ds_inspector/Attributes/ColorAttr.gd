@@ -15,7 +15,7 @@ var color_picker: ColorPickerButton
 var type: String = "color"
 
 var _attr: String
-var _node: Node
+var _node  # Node或其他Object
 
 var _focus_flag: bool = false
 var _picker_open: bool = false  # 标记颜色选择器是否打开
@@ -44,7 +44,7 @@ func _ready():
 	color_picker.pressed.connect(_on_picker_pressed)
 	pass
 
-func set_node(node: Node):
+func set_node(node, inspector_container = null):
 	_node = node
 
 func set_attr_name(attr_name: String):
