@@ -19,8 +19,13 @@ func _ready():
 	# 连接按钮信号
 	if NodeBtn:
 		NodeBtn.pressed.connect(_on_node_button_pressed)
+		# 在Button上也启用拖放转发，让拖放事件能够传递到父容器
+		NodeBtn.set_drag_forwarding(Callable(), _can_drop_data_fw, _drop_data_fw)
 	if DelBtn:
 		DelBtn.pressed.connect(_on_delete_button_pressed)
+	
+	# 启用拖放转发，让拖放事件能够传递到父容器
+	set_drag_forwarding(Callable(), _can_drop_data_fw, _drop_data_fw)
 
 func _process(delta: float):
 	# 累积时间，每秒更新一次路径
@@ -83,3 +88,24 @@ func _on_node_button_pressed() -> void:
 # 点击删除按钮时
 func _on_delete_button_pressed() -> void:
 	delete_requested.emit()
+
+# 判断是否可以接收拖放的数据（转发给父容器RecordContainer）
+func _can_drop_data_fw(position: Vector2, drag_data: Variant) -> bool:
+	# 获取RecordContainer（RecordNodeItem的父容器）
+	var parent = get_parent()
+	if parent and parent.has_method("_can_drop_data_fw"):
+		# 将位置转换为父容器的本地坐标
+		# position是相对于当前控件的本地坐标，转换为相对于父容器的坐标
+		var parent_local_pos = position + get_position()
+		return parent._can_drop_data_fw(parent_local_pos, drag_data)
+	return false
+
+# 执行拖放操作（转发给父容器RecordContainer）
+func _drop_data_fw(position: Vector2, drag_data: Variant) -> void:
+	# 获取RecordContainer（RecordNodeItem的父容器）
+	var parent = get_parent()
+	if parent and parent.has_method("_drop_data_fw"):
+		# 将位置转换为父容器的本地坐标
+		# position是相对于当前控件的本地坐标，转换为相对于父容器的坐标
+		var parent_local_pos = position + get_position()
+		parent._drop_data_fw(parent_local_pos, drag_data)
