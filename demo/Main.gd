@@ -16,6 +16,14 @@ var arr2: Array[int] = [1, 2, 3, 4, 5]
 var data = TestData.new()
 var data2 = null
 var data3 = null
+var data4 = {
+	"a": 1,
+	"b": 2,
+	"c": 3,
+	"d": 4,
+	"e": 5,
+	"f": 6,
+}
 
 func _ready():
 	# get_viewport().gui_embed_subwindows = false

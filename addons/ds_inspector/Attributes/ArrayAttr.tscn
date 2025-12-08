@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bneq5fic4a7tl"]
+[gd_scene load_steps=5 format=3 uid="uid://bneq5fic4a7tl"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/Attributes/ArrayAttr.gd" id="1_nxhu6"]
 [ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="2_d8i4b"]
 [ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="2_u86em"]
+[ext_resource type="PackedScene" uid="uid://ce18ajqavop67" path="res://addons/ds_inspector/DeleteSlot.tscn" id="4_xv1ia"]
 
 [node name="ArrayAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container", "page_btn_root", "next_btn", "prev_btn")]
 offset_left = 770.0
@@ -18,6 +19,7 @@ attr_container = NodePath("AttrContainer")
 page_btn_root = NodePath("AttrContainer/PageBtnContainer")
 next_btn = NodePath("AttrContainer/PageBtnContainer/Prev")
 prev_btn = NodePath("AttrContainer/PageBtnContainer/Next")
+delete_slot = ExtResource("4_xv1ia")
 
 [node name="ExpandBtn" type="Button" parent="."]
 layout_mode = 2

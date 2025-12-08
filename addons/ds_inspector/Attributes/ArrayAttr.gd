@@ -19,6 +19,9 @@ var prev_btn: Button
 @export
 var page_size: int = 20
 
+@export
+var delete_slot: PackedScene
+
 var type: String = "array"
 
 var _node  # 父对象（可能是Node，也可能是其他Object）
@@ -162,6 +165,13 @@ func _create_element_at_index(index: int):
 	# 创建AttrItem
 	var attr_item = attr_item_scene.instantiate()
 	
+	# 创建DeleteSlot包裹AttrItem
+	var delete_slot_instance = delete_slot.instantiate()
+	delete_slot_instance.add_target_node(attr_item)
+	
+	# 连接删除按钮信号
+	delete_slot_instance.delete_btn.pressed.connect(_on_delete_element.bind(index))
+	
 	# 找到PageBtnContainer的位置，在它之前插入
 	var insert_index = -1
 	for i in range(attr_container.get_child_count()):
@@ -170,10 +180,10 @@ func _create_element_at_index(index: int):
 			break
 	
 	if insert_index >= 0:
-		attr_container.add_child(attr_item)
-		attr_container.move_child(attr_item, insert_index)
+		attr_container.add_child(delete_slot_instance)
+		attr_container.move_child(delete_slot_instance, insert_index)
 	else:
-		attr_container.add_child(attr_item)
+		attr_container.add_child(delete_slot_instance)
 	
 	# 设置标签为索引
 	attr_item.label.text = "[%d]" % index
@@ -218,10 +228,10 @@ func _update_elements():
 	var page_element_count = end_index - start_index
 	
 	var children = attr_container.get_children()
-	# 跳过PageBtnContainer
+	# 跳过PageBtnContainer，获取DeleteSlot节点
 	var display_children = []
 	for child in children:
-		if child is DsAttrItem:
+		if child != page_btn_root and child.has_method("add_target_node"):
 			display_children.append(child)
 	
 	var display_size = display_children.size()
@@ -231,54 +241,66 @@ func _update_elements():
 		# 元素变少，删除多余元素（从后往前删）
 		for i in range(display_size - 1, page_element_count - 1, -1):
 			if i < display_children.size():
-				var child = display_children[i]
-				attr_container.remove_child(child)
-				child.queue_free()
+				var delete_slot_node = display_children[i]
+				attr_container.remove_child(delete_slot_node)
+				delete_slot_node.queue_free()
 		display_children.resize(page_element_count)
 	
 	# 更新现有元素的值和索引标签
 	for i in range(min(page_element_count, display_size)):
 		var array_index = start_index + i
-		if i < display_children.size() and display_children[i] is DsAttrItem:
-			var attr_item: DsAttrItem = display_children[i]
-			var element_value = _value[array_index]
+		if i < display_children.size():
+			var delete_slot_node = display_children[i]
+			# 从DeleteSlot中获取AttrItem
+			var attr_item: DsAttrItem = null
+			for child in delete_slot_node.get_children():
+				if child is DsAttrItem:
+					attr_item = child
+					break
 			
-			# 更新索引标签
-			attr_item.label.text = "[%d]" % array_index
-			attr_item._attr_name = str(array_index)
-			
-			# 更新attr的索引和引用的包装器
-			if attr_item._attr != null:
-				# 确保attr引用的是最新的数组包装器
-				if attr_item._attr.has_method("set_node"):
-					attr_item._attr._node = _array_wrapper
-				attr_item._attr.set_attr_name(str(array_index))
-			
-			# 检测类型是否变化，如果变化则重新创建
-			if attr_item._should_recreate_attr(element_value):
-				# 移除旧的attr
+			if attr_item != null:
+				var element_value = _value[array_index]
+				
+				# 更新索引标签
+				attr_item.label.text = "[%d]" % array_index
+				attr_item._attr_name = str(array_index)
+				
+				# 更新删除按钮的连接（断开所有连接，然后重新连接）
+				_disconnect_delete_button(delete_slot_node.delete_btn)
+				delete_slot_node.delete_btn.pressed.connect(_on_delete_element.bind(array_index))
+				
+				# 更新attr的索引和引用的包装器
 				if attr_item._attr != null:
-					attr_item._attr.queue_free()
-					attr_item._attr = null
+					# 确保attr引用的是最新的数组包装器
+					if attr_item._attr.has_method("set_node"):
+						attr_item._attr._node = _array_wrapper
+					attr_item._attr.set_attr_name(str(array_index))
 				
-				# 创建新的attr
-				var prop = {
-					"name": str(array_index),
-					"hint": PROPERTY_HINT_NONE
-				}
-				var attr = attr_item._create_attr_for_value(element_value, prop)
-				attr_item.add_child(attr)
-				attr_item._attr = attr
-				
-				attr.set_node(_array_wrapper, _inspector_container)
-				attr.set_attr_name(str(array_index))
-				attr.set_value(element_value)
-				
-				# 更新类型信息
-				attr_item._update_type_info(element_value)
-			else:
-				# 只更新值
-				attr_item._attr.set_value(element_value)
+				# 检测类型是否变化，如果变化则重新创建
+				if attr_item._should_recreate_attr(element_value):
+					# 移除旧的attr
+					if attr_item._attr != null:
+						attr_item._attr.queue_free()
+						attr_item._attr = null
+					
+					# 创建新的attr
+					var prop = {
+						"name": str(array_index),
+						"hint": PROPERTY_HINT_NONE
+					}
+					var attr = attr_item._create_attr_for_value(element_value, prop)
+					attr_item.add_child(attr)
+					attr_item._attr = attr
+					
+					attr.set_node(_array_wrapper, _inspector_container)
+					attr.set_attr_name(str(array_index))
+					attr.set_value(element_value)
+					
+					# 更新类型信息
+					attr_item._update_type_info(element_value)
+				else:
+					# 只更新值
+					attr_item._attr.set_value(element_value)
 	
 	# 需要添加新元素
 	if page_element_count > display_size:
@@ -291,7 +313,7 @@ func _update_elements():
 # 清除所有元素
 func _clear_elements():
 	for child in attr_container.get_children():
-		if child is DsAttrItem:
+		if child != page_btn_root:
 			child.queue_free()
 
 # 计算总页数
@@ -336,10 +358,42 @@ func _on_next_page():
 func _refresh_page():
 	# 清除当前显示的元素
 	for child in attr_container.get_children():
-		if child is DsAttrItem:
+		if child != page_btn_root:
 			attr_container.remove_child(child)
 			child.queue_free()
 	
 	# 重新初始化当前页元素
 	_initialize_elements()
 	_update_page_buttons()
+
+# 断开删除按钮的所有连接
+func _disconnect_delete_button(btn: Button):
+	var connections = btn.pressed.get_connections()
+	for conn in connections:
+		btn.pressed.disconnect(conn.callable)
+
+# 删除指定索引的元素
+func _on_delete_element(index: int):
+	if _value == null or index < 0 or index >= _value.size():
+		return
+	
+	# 从数组中移除元素
+	_value.remove_at(index)
+	
+	# 更新按钮状态
+	_update_button_state()
+	
+	# 如果数组为空，收起
+	if _value.size() == 0:
+		_collapse()
+		return
+	
+	# 重新计算总页数
+	_calculate_total_pages()
+	
+	# 如果删除后当前页没有元素了，跳转到上一页
+	if _current_page >= _total_pages:
+		_current_page = max(0, _total_pages - 1)
+	
+	# 刷新当前页显示
+	_refresh_page()

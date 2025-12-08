@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ce18ajqavop67"]
+
+[ext_resource type="Texture2D" uid="uid://cba6u3in77t7p" path="res://addons/ds_inspector/icon/delete.svg" id="1_0daf2"]
+[ext_resource type="Script" path="res://addons/ds_inspector/DeleteSlot.gd" id="1_l5eik"]
+
+[node name="DeleteSlot" type="HBoxContainer" node_paths=PackedStringArray("delete_btn")]
+offset_right = 24.0
+offset_bottom = 24.0
+size_flags_horizontal = 3
+script = ExtResource("1_l5eik")
+delete_btn = NodePath("DeleteBtn")
+
+[node name="DeleteBtn" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("1_0daf2")
