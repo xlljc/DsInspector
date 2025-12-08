@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bneq5fic4a7tl"]
+
+[ext_resource type="Script" path="res://addons/ds_inspector/Attributes/ArrayAttr.gd" id="1_nxhu6"]
+[ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="2_d8i4b"]
+[ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="2_u86em"]
+
+[node name="ArrayAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container")]
+offset_left = 770.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 6.0
+script = ExtResource("1_nxhu6")
+expand_icon_tex = ExtResource("2_d8i4b")
+collapse_icon_tex = ExtResource("2_u86em")
+expand_btn = NodePath("ExpandBtn")
+attr_container = NodePath("AttrContainer")
+
+[node name="ExpandBtn" type="Button" parent="."]
+layout_mode = 2
+text = "Array[100]"
+icon = ExtResource("2_u86em")
+
+[node name="AttrContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3

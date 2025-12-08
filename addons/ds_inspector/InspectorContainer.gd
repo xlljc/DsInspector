@@ -53,6 +53,8 @@ var sprite_frames_attr: PackedScene = preload("res://addons/ds_inspector/Attribu
 var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumAttr.tscn")
 @onready
 var object_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ObjectAttr.tscn")
+@onready
+var array_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ArrayAttr.tscn")
 
 class AttrItem:
 	var attr: DsAttrItem
