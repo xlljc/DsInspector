@@ -1,6 +1,6 @@
 @tool
 extends VBoxContainer
-class_name InspectorContainer
+class_name DsInspectorContainer
 
 @export
 var update_time: float = 0.2 # 更新时间
@@ -52,11 +52,11 @@ var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumA
 var object_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ObjectAttr.tscn")
 
 class AttrItem:
-	var attr: BaseAttr
+	var attr: DsBaseAttr
 	var name: String
 	var usage: int
 	var type: int
-	func _init(_attr: BaseAttr, _name: String, _usage: int, _type: int):
+	func _init(_attr: DsBaseAttr, _name: String, _usage: int, _type: int):
 		attr = _attr
 		name = _name
 		usage = _usage
@@ -157,7 +157,7 @@ func _init_node_attr():
 
 func _create_node_attr(prop: Dictionary) -> AttrItem:
 	var v := _curr_node.get(prop.name)
-	var attr: BaseAttr
+	var attr: DsBaseAttr
 
 	# ------------- 特殊处理 -----------------
 	if _curr_node is AnimatedSprite2D:
@@ -216,7 +216,7 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 	return AttrItem.new(attr, prop.name, prop.usage, prop.type)
 
 func _create_label_attr(node: Node, title: String, value: String) -> void:
-	var attr: BaseAttr = rich_text_attr.instantiate()
+	var attr: DsBaseAttr = rich_text_attr.instantiate()
 	add_child(attr)
 	attr.set_node(node)
 	attr.set_title(title)

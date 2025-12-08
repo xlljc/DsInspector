@@ -22,6 +22,6 @@ func _process(delta):
 	timer += delta
 	if timer >= 0.5:
 		timer -= 0.5;
-		var n := TestNode.new()
+		var n := DsTestNode.new()
 		add_child(n)
 	pass

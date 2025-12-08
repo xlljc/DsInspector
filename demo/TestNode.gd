@@ -1,5 +1,5 @@
 extends Node2D
-class_name TestNode
+class_name DsTestNode
 
 @export
 var test: float = 0;

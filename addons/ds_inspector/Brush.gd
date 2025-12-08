@@ -1,6 +1,6 @@
 @tool
 extends Node2D
-class_name Brush
+class_name DsBrush
 
 
 var node_tree
@@ -81,8 +81,8 @@ func _draw():
 		_has_draw_node = false
 		return
 
-	var camera_trans: CameraTransInfo = debug_tool.get_camera_trans()
-	var node_trans: NodeTransInfo = debug_tool.calc_node_rect(_draw_node)
+	var camera_trans: DsCameraTransInfo = debug_tool.get_camera_trans()
+	var node_trans: DsNodeTransInfo = debug_tool.calc_node_rect(_draw_node)
 	var pos: Vector2
 	var rot: float
 	var scale: Vector2

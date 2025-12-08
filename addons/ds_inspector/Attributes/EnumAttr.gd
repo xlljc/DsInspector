@@ -1,5 +1,5 @@
 @tool
-extends BaseAttr
+extends DsBaseAttr
 
 @export
 var label: Label

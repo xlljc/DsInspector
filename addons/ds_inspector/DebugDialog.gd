@@ -2,9 +2,9 @@
 extends Window
 
 @export
-var tree: NodeTree
+var tree: DsNodeTree
 @export
-var exclude_list: ExcludeList
+var exclude_list: DsExcludeList
 @export
 var select_btn: Button
 @export

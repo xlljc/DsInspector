@@ -1,5 +1,5 @@
 @tool
-extends BaseAttr
+extends DsBaseAttr
 
 @export
 var label: Label
@@ -50,11 +50,11 @@ var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumA
 var object_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ObjectAttr.tscn")
 
 class AttrItem:
-	var attr: BaseAttr
+	var attr: DsBaseAttr
 	var name: String
 	var usage: int
 	var type: int
-	func _init(_attr: BaseAttr, _name: String, _usage: int, _type: int):
+	func _init(_attr: DsBaseAttr, _name: String, _usage: int, _type: int):
 		attr = _attr
 		name = _name
 		usage = _usage
@@ -77,7 +77,7 @@ func set_value(_value):
 	if not _value is Object:
 		_clear_all_attrs()
 		_current_value = null
-		var rich_attr: BaseAttr = rich_text_attr.instantiate()
+		var rich_attr: DsBaseAttr = rich_text_attr.instantiate()
 		vboxcontainer.add_child(rich_attr)
 		rich_attr.set_node(_node)
 		rich_attr.set_title("值")
@@ -152,7 +152,7 @@ func _update_object_attrs(obj: Object):
 
 func _create_attr_for_property(obj: Object, prop: Dictionary) -> AttrItem:
 	var prop_value = obj.get(prop.name)
-	var attr: BaseAttr = null
+	var attr: DsBaseAttr = null
 	
 	# 根据属性类型创建相应的属性节点
 	if prop_value == null:

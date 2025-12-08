@@ -1,4 +1,4 @@
-class_name CameraTransInfo
+class_name DsCameraTransInfo
 
 # 节点的位置
 var position: Vector2

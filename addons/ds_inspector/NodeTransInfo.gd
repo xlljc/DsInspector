@@ -1,8 +1,8 @@
 
 
-# NodeTransInfo
+# DsNodeTransInfo
 # 表示节点的变换信息的类，包括其位置、大小、旋转和偏移。
-class_name NodeTransInfo
+class_name DsNodeTransInfo
 
 # 节点的位置
 var position: Vector2

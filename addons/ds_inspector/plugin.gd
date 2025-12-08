@@ -3,7 +3,7 @@ extends EditorPlugin
 
 var debug_tool: Node
 var tool_menu: PopupMenu
-var save_config: SaveConfig
+var save_config: DsSaveConfig
 
 func _enter_tree():
 	# 创建工具菜单
@@ -11,9 +11,9 @@ func _enter_tree():
 	tool_menu.add_check_item("在编辑器运行", 0)
 	tool_menu.add_check_item("在游戏中运行", 1)
 	
-	SaveConfig.save_path = "user://ds_inspector_editor_config.json"
+	DsSaveConfig.save_path = "user://ds_inspector_editor_config.json"
 	# 设置初始状态
-	save_config = SaveConfig.new()
+	save_config = DsSaveConfig.new()
 	add_child(save_config)
 
 	tool_menu.set_item_checked(0, save_config.get_enable_in_editor())

@@ -1,6 +1,6 @@
 @tool
 extends Node
-class_name SaveConfig
+class_name DsSaveConfig
 
 # 数据类定义
 class ConfigData:

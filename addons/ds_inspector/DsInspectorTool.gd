@@ -5,11 +5,11 @@ extends CanvasLayer
 @export
 var window: Window
 @export
-var brush: Brush
+var brush: DsBrush
 @export
 var mask: Control
 @export
-var inspector: InspectorContainer
+var inspector: DsInspectorContainer
 @export
 var tips: Label
 @export
@@ -19,7 +19,7 @@ var cheat: VBoxContainer
 @export
 var hover_iton: TextureButton
 
-var save_config: SaveConfig = null
+var save_config: DsSaveConfig = null
 
 var main_camera: Camera2D = null
 var prev_click: bool = false
@@ -38,7 +38,7 @@ var _mouse_in_hover_btn: bool = false
 
 func _enter_tree():
 	if save_config == null:
-		save_config = SaveConfig.new()
+		save_config = DsSaveConfig.new()
 		call_deferred("add_child", save_config)
 		if save_config.get_use_system_window():
 			get_viewport().gui_embed_subwindows = false
@@ -135,7 +135,7 @@ func get_check_node() -> Node:
 				if !_is_path_excluded(node_path):
 					return collision_shape
 	
-	var camera_trans: CameraTransInfo = get_camera_trans()
+	var camera_trans: DsCameraTransInfo = get_camera_trans()
 	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_trans.zoom, false, _exclude_list);
 	if node != null:
 		_exclude_list.append(node)
@@ -197,7 +197,7 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon):
 			return node
 	else:
-		var rect: NodeTransInfo = calc_node_rect(node)
+		var rect: DsNodeTransInfo = calc_node_rect(node)
 		if rect.size == Vector2.ZERO:
 			return null
 		var mpos: Vector2
@@ -273,12 +273,12 @@ func is_under_inner_viewport(n: Node) -> bool:
 		current = current.get_parent()
 	return false
 
-func calc_node_rect(node: Node) -> NodeTransInfo:
+func calc_node_rect(node: Node) -> DsNodeTransInfo:
 	## 获取节点的矩形范围
 	if node is Control:
 		var trans: Transform2D = node.get_global_transform()
 		var rect: Rect2 = node.get_global_rect()
-		return NodeTransInfo.new(rect.position, rect.size, trans.get_rotation())
+		return DsNodeTransInfo.new(rect.position, rect.size, trans.get_rotation())
 	elif node is Node2D:
 		var pos: Vector2 = node.global_position
 		var rot: float = node.global_rotation
@@ -299,7 +299,7 @@ func calc_node_rect(node: Node) -> NodeTransInfo:
 				if node.centered:
 					pos -= (size * 0.5).rotated(rot)
 				pos += offset.rotated(rot)
-				return NodeTransInfo.new(pos, size, rot)
+				return DsNodeTransInfo.new(pos, size, rot)
 		elif node is AnimatedSprite2D:
 			var sf: SpriteFrames = node.sprite_frames
 			if sf:
@@ -311,7 +311,7 @@ func calc_node_rect(node: Node) -> NodeTransInfo:
 					if node.centered:
 						pos -= (size * 0.5).rotated(rot)
 					pos += offset.rotated(rot)
-					return NodeTransInfo.new(pos, size, rot)
+					return DsNodeTransInfo.new(pos, size, rot)
 		elif node is PointLight2D:
 			var texture: Texture2D = node.texture;
 			if texture:
@@ -319,7 +319,7 @@ func calc_node_rect(node: Node) -> NodeTransInfo:
 				var size: Vector2 = texture.get_size() * scale;
 				var offset: Vector2 = node.offset * scale
 				pos += (offset - size * 0.5).rotated(rot)
-				return NodeTransInfo.new(pos, size, rot)
+				return DsNodeTransInfo.new(pos, size, rot)
 		elif node is TileMap or node.get_class() == "TileMapLayer":
 			var ts: TileSet = node.tile_set;
 			if ts != null:
@@ -328,14 +328,14 @@ func calc_node_rect(node: Node) -> NodeTransInfo:
 				var tile_size: Vector2 = Vector2(ts.tile_size)
 				var size: Vector2 = rect.size * scale * tile_size
 				pos += (rect.position * scale * tile_size).rotated(rot)
-				return NodeTransInfo.new(pos, size, rot)
+				return DsNodeTransInfo.new(pos, size, rot)
 		elif node is BackBufferCopy or node is VisibleOnScreenEnabler2D or node is VisibleOnScreenNotifier2D:
 			var scale: Vector2 = node.global_scale;
 			var rect: Rect2 = node.rect;
 			pos -= (rect.size * 0.5 * scale).rotated(rot)
-			return NodeTransInfo.new(pos, rect.size * scale, rot)
-		return NodeTransInfo.new(pos, Vector2.ZERO, rot)
-	return NodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)
+			return DsNodeTransInfo.new(pos, rect.size * scale, rot)
+		return DsNodeTransInfo.new(pos, Vector2.ZERO, rot)
+	return DsNodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)
 
 ## 检测点是否在多边形内部（支持变换的版本）
 func is_point_in_polygon_transformed(point: Vector2, polygon: PackedVector2Array, node_transform: Transform2D) -> bool:
@@ -406,13 +406,13 @@ func ui_to_scene(ui_position: Vector2) -> Vector2:
 	return scene_position
 
 # 获取相机位置信息
-func get_camera_trans() -> CameraTransInfo:
+func get_camera_trans() -> DsCameraTransInfo:
 	if main_camera != null and is_instance_valid(main_camera):
 		if main_camera.ignore_rotation:
-			return CameraTransInfo.new(main_camera.global_position, main_camera.zoom, 0.0, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
+			return DsCameraTransInfo.new(main_camera.global_position, main_camera.zoom, 0.0, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
 		else:
-			return CameraTransInfo.new(main_camera.global_position, main_camera.zoom, main_camera.global_rotation, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
-	return CameraTransInfo.new(Vector2.ZERO, Vector2.ONE, 0.0, Vector2.ZERO, true)
+			return DsCameraTransInfo.new(main_camera.global_position, main_camera.zoom, main_camera.global_rotation, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
+	return DsCameraTransInfo.new(Vector2.ZERO, Vector2.ONE, 0.0, Vector2.ZERO, true)
 
 ## 遍历场景树, 在控制台打印出来
 func _each_tree(node: Node) -> void:

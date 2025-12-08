@@ -1,6 +1,6 @@
 @tool
 extends Tree
-class_name ExcludeList
+class_name DsExcludeList
 
 @export
 var add_btn_path: NodePath

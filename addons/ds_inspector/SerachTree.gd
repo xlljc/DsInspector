@@ -14,7 +14,7 @@ var _visible_icon: Texture = preload("res://addons/ds_inspector/icon/Visible.png
 var _hide_icon: Texture = preload("res://addons/ds_inspector/icon/Hide.png")
 
 @onready
-var node_tree: NodeTree = get_node(node_tree_path)
+var node_tree: DsNodeTree = get_node(node_tree_path)
 var _root_item: TreeItem
 
 func _ready():

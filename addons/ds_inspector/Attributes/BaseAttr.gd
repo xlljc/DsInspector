@@ -1,6 +1,6 @@
 @tool
 extends HBoxContainer
-class_name BaseAttr
+class_name DsBaseAttr
 
 func set_node(_node: Node):
 	pass

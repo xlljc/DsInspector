@@ -1,6 +1,6 @@
 @tool
 extends Tree
-class_name NodeTree
+class_name DsNodeTree
 
 class NodeData:
 	var name: String
