@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="2_d8i4b"]
 [ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="2_u86em"]
 
-[node name="ArrayAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container")]
+[node name="ArrayAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container", "page_btn_root", "next_btn", "prev_btn")]
 offset_left = 770.0
 offset_right = 1920.0
 offset_bottom = 1080.0
@@ -15,6 +15,9 @@ expand_icon_tex = ExtResource("2_d8i4b")
 collapse_icon_tex = ExtResource("2_u86em")
 expand_btn = NodePath("ExpandBtn")
 attr_container = NodePath("AttrContainer")
+page_btn_root = NodePath("AttrContainer/PageBtnContainer")
+next_btn = NodePath("AttrContainer/PageBtnContainer/Prev")
+prev_btn = NodePath("AttrContainer/PageBtnContainer/Next")
 
 [node name="ExpandBtn" type="Button" parent="."]
 layout_mode = 2
@@ -24,3 +27,16 @@ icon = ExtResource("2_u86em")
 [node name="AttrContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="PageBtnContainer" type="HBoxContainer" parent="AttrContainer"]
+layout_mode = 2
+
+[node name="Prev" type="Button" parent="AttrContainer/PageBtnContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "上一页"
+
+[node name="Next" type="Button" parent="AttrContainer/PageBtnContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "下一页"

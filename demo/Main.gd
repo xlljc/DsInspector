@@ -36,11 +36,11 @@ func _process(delta):
 	data.float_value += delta
 	data.ch_data.float_value += delta * 2
 	arr[0] += delta
-	if timer2 >= 6:
+	if timer2 >= 3:
 		timer2 -= 3;
 		data3 = self
-		arr[1] = Node2D.new()
-		arr.push_back(arr)
+		# arr[1] = Node2D.new()
+		arr.push_back(delta)
 		data2 = Node2D.new()
 		data.ch_data.ch_data = TestData.new()
 	pass
