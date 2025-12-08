@@ -77,7 +77,7 @@ func _ready():
 	pass
 
 func _process(delta):
-	if _has_node:
+	if _has_node and is_visible_in_tree():
 		if _curr_node == null or !is_instance_valid(_curr_node) or !_curr_node.is_inside_tree():
 			_clear_node_attr()
 			pass
