@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=32 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
@@ -13,8 +13,11 @@
 [ext_resource type="Script" path="res://addons/ds_inspector/TreeContainer.gd" id="11_gi7kt"]
 [ext_resource type="Script" path="res://addons/ds_inspector/NodeTree.gd" id="12_n858a"]
 [ext_resource type="Script" path="res://addons/ds_inspector/SerachTree.gd" id="13_n5350"]
+[ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="14_lsm7a"]
 [ext_resource type="Script" path="res://addons/ds_inspector/DebugTab.gd" id="14_x52hf"]
 [ext_resource type="Script" path="res://addons/ds_inspector/InspectorContainer.gd" id="15_teqd0"]
+[ext_resource type="Script" path="res://addons/ds_inspector/RecordBtn.gd" id="15_vlwlm"]
+[ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="16_h0qj0"]
 [ext_resource type="Script" path="res://addons/ds_inspector/ExcludeList.gd" id="16_lfkxp"]
 [ext_resource type="Script" path="res://addons/ds_inspector/Cheat/Cheat.gd" id="17_i1g1n"]
 [ext_resource type="PackedScene" uid="uid://d2qnsha516yor" path="res://addons/ds_inspector/Cheat/CheatItem.tscn" id="18_req58"]
@@ -308,6 +311,7 @@ text = "清除"
 [node name="VSplitContainer" type="VSplitContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+dragger_visibility = 1
 
 [node name="TreeRoot" type="Control" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer"]
 layout_mode = 2
@@ -339,14 +343,27 @@ hide_root = true
 script = ExtResource("13_n5350")
 node_tree_path = NodePath("../NodeTree")
 
-[node name="Control" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer"]
+[node name="RecordRoot" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/Control"]
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
+layout_mode = 2
+
+[node name="RecordBtn" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/HBoxContainer" node_paths=PackedStringArray("record_root", "vsc")]
+layout_mode = 2
+icon = ExtResource("14_lsm7a")
+flat = true
+script = ExtResource("15_vlwlm")
+record_root = NodePath("../..")
+vsc = NodePath("../../..")
+expand_icon_tex = ExtResource("16_h0qj0")
+collapse_icon_tex = ExtResource("14_lsm7a")
+
+[node name="Label" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/HBoxContainer"]
 layout_mode = 2
 text = "记录节点对象"
 
-[node name="KeepTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/Control"]
+[node name="RecordTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
