@@ -471,6 +471,14 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 	# 获取现有的 TreeItem 子节点
 	var tree_items: Array = parent_item.get_children()
 	
+	# 保存当前选中的节点引用（如果选中的是子节点）
+	var selected_item: TreeItem = get_selected()
+	var selected_node: Node = null
+	if selected_item:
+		var selected_data: NodeData = selected_item.get_metadata(0)
+		if selected_data and is_instance_valid(selected_data.node):
+			selected_node = selected_data.node
+	
 	# 逐个对比，找到第一个不匹配的位置
 	var mismatch_index: int = -1
 	var min_count: int = min(actual_children.size(), tree_items.size())
@@ -508,6 +516,15 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 		# 从不匹配位置开始重新创建 TreeItem
 		for i in range(delete_from, actual_children.size()):
 			create_node_item(actual_children[i], parent_item, true)
+		
+		# 如果之前选中的节点在被重建的范围内，重新选中它
+		if selected_node and is_instance_valid(selected_node):
+			# 检查选中的节点是否在被删除和重建的范围内（index >= delete_from）
+			for i in range(delete_from, actual_children.size()):
+				if actual_children[i] == selected_node:
+					# 延迟重新选中节点，确保TreeItem已经创建完成
+					call_deferred("locate_selected", selected_node)
+					break
 	pass
 
 
