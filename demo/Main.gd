@@ -17,40 +17,33 @@ var data = TestData.new()
 var data2 = null
 var data3 = null
 var data4 = {
-	"a": 1,
-	"b": 2,
-	"c": 3,
-	"d": 4,
+	"a": true,
+	"d": false,
 	"e": 5,
-	"f": 6,
-	"g": [1, 2, 3, 4, 5, Color.RED],
+	"g": [1, 2, true, Color.RED],
 	"h": {
 		"a": 1,
 		"b": 2,
-		"c": 3,
-		"d": 4,
-		"e": 5,
-		"f": 6,
 	},
 	"i": TestData.new(),
 	111: "111",
-	112: [1, 2, 3, 4, 5, Color.RED],
+	112: [1, 2, false, Color.RED],
 	113: {
 		"a": 1,
 		"b": 2,
-		"c": 3,
-		"d": 4,
-		"e": 5,
-		"f": 6,
 	},
+}
+var data5 = {
+	true: "1111",
+	false: 121,
 }
 
 func _ready():
 	# get_viewport().gui_embed_subwindows = false
 	DsInspector.add_cheat_button_callable("测试作弊", _on_cheat_button_pressed)
 	data.ch_data = TestData.new()
+	data5[Node2D.new()] = "1111"
 	for i in range(30):
-		arr.push_back(false)
 		arr2.push_back(i)
 		data4[i] = false
 	pass
@@ -68,11 +61,9 @@ func _process(delta):
 	data.float_value += delta
 	data.ch_data.float_value += delta * 2
 	arr[0] += delta
-	if timer2 >= 1:
-		timer2 -= 1;
+	if timer2 >= 6:
+		timer2 -= 6;
 		data3 = self
-		# arr[1] = Node2D.new()
-		# arr2.remove_at(arr2.size() - 1)
-		# data2 = Node2D.new()
 		data.ch_data.ch_data = TestData.new()
+		data5[false] += delta
 	pass

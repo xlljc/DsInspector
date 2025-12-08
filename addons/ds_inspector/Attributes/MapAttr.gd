@@ -41,17 +41,29 @@ var _sorted_keys: Array = []  # 排序后的键列表
 # 字典包装器类，用于让字典支持set/get操作
 class DictWrapper:
 	var dict: Dictionary
+	var key_map: Dictionary  # 从字符串形式的键到原始键的映射
 	
 	func _init(d: Dictionary):
 		dict = d
+		_build_key_map()
+	
+	func _build_key_map():
+		key_map = {}
+		for key in dict.keys():
+			var str_key = str(key)
+			key_map[str_key] = key
 	
 	func get(key):
-		if dict.has(key):
-			return dict[key]
+		# 如果传入的是字符串形式的键，先转换为原始键
+		var original_key = key_map.get(str(key), key)
+		if dict.has(original_key):
+			return dict[original_key]
 		return null
 	
 	func set(key, value):
-		dict[key] = value
+		# 如果传入的是字符串形式的键，先转换为原始键
+		var original_key = key_map.get(str(key), key)
+		dict[original_key] = value
 
 func _ready():
 	expand_btn.pressed.connect(on_expand_btn_pressed)
@@ -117,6 +129,7 @@ func set_value(value):
 		_dict_wrapper = DictWrapper.new(_value)
 	else:
 		_dict_wrapper.dict = _value
+		_dict_wrapper._build_key_map()  # 重新构建键映射
 	
 	_update_button_state()
 	
@@ -384,11 +397,15 @@ func _disconnect_delete_button(btn: Button):
 
 # 删除指定键的元素
 func _on_delete_element(key):
+	# key 参数已经是原始键（从 _sorted_keys 获取）
 	if _value == null or not _value.has(key):
 		return
 	
 	# 从字典中移除元素
 	_value.erase(key)
+	
+	# 重新构建键映射
+	_dict_wrapper._build_key_map()
 	
 	# 更新按钮状态
 	_update_button_state()
