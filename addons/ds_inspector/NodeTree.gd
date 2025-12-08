@@ -487,6 +487,8 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 			# 节点匹配，更新显示信息
 			node_data.node = actual_children[i]  # 更新引用
 			tree_item.set_text(0, actual_children[i].name)
+			# 更新鼠标悬停提示
+			tree_item.set_tooltip_text(0, str(actual_children[i].get_path()))
 			if node_data.visible_icon_index >= 0:
 				node_data.visible = node_data.node.visible
 				tree_item.set_button(0, node_data.visible_icon_index, get_visible_icon(node_data.visible))
@@ -516,6 +518,8 @@ func create_node_item(node: Node, parent: TreeItem, add_slot: bool) -> TreeItem:
 	var node_data = NodeData.new(node)
 	item.set_metadata(0, node_data)  # 存储节点引用
 	item.set_text(0, node.name)
+	# 设置鼠标悬停提示，显示节点路径
+	item.set_tooltip_text(0, str(node.get_path()))
 	if node.name == "PauseMenu":
 		print("create: " + node.name)
 	# item.set_icon(0, get_icon("Node", "EditorIcons"))

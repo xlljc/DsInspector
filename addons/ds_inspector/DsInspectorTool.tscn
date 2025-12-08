@@ -20,7 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="16_h0qj0"]
 [ext_resource type="Script" path="res://addons/ds_inspector/ExcludeList.gd" id="16_lfkxp"]
 [ext_resource type="Script" path="res://addons/ds_inspector/Cheat/Cheat.gd" id="17_i1g1n"]
-[ext_resource type="Script" path="res://addons/ds_inspector/RecordTree.gd" id="17_q107o"]
+[ext_resource type="Script" path="res://addons/ds_inspector/RecordContainer.gd" id="17_m28ub"]
 [ext_resource type="PackedScene" uid="uid://d2qnsha516yor" path="res://addons/ds_inspector/Cheat/CheatItem.tscn" id="18_req58"]
 [ext_resource type="PackedScene" uid="uid://cyp4nd4ttykii" path="res://addons/ds_inspector/RecordNodeItem.tscn" id="18_wb1ao"]
 [ext_resource type="Script" path="res://addons/ds_inspector/Brush.gd" id="19_1ycqc"]
@@ -364,7 +364,7 @@ collapse_icon_tex = ExtResource("14_lsm7a")
 
 [node name="Label" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/HBoxContainer"]
 layout_mode = 2
-text = "记录节点对象"
+text = "记录节点实例"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
 layout_mode = 2
@@ -373,8 +373,10 @@ size_flags_vertical = 3
 [node name="RecordContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-script = ExtResource("17_q107o")
+size_flags_vertical = 3
+script = ExtResource("17_m28ub")
 record_node_item_scene = ExtResource("18_wb1ao")
+node_tree_path = NodePath("../../../TreeRoot/NodeTree")
 
 [node name="TabContainer" type="TabContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2

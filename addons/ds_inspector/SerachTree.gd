@@ -50,6 +50,8 @@ func _create_node_item(node: Node):
 	var node_data := node_tree.create_node_data(node)
 	item.set_metadata(0, node_data)  # 存储节点引用
 	item.set_text(0, node.name)
+	# 设置鼠标悬停提示，显示节点路径
+	item.set_tooltip_text(0, str(node.get_path()))
 	item.set_icon(0, load(node_tree.icon_mapping.get_icon(node)))
 	
 	var btn_index: int = 0

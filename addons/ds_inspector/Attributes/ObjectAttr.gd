@@ -61,7 +61,7 @@ class AttrItem:
 		type = _type
 
 func set_node(_node: Node):
-	_node = _node
+	self._node = _node
 
 func set_title(name: String):
 	_attr = name

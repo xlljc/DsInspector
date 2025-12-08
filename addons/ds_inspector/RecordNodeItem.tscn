@@ -19,6 +19,8 @@ size_flags_horizontal = 3
 text = "Node2D"
 icon = ExtResource("1_4gh53")
 alignment = 0
+text_overrun_behavior = 3
+clip_text = true
 
 [node name="DeleteBtn" type="Button" parent="."]
 layout_mode = 2
