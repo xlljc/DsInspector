@@ -1,11 +1,5 @@
 @tool
-extends DsBaseAttr
-
-
-@export
-var label: Label
-@export
-var text: Label
+extends Label
 
 var type: String = "label"
 
@@ -14,9 +8,9 @@ var _node: Node
 func set_node(node: Node):
 	_node = node
 
-func set_title(name: String):
-	label.text = name
+func set_attr_name(attr_name: String):
+	text = attr_name
 
 func set_value(value):
-	text.text = str(value)
-	text.tooltip_text = name
+	text = str(value)
+	tooltip_text = text

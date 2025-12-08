@@ -1,3 +1,4 @@
+@tool
 extends Button
 
 # 记录内容容器

@@ -1,10 +1,5 @@
 @tool
-extends DsBaseAttr
-
-@export
-var label: Label
-@export
-var texture_node: TextureRect
+extends TextureRect
 
 var type: String = "texture"
 
@@ -14,14 +9,13 @@ var _node: Node
 func set_node(node: Node):
 	_node = node
 
-func set_title(name: String):
-	_attr = name
-	label.text = name
+func set_attr_name(attr_name: String):
+	_attr = attr_name
 
 func set_value(value):
 	if value == null:
-		texture_node.texture = null
+		texture = null
 		return
 	elif not value is Texture:
 		return
-	texture_node.texture = value
+	texture = value

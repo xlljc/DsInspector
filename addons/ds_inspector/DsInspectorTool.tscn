@@ -140,10 +140,11 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(3670, 704)
+position = Vector2i(2358, 692)
 size = Vector2i(2758, 1818)
 visible = false
 transient = true
+content_scale_factor = 1.5
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
 tree = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot/NodeTree")
@@ -367,6 +368,7 @@ layout_mode = 2
 text = "记录节点实例"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -603,7 +605,7 @@ layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 5
 item_count = 9
-selected = 2
+selected = 4
 popup/item_0/text = "50%"
 popup/item_0/id = 0
 popup/item_1/text = "75%"
@@ -719,10 +721,8 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 1233.0
-offset_top = 20.0
-offset_right = 1281.0
-offset_bottom = 68.0
+offset_right = 48.0
+offset_bottom = 48.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")
 texture_hover = ExtResource("23_qya0n")

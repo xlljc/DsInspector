@@ -15,6 +15,9 @@ const flag: int = PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_EDITOR
 var _attr_list: Array = [] # value: AttrItem
 
 @onready
+var attr_item: PackedScene = preload("res://addons/ds_inspector/Attributes/AttrItem.tscn")
+
+@onready
 var line: PackedScene = preload("res://addons/ds_inspector/Attributes/Line.tscn")
 @onready
 var label_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/LabelAttr.tscn")
@@ -52,11 +55,11 @@ var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumA
 var object_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ObjectAttr.tscn")
 
 class AttrItem:
-	var attr: DsBaseAttr
+	var attr: DsAttrItem
 	var name: String
 	var usage: int
 	var type: int
-	func _init(_attr: DsBaseAttr, _name: String, _usage: int, _type: int):
+	func _init(_attr: DsAttrItem, _name: String, _usage: int, _type: int):
 		attr = _attr
 		name = _name
 		usage = _usage
@@ -156,71 +159,20 @@ func _init_node_attr():
 	pass
 
 func _create_node_attr(prop: Dictionary) -> AttrItem:
-	var v := _curr_node.get(prop.name)
-	var attr: DsBaseAttr
+	var attr: DsAttrItem = attr_item.instantiate()
 
-	# ------------- 特殊处理 -----------------
-	if _curr_node is AnimatedSprite2D:
-		if prop.name == "sprite_frames":
-			attr = sprite_frames_attr.instantiate()
-	# ---------------------------------------
-
-	if attr == null:
-		if v == null:
-			attr = rich_text_attr.instantiate()
-		else:
-			match typeof(v):
-				TYPE_BOOL:
-					attr = bool_attr.instantiate()
-				TYPE_INT:
-					if prop.hint == PROPERTY_HINT_ENUM:
-						attr = enum_attr.instantiate()
-					else:
-						attr = int_attr.instantiate()
-				TYPE_FLOAT:
-					attr = float_attr.instantiate()
-				TYPE_VECTOR2:
-					attr = vector2_attr.instantiate()
-				TYPE_VECTOR2I:
-					attr = vector2I_attr.instantiate()
-				TYPE_VECTOR3:
-					attr = vector3_attr.instantiate() # 新增
-				TYPE_VECTOR3I:
-					attr = vector3I_attr.instantiate() # 新增
-				TYPE_COLOR:
-					attr = color_attr.instantiate()
-				TYPE_RECT2:
-					attr = rect_attr.instantiate()
-				TYPE_RECT2I:
-					attr = recti_attr.instantiate()
-				TYPE_STRING:
-					attr = string_attr.instantiate()
-				TYPE_OBJECT:
-					if v is Texture2D:
-						attr = texture_attr.instantiate()
-					else:
-						# attr = rich_text_attr.instantiate()
-						attr = object_attr.instantiate()
-				_:
-					attr = rich_text_attr.instantiate()
+	attr.set_node(_curr_node, self)
+	attr.set_attr(prop)
 	add_child(attr)
-
-	attr.set_node(_curr_node)
-	attr.set_title(prop.name)
 	
-	if attr.type == "enum":
-		attr.set_enum_options(prop.hint_string)
-	
-	attr.set_value(v)
-	# print(prop.name, "   ", typeof(v))
 	return AttrItem.new(attr, prop.name, prop.usage, prop.type)
 
 func _create_label_attr(node: Node, title: String, value: String) -> void:
-	var attr: DsBaseAttr = rich_text_attr.instantiate()
-	add_child(attr)
-	attr.set_node(node)
-	attr.set_title(title)
+	var attr: DsAttrItem = attr_item.instantiate()
+	attr.label.text = title
+	attr.set_attr_node(rich_text_attr.instantiate())
 	attr.set_value(value)
+	add_child(attr)
 
 func _update_node_attr():
 	for item in _attr_list:

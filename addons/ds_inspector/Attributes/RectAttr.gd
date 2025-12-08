@@ -1,8 +1,6 @@
 @tool
-extends DsBaseAttr
+extends VBoxContainer
 
-@export
-var label: Label
 @export
 var x_line_edit: LineEdit
 @export
@@ -40,9 +38,8 @@ func _ready():
 func set_node(node: Node):
 	_node = node
 
-func set_title(name: String):
-	_attr = name
-	label.text = name
+func set_attr_name(attr_name: String):
+	_attr = attr_name
 
 func set_value(value):
 	if not value is Rect2:

@@ -8,6 +8,8 @@ class TestData:
 	var color_value: Color = Color.WHITE
 
 var timer: float = 0.0
+var arr = [1, 2, 3, 4, 5]
+var arr2: Array[int] = [1, 2, 3, 4, 5]
 var data: TestData = TestData.new()
 
 func _ready():
