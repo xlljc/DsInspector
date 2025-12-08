@@ -55,6 +55,8 @@ var enum_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/EnumA
 var object_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ObjectAttr.tscn")
 @onready
 var array_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/ArrayAttr.tscn")
+@onready
+var map_attr: PackedScene = preload("res://addons/ds_inspector/Attributes/MapAttr.tscn")
 
 class AttrItem:
 	var attr: DsAttrItem

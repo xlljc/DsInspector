@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://i1xuciauwlyd"]
+
+[ext_resource type="Script" path="res://addons/ds_inspector/Attributes/MapAttr.gd" id="1_2sw8c"]
+[ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="2_aqvdi"]
+[ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="3_h4r3h"]
+[ext_resource type="PackedScene" uid="uid://ce18ajqavop67" path="res://addons/ds_inspector/DeleteSlot.tscn" id="4_jnous"]
+
+[node name="MapAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container", "page_btn_root", "next_btn", "prev_btn")]
+offset_left = 770.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 6.0
+script = ExtResource("1_2sw8c")
+expand_icon_tex = ExtResource("2_aqvdi")
+collapse_icon_tex = ExtResource("3_h4r3h")
+expand_btn = NodePath("ExpandBtn")
+attr_container = NodePath("AttrContainer")
+page_btn_root = NodePath("AttrContainer/PageBtnContainer")
+next_btn = NodePath("AttrContainer/PageBtnContainer/Next")
+prev_btn = NodePath("AttrContainer/PageBtnContainer/Prev")
+delete_slot = ExtResource("4_jnous")
+
+[node name="ExpandBtn" type="Button" parent="."]
+layout_mode = 2
+disabled = true
+text = "Dictionary[0]"
+icon = ExtResource("3_h4r3h")
+
+[node name="AttrContainer" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PageBtnContainer" type="HBoxContainer" parent="AttrContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Prev" type="Button" parent="AttrContainer/PageBtnContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "上一页"
+
+[node name="Next" type="Button" parent="AttrContainer/PageBtnContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "下一页"

@@ -98,7 +98,7 @@ func _initialize_children():
 	var property_list = _value.get_property_list()
 	
 	# 需要preload AttrItem场景
-	var attr_item_scene = preload("res://addons/ds_inspector/Attributes/AttrItem.tscn")
+	var attr_item_scene = _inspector_container.attr_item
 	
 	var has_properties = false
 	for prop in property_list:

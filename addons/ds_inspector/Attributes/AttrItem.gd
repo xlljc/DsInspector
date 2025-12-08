@@ -157,6 +157,8 @@ func _create_attr_for_value(value, prop: Dictionary):
 					attr = _inspector_container.string_attr.instantiate()
 				TYPE_ARRAY:
 					attr = _inspector_container.array_attr.instantiate()
+				TYPE_DICTIONARY:
+					attr = _inspector_container.map_attr.instantiate()
 				TYPE_OBJECT:
 					if value is Texture2D:
 						attr = _inspector_container.texture_attr.instantiate()

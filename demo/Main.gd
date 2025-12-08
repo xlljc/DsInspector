@@ -23,6 +23,26 @@ var data4 = {
 	"d": 4,
 	"e": 5,
 	"f": 6,
+	"g": [1, 2, 3, 4, 5, Color.RED],
+	"h": {
+		"a": 1,
+		"b": 2,
+		"c": 3,
+		"d": 4,
+		"e": 5,
+		"f": 6,
+	},
+	"i": TestData.new(),
+	111: "111",
+	112: [1, 2, 3, 4, 5, Color.RED],
+	113: {
+		"a": 1,
+		"b": 2,
+		"c": 3,
+		"d": 4,
+		"e": 5,
+		"f": 6,
+	},
 }
 
 func _ready():
@@ -30,7 +50,9 @@ func _ready():
 	DsInspector.add_cheat_button_callable("测试作弊", _on_cheat_button_pressed)
 	data.ch_data = TestData.new()
 	for i in range(30):
+		arr.push_back(false)
 		arr2.push_back(i)
+		data4[i] = false
 	pass
 
 func _on_cheat_button_pressed():

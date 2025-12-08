@@ -22,13 +22,13 @@ var page_size: int = 20
 @export
 var delete_slot: PackedScene
 
-var type: String = "array"
+var type: String = "map"
 
 var _node  # 父对象（可能是Node，也可能是其他Object）
 var _inspector_container
 var _attr: String
-var _value: Array  # 当前Array的值
-var _array_wrapper: ArrayWrapper  # 数组包装器，用于支持set/get操作
+var _value: Dictionary  # 当前Dictionary的值
+var _dict_wrapper: DictWrapper  # 字典包装器，用于支持set/get操作
 
 var _is_expanded: bool = false
 var _is_initialized: bool = false  # 是否已经初始化过元素
@@ -36,24 +36,22 @@ var _is_initialized: bool = false  # 是否已经初始化过元素
 # 分页相关
 var _current_page: int = 0  # 当前页码（从0开始）
 var _total_pages: int = 0   # 总页数
+var _sorted_keys: Array = []  # 排序后的键列表
 
-# 数组包装器类，用于让数组支持字符串索引的get/set操作
-class ArrayWrapper:
-	var array: Array
+# 字典包装器类，用于让字典支持set/get操作
+class DictWrapper:
+	var dict: Dictionary
 	
-	func _init(arr: Array):
-		array = arr
+	func _init(d: Dictionary):
+		dict = d
 	
-	func get(index):
-		var idx = int(index)
-		if idx >= 0 and idx < array.size():
-			return array[idx]
+	func get(key):
+		if dict.has(key):
+			return dict[key]
 		return null
 	
-	func set(index, value):
-		var idx = int(index)
-		if idx >= 0 and idx < array.size():
-			array[idx] = value
+	func set(key, value):
+		dict[key] = value
 
 func _ready():
 	expand_btn.pressed.connect(on_expand_btn_pressed)
@@ -73,21 +71,22 @@ func on_expand_btn_pressed():
 		_collapse()
 	pass
 
-# 展开Array
+# 展开Dictionary
 func _expand():
 	expand_btn.icon = expand_icon_tex
 	attr_container.visible = true
 	# 第一次展开时才初始化元素
 	if not _is_initialized:
-		# 确保有ArrayWrapper
-		if _array_wrapper == null and _value != null:
-			_array_wrapper = ArrayWrapper.new(_value)
+		# 确保有DictWrapper
+		if _dict_wrapper == null and _value != null:
+			_dict_wrapper = DictWrapper.new(_value)
 		_current_page = 0
+		_update_sorted_keys()
 		_initialize_elements()
 		_is_initialized = true
 		_update_page_buttons()
 
-# 收起Array
+# 收起Dictionary
 func _collapse():
 	_is_expanded = false
 	expand_btn.icon = collapse_icon_tex
@@ -107,22 +106,23 @@ func set_attr_name(attr_name: String):
 	pass
 
 func set_value(value):
-	# 如果Array变为null或空，且当前已经展开，则需要收起并销毁所有元素
-	if (value == null or (value is Array and value.size() == 0)) and _is_expanded:
+	# 如果Dictionary变为null或空，且当前已经展开，则需要收起并销毁所有元素
+	if (value == null or (value is Dictionary and value.size() == 0)) and _is_expanded:
 		_collapse()
 	
-	_value = value if value != null else []
+	_value = value if value != null else {}
 	
-	# 更新或创建ArrayWrapper
-	if _array_wrapper == null:
-		_array_wrapper = ArrayWrapper.new(_value)
+	# 更新或创建DictWrapper
+	if _dict_wrapper == null:
+		_dict_wrapper = DictWrapper.new(_value)
 	else:
-		_array_wrapper.array = _value
+		_dict_wrapper.dict = _value
 	
 	_update_button_state()
 	
 	# 如果已经展开且有值，更新所有元素
 	if _is_expanded and _is_initialized and _value != null and _value.size() > 0:
+		_update_sorted_keys()
 		_update_elements()
 	elif _is_expanded and _is_initialized:
 		_update_page_buttons()
@@ -132,14 +132,22 @@ func set_value(value):
 func _update_button_state():
 	if _value != null:
 		var size = _value.size()
-		expand_btn.text = "Array[%d]" % size
+		expand_btn.text = "Dictionary[%d]" % size
 		expand_btn.disabled = size == 0
 	else:
-		expand_btn.text = "Array[null]"
+		expand_btn.text = "Dictionary[null]"
 		expand_btn.disabled = true
 	pass
 
-# 初始化数组元素（只显示当前页）
+# 更新排序后的键列表
+func _update_sorted_keys():
+	_sorted_keys.clear()
+	if _value != null:
+		_sorted_keys = _value.keys()
+		# 将键转换为字符串进行排序
+		_sorted_keys.sort_custom(func(a, b): return str(a) < str(b))
+
+# 初始化字典元素（只显示当前页）
 func _initialize_elements():
 	if _value == null or _value.size() == 0:
 		return
@@ -147,17 +155,18 @@ func _initialize_elements():
 	_calculate_total_pages()
 	
 	var start_index = _current_page * page_size
-	var end_index = min(start_index + page_size, _value.size())
+	var end_index = min(start_index + page_size, _sorted_keys.size())
 	
 	for i in range(start_index, end_index):
 		_create_element_at_index(i)
 
 # 创建指定索引的元素
 func _create_element_at_index(index: int):
-	if index < 0 or index >= _value.size():
+	if index < 0 or index >= _sorted_keys.size():
 		return
 	
-	var element_value = _value[index]
+	var key = _sorted_keys[index]
+	var element_value = _value[key]
 	
 	# 需要preload AttrItem场景
 	var attr_item_scene = _inspector_container.attr_item
@@ -170,7 +179,7 @@ func _create_element_at_index(index: int):
 	delete_slot_instance.add_target_node(attr_item)
 	
 	# 连接删除按钮信号
-	delete_slot_instance.delete_btn.pressed.connect(_on_delete_element.bind(index))
+	delete_slot_instance.delete_btn.pressed.connect(_on_delete_element.bind(key))
 	
 	# 找到PageBtnContainer的位置，在它之前插入
 	var insert_index = -1
@@ -185,19 +194,19 @@ func _create_element_at_index(index: int):
 	else:
 		attr_container.add_child(delete_slot_instance)
 	
-	# 设置标签为索引
-	attr_item.label.text = "[%d]" % index
+	# 设置标签为键名
+	attr_item.label.text = str(key)
 	
-	# 为数组元素创建一个虚拟的属性字典
+	# 为字典元素创建一个虚拟的属性字典
 	var prop = {
-		"name": str(index),
+		"name": str(key),
 		"hint": PROPERTY_HINT_NONE
 	}
 	
 	# 设置节点和检查器容器
 	attr_item.set_node(_node, _inspector_container)
-	attr_item._check_value_change = false  # 数组元素不检查类型变化（会重新创建）
-	attr_item._attr_name = str(index)
+	attr_item._check_value_change = false  # 字典元素不检查类型变化（会重新创建）
+	attr_item._attr_name = str(key)
 	attr_item._prop_hint = PROPERTY_HINT_NONE
 	
 	# 直接创建对应类型的attr
@@ -205,8 +214,8 @@ func _create_element_at_index(index: int):
 	attr_item.add_child(attr)
 	attr_item._attr = attr
 	
-	attr.set_node(_array_wrapper, _inspector_container)  # 传递数组包装器
-	attr.set_attr_name(str(index))
+	attr.set_node(_dict_wrapper, _inspector_container)  # 传递字典包装器
+	attr.set_attr_name(str(key))
 	attr.set_value(element_value)
 	
 	# 更新类型信息
@@ -224,7 +233,7 @@ func _update_elements():
 		_current_page = max(0, _total_pages - 1)
 	
 	var start_index = _current_page * page_size
-	var end_index = min(start_index + page_size, _value.size())
+	var end_index = min(start_index + page_size, _sorted_keys.size())
 	var page_element_count = end_index - start_index
 	
 	var children = attr_container.get_children()
@@ -246,10 +255,11 @@ func _update_elements():
 				delete_slot_node.queue_free()
 		display_children.resize(page_element_count)
 	
-	# 更新现有元素的值和索引标签
+	# 更新现有元素的值和键标签
 	for i in range(min(page_element_count, display_size)):
-		var array_index = start_index + i
-		if i < display_children.size():
+		var key_index = start_index + i
+		if key_index < _sorted_keys.size() and i < display_children.size():
+			var key = _sorted_keys[key_index]
 			var delete_slot_node = display_children[i]
 			# 从DeleteSlot中获取AttrItem
 			var attr_item: DsAttrItem = null
@@ -258,23 +268,23 @@ func _update_elements():
 					attr_item = child
 					break
 			
-			if attr_item != null:
-				var element_value = _value[array_index]
+			if attr_item != null and _value.has(key):
+				var element_value = _value[key]
 				
-				# 更新索引标签
-				attr_item.label.text = "[%d]" % array_index
-				attr_item._attr_name = str(array_index)
+				# 更新键标签
+				attr_item.label.text = str(key)
+				attr_item._attr_name = str(key)
 				
 				# 更新删除按钮的连接（断开所有连接，然后重新连接）
 				_disconnect_delete_button(delete_slot_node.delete_btn)
-				delete_slot_node.delete_btn.pressed.connect(_on_delete_element.bind(array_index))
+				delete_slot_node.delete_btn.pressed.connect(_on_delete_element.bind(key))
 				
-				# 更新attr的索引和引用的包装器
+				# 更新attr的键和引用的包装器
 				if attr_item._attr != null:
-					# 确保attr引用的是最新的数组包装器
+					# 确保attr引用的是最新的字典包装器
 					if attr_item._attr.has_method("set_node"):
-						attr_item._attr._node = _array_wrapper
-					attr_item._attr.set_attr_name(str(array_index))
+						attr_item._attr._node = _dict_wrapper
+					attr_item._attr.set_attr_name(str(key))
 				
 				# 检测类型是否变化，如果变化则重新创建
 				if attr_item._should_recreate_attr(element_value):
@@ -285,15 +295,15 @@ func _update_elements():
 					
 					# 创建新的attr
 					var prop = {
-						"name": str(array_index),
+						"name": str(key),
 						"hint": PROPERTY_HINT_NONE
 					}
 					var attr = attr_item._create_attr_for_value(element_value, prop)
 					attr_item.add_child(attr)
 					attr_item._attr = attr
 					
-					attr.set_node(_array_wrapper, _inspector_container)
-					attr.set_attr_name(str(array_index))
+					attr.set_node(_dict_wrapper, _inspector_container)
+					attr.set_attr_name(str(key))
 					attr.set_value(element_value)
 					
 					# 更新类型信息
@@ -305,8 +315,8 @@ func _update_elements():
 	# 需要添加新元素
 	if page_element_count > display_size:
 		for i in range(display_size, page_element_count):
-			var array_index = start_index + i
-			_create_element_at_index(array_index)
+			var key_index = start_index + i
+			_create_element_at_index(key_index)
 	
 	_update_page_buttons()
 
@@ -321,7 +331,7 @@ func _calculate_total_pages():
 	if _value == null or _value.size() == 0:
 		_total_pages = 0
 	else:
-		_total_pages = ceili(float(_value.size()) / float(page_size))
+		_total_pages = ceili(float(_sorted_keys.size()) / float(page_size))
 
 # 更新分页按钮状态
 func _update_page_buttons():
@@ -372,21 +382,24 @@ func _disconnect_delete_button(btn: Button):
 	for conn in connections:
 		btn.pressed.disconnect(conn.callable)
 
-# 删除指定索引的元素
-func _on_delete_element(index: int):
-	if _value == null or index < 0 or index >= _value.size():
+# 删除指定键的元素
+func _on_delete_element(key):
+	if _value == null or not _value.has(key):
 		return
 	
-	# 从数组中移除元素
-	_value.remove_at(index)
+	# 从字典中移除元素
+	_value.erase(key)
 	
 	# 更新按钮状态
 	_update_button_state()
 	
-	# 如果数组为空，收起
+	# 如果字典为空，收起
 	if _value.size() == 0:
 		_collapse()
 		return
+	
+	# 更新排序后的键列表
+	_update_sorted_keys()
 	
 	# 重新计算总页数
 	_calculate_total_pages()
