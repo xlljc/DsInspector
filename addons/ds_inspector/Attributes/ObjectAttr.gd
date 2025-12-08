@@ -30,19 +30,28 @@ func _ready():
 func on_expand_btn_pressed():
 	_is_expanded = !_is_expanded
 	if _is_expanded:
-		expand_btn.icon = expand_icon_tex
-		attr_container.visible = true
-		# 第一次展开时才初始化子字段
-		if not _is_initialized:
-			_initialize_children()
-			_is_initialized = true
+		_expand()
 	else:
-		expand_btn.icon = collapse_icon_tex
-		attr_container.visible = false
-		# 收起时销毁所有子字段以节约性能
-		_clear_children()
-		_is_initialized = false
+		_collapse()
 	pass
+
+# 展开Object
+func _expand():
+	expand_btn.icon = expand_icon_tex
+	attr_container.visible = true
+	# 第一次展开时才初始化子字段
+	if not _is_initialized:
+		_initialize_children()
+		_is_initialized = true
+
+# 收起Object
+func _collapse():
+	_is_expanded = false
+	expand_btn.icon = collapse_icon_tex
+	attr_container.visible = false
+	# 收起时销毁所有子字段以节约性能
+	_clear_children()
+	_is_initialized = false
 
 
 func set_node(node, inspector_container = null):
@@ -56,6 +65,10 @@ func set_attr_name(attr_name: String):
 	pass
 
 func set_value(value):
+	# 如果Object变为null，且当前已经展开，则需要收起并销毁所有子属性
+	if value == null and _is_expanded:
+		_collapse()
+	
 	_value = value
 	_update_button_state()
 	pass
@@ -86,7 +99,7 @@ func _initialize_children():
 	var has_properties = false
 	for prop in property_list:
 		# 过滤掉一些内部属性和不需要显示的属性
-		if _should_skip_property(prop):
+		if !_should_display_property(prop):
 			continue
 		
 		has_properties = true
@@ -113,22 +126,17 @@ func _clear_children():
 	for child in attr_container.get_children():
 		child.queue_free()
 
-# 判断是否应该跳过某个属性
-func _should_skip_property(prop: Dictionary) -> bool:
-	# 跳过内部属性（usage标志）
-	if prop.usage & PROPERTY_USAGE_CATEGORY:
-		return true
-	if prop.usage & PROPERTY_USAGE_GROUP:
-		return true
-	if prop.usage & PROPERTY_USAGE_SUBGROUP:
-		return true
+func _should_display_property(prop: Dictionary) -> bool:
+	# 过滤掉不需要显示的属性
+	# 排除内部属性、RefCounted 相关属性等
+	if prop.name in ["script", "Script Variables", "Resource", "RefCounted"]:
+		return false
 	
-	# 只显示可编辑的属性
-	if not (prop.usage & PROPERTY_USAGE_EDITOR):
-		return true
+	# 只显示有用的属性标志
+	var usage: int = prop.usage
 	
-	# 跳过脚本属性（避免递归显示）
-	if prop.name == "script":
+	# 显示编辑器属性或脚本变量
+	if usage & PROPERTY_USAGE_EDITOR or usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
 		return true
 	
 	return false

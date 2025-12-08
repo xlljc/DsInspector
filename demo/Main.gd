@@ -8,9 +8,12 @@ class TestData:
 	var color_value: Color = Color.WHITE
 
 var timer: float = 0.0
+var timer2: float = 0.0
+
 var arr = [1, 2, 3, 4, 5]
 var arr2: Array[int] = [1, 2, 3, 4, 5]
-var data: TestData = TestData.new()
+var data = TestData.new()
+var data2 = null
 
 func _ready():
 	# get_viewport().gui_embed_subwindows = false
@@ -26,4 +29,9 @@ func _process(delta):
 		timer -= 0.5;
 		var n := DsTestNode.new()
 		add_child(n)
+	timer2 += delta
+	if timer2 >= 3:
+		timer2 -= 3;
+		data = null
+		data2 = TestData.new()
 	pass
