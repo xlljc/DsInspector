@@ -18,6 +18,9 @@ var node_tree: DsNodeTree = get_node(node_tree_path)
 var _root_item: TreeItem
 
 func _ready():
+	# 启用拖拽功能
+	set_drag_forwarding(_get_drag_data_fw, Callable(), Callable())
+	
 	# 选中item信号
 	item_selected.connect(_on_item_selected)
 	# item按钮按下信号
@@ -64,3 +67,22 @@ func _create_node_item(node: Node):
 		item.add_button(0, node_tree.get_visible_icon(node_data.visible))  # 添加显示/隐藏按钮
 		btn_index += 1
 	pass
+
+# 开始拖拽时获取数据
+func _get_drag_data_fw(_position: Vector2) -> Variant:
+	var selected_item: TreeItem = get_selected()
+	if selected_item:
+		var data = selected_item.get_metadata(0)
+		if data and is_instance_valid(data.node):
+			# 不允许拖拽根节点
+			if data.node == get_tree().root:
+				return null
+			
+			# 创建拖拽预览
+			var preview = Label.new()
+			preview.text = data.node.name
+			set_drag_preview(preview)
+			
+			# 使用 weakref 来存储节点引用
+			return {"item": selected_item, "node_ref": weakref(data.node)}
+	return null

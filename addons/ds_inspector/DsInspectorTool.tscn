@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=34 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
@@ -20,7 +20,9 @@
 [ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="16_h0qj0"]
 [ext_resource type="Script" path="res://addons/ds_inspector/ExcludeList.gd" id="16_lfkxp"]
 [ext_resource type="Script" path="res://addons/ds_inspector/Cheat/Cheat.gd" id="17_i1g1n"]
+[ext_resource type="Script" path="res://addons/ds_inspector/RecordTree.gd" id="17_q107o"]
 [ext_resource type="PackedScene" uid="uid://d2qnsha516yor" path="res://addons/ds_inspector/Cheat/CheatItem.tscn" id="18_req58"]
+[ext_resource type="PackedScene" uid="uid://cyp4nd4ttykii" path="res://addons/ds_inspector/RecordNodeItem.tscn" id="18_wb1ao"]
 [ext_resource type="Script" path="res://addons/ds_inspector/Brush.gd" id="19_1ycqc"]
 [ext_resource type="Script" path="res://addons/ds_inspector/SettingList.gd" id="19_s1270"]
 [ext_resource type="Texture2D" uid="uid://k6nfbn6oroyw" path="res://addons/ds_inspector/node_icon/AnimatedSprite2D.svg" id="20_bgw6s"]
@@ -349,12 +351,13 @@ layout_mode = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
 layout_mode = 2
 
-[node name="RecordBtn" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/HBoxContainer" node_paths=PackedStringArray("record_root", "vsc")]
+[node name="RecordBtn" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/HBoxContainer" node_paths=PackedStringArray("record_root", "scroll_container", "vsc")]
 layout_mode = 2
 icon = ExtResource("14_lsm7a")
 flat = true
 script = ExtResource("15_vlwlm")
 record_root = NodePath("../..")
+scroll_container = NodePath("../../ScrollContainer")
 vsc = NodePath("../../..")
 expand_icon_tex = ExtResource("16_h0qj0")
 collapse_icon_tex = ExtResource("14_lsm7a")
@@ -363,11 +366,15 @@ collapse_icon_tex = ExtResource("14_lsm7a")
 layout_mode = 2
 text = "记录节点对象"
 
-[node name="RecordTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
+[node name="ScrollContainer" type="ScrollContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot"]
 layout_mode = 2
 size_flags_vertical = 3
-focus_mode = 0
-hide_root = true
+
+[node name="RecordContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("17_q107o")
+record_node_item_scene = ExtResource("18_wb1ao")
 
 [node name="TabContainer" type="TabContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
@@ -710,9 +717,9 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 2026.0
+offset_left = 1233.0
 offset_top = 20.0
-offset_right = 2074.0
+offset_right = 1281.0
 offset_bottom = 68.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")

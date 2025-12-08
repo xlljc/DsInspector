@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://cyp4nd4ttykii"]
+
+[ext_resource type="Texture2D" uid="uid://ddc0msap4a60w" path="res://addons/ds_inspector/node_icon/Node2D.svg" id="1_4gh53"]
+[ext_resource type="Script" path="res://addons/ds_inspector/RecordNodeItem.gd" id="1_dbmpm"]
+[ext_resource type="Texture2D" uid="uid://cba6u3in77t7p" path="res://addons/ds_inspector/icon/delete.svg" id="2_puv71"]
+
+[node name="RecordNodeItem" type="HBoxContainer" node_paths=PackedStringArray("NodeBtn", "DelBtn")]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 31.0
+grow_horizontal = 2
+script = ExtResource("1_dbmpm")
+NodeBtn = NodePath("NodeButton")
+DelBtn = NodePath("DeleteBtn")
+
+[node name="NodeButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Node2D"
+icon = ExtResource("1_4gh53")
+alignment = 0
+
+[node name="DeleteBtn" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("2_puv71")
