@@ -30,8 +30,9 @@ func _process(delta):
 		var n := DsTestNode.new()
 		add_child(n)
 	timer2 += delta
-	if timer2 >= 3:
-		timer2 -= 3;
-		data = null
-		data2 = TestData.new()
+	data.float_value += delta
+	# if timer2 >= 3:
+	# 	timer2 -= 3;
+	# 	data = false
+	# 	data2 = TestData.new()
 	pass

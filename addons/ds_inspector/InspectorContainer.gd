@@ -170,6 +170,7 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 func _create_label_attr(node: Node, title: String, value: String) -> void:
 	var attr: DsAttrItem = attr_item.instantiate()
 	attr.label.text = title
+	attr.set_node(node, self)
 	attr.set_attr_node(rich_text_attr.instantiate())
 	attr.set_value(value)
 	add_child(attr)
