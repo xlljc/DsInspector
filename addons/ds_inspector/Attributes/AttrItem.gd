@@ -9,6 +9,7 @@ var _curr_node  # 可以是Node或任何Object
 var _inspector_container
 var _attr
 var _attr_name: String  # 属性名
+var _check_value_change: bool = false
 var _prop_hint: int  # 属性提示类型（用于enum检测）
 var _current_type: int = -1  # 当前值的类型
 var _current_is_texture: bool = false  # 当前值是否是Texture2D
@@ -22,6 +23,7 @@ func set_attr(prop: Dictionary):
 		printerr("AttrItem已经设置过属性了！")
 		return
 
+	_check_value_change = true
 	_attr_name = prop.name
 	_prop_hint = prop.hint
 	label.text = prop.name
@@ -50,7 +52,7 @@ func set_attr_node(node: Node):
 
 func set_value(value):
 	# 检测类型是否发生变化
-	if _should_recreate_attr(value):
+	if _check_value_change and _should_recreate_attr(value):
 		_recreate_attr(value)
 	else:
 		_attr.set_value(value)

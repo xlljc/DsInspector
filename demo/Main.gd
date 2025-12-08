@@ -6,6 +6,7 @@ class TestData:
 	var string_value: String = "Hello"
 	var vector3_value: Vector3 = Vector3.ZERO
 	var color_value: Color = Color.WHITE
+	var ch_data
 
 var timer: float = 0.0
 var timer2: float = 0.0
@@ -14,10 +15,12 @@ var arr = [1, 2, 3, 4, 5]
 var arr2: Array[int] = [1, 2, 3, 4, 5]
 var data = TestData.new()
 var data2 = null
+var data3 = null
 
 func _ready():
 	# get_viewport().gui_embed_subwindows = false
 	DsInspector.add_cheat_button_callable("测试作弊", _on_cheat_button_pressed)
+	data.ch_data = TestData.new()
 	pass
 
 func _on_cheat_button_pressed():
@@ -31,8 +34,10 @@ func _process(delta):
 		add_child(n)
 	timer2 += delta
 	data.float_value += delta
-	# if timer2 >= 3:
-	# 	timer2 -= 3;
-	# 	data = false
-	# 	data2 = TestData.new()
+	data.ch_data.float_value += delta * 2
+	if timer2 >= 6:
+		timer2 -= 3;
+		data3 = self
+		data2 = Node2D.new()
+		data.ch_data.ch_data = TestData.new()
 	pass

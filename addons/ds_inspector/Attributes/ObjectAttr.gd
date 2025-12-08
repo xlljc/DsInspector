@@ -71,6 +71,10 @@ func set_value(value):
 	
 	_value = value
 	_update_button_state()
+	
+	# 如果已经展开且有值，更新所有子属性
+	if _is_expanded and _is_initialized and value != null:
+		_update_children()
 	pass
 
 # 更新按钮状态和显示文本
@@ -120,6 +124,21 @@ func _initialize_children():
 		label.text = "  (无可显示属性)"
 		label.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 		attr_container.add_child(label)
+
+# 更新所有子字段的值
+func _update_children():
+	if _value == null:
+		return
+	
+	for child in attr_container.get_children():
+		if child is DsAttrItem:
+			var attr_item: DsAttrItem = child
+			# 更新子AttrItem引用的对象（如果对象本身被替换了）
+			attr_item._curr_node = _value
+			# 获取对应属性的最新值
+			var prop_value = _value.get(attr_item._attr_name)
+			# 更新子属性的值
+			attr_item.set_value(prop_value)
 
 # 清除所有子字段
 func _clear_children():
