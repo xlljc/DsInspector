@@ -11,7 +11,7 @@ class TestData:
 var timer: float = 0.0
 var timer2: float = 0.0
 
-var arr = [1, 2, 3, 4, 5]
+var arr = [1, 2, 3, 4, 5, Color.RED]
 var arr2: Array[int] = [1, 2, 3, 4, 5]
 var data = TestData.new()
 var data2 = null
@@ -21,6 +21,8 @@ func _ready():
 	# get_viewport().gui_embed_subwindows = false
 	DsInspector.add_cheat_button_callable("测试作弊", _on_cheat_button_pressed)
 	data.ch_data = TestData.new()
+	for i in range(30):
+		arr2.push_back(i)
 	pass
 
 func _on_cheat_button_pressed():
@@ -36,11 +38,11 @@ func _process(delta):
 	data.float_value += delta
 	data.ch_data.float_value += delta * 2
 	arr[0] += delta
-	if timer2 >= 3:
-		timer2 -= 3;
+	if timer2 >= 1:
+		timer2 -= 1;
 		data3 = self
 		# arr[1] = Node2D.new()
-		arr.push_back(delta)
-		data2 = Node2D.new()
+		# arr2.remove_at(arr2.size() - 1)
+		# data2 = Node2D.new()
 		data.ch_data.ch_data = TestData.new()
 	pass

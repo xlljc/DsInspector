@@ -30,6 +30,10 @@ var _array_wrapper: ArrayWrapper  # 数组包装器，用于支持set/get操作
 var _is_expanded: bool = false
 var _is_initialized: bool = false  # 是否已经初始化过元素
 
+# 分页相关
+var _current_page: int = 0  # 当前页码（从0开始）
+var _total_pages: int = 0   # 总页数
+
 # 数组包装器类，用于让数组支持字符串索引的get/set操作
 class ArrayWrapper:
 	var array: Array
@@ -50,8 +54,11 @@ class ArrayWrapper:
 
 func _ready():
 	expand_btn.pressed.connect(on_expand_btn_pressed)
+	prev_btn.pressed.connect(_on_prev_page)
+	next_btn.pressed.connect(_on_next_page)
 	expand_btn.icon = collapse_icon_tex
 	attr_container.visible = false
+	page_btn_root.visible = false
 	_update_button_state()
 	pass
 
@@ -72,8 +79,10 @@ func _expand():
 		# 确保有ArrayWrapper
 		if _array_wrapper == null and _value != null:
 			_array_wrapper = ArrayWrapper.new(_value)
+		_current_page = 0
 		_initialize_elements()
 		_is_initialized = true
+		_update_page_buttons()
 
 # 收起Array
 func _collapse():
@@ -112,6 +121,8 @@ func set_value(value):
 	# 如果已经展开且有值，更新所有元素
 	if _is_expanded and _is_initialized and _value != null and _value.size() > 0:
 		_update_elements()
+	elif _is_expanded and _is_initialized:
+		_update_page_buttons()
 	pass
 
 # 更新按钮状态和显示文本
@@ -125,12 +136,17 @@ func _update_button_state():
 		expand_btn.disabled = true
 	pass
 
-# 初始化数组元素
+# 初始化数组元素（只显示当前页）
 func _initialize_elements():
 	if _value == null or _value.size() == 0:
 		return
 	
-	for i in range(_value.size()):
+	_calculate_total_pages()
+	
+	var start_index = _current_page * page_size
+	var end_index = min(start_index + page_size, _value.size())
+	
+	for i in range(start_index, end_index):
 		_create_element_at_index(i)
 
 # 创建指定索引的元素
@@ -145,11 +161,19 @@ func _create_element_at_index(index: int):
 	
 	# 创建AttrItem
 	var attr_item = attr_item_scene.instantiate()
-	attr_container.add_child(attr_item)
 	
-	# 如果需要插入到指定位置，调整顺序
-	if index < attr_container.get_child_count() - 1:
-		attr_container.move_child(attr_item, index)
+	# 找到PageBtnContainer的位置，在它之前插入
+	var insert_index = -1
+	for i in range(attr_container.get_child_count()):
+		if attr_container.get_child(i) == page_btn_root:
+			insert_index = i
+			break
+	
+	if insert_index >= 0:
+		attr_container.add_child(attr_item)
+		attr_container.move_child(attr_item, insert_index)
+	else:
+		attr_container.add_child(attr_item)
 	
 	# 设置标签为索引
 	attr_item.label.text = "[%d]" % index
@@ -178,40 +202,57 @@ func _create_element_at_index(index: int):
 	# 更新类型信息
 	attr_item._update_type_info(element_value)
 
-# 更新所有元素的值
+# 更新所有元素的值（只更新当前页）
 func _update_elements():
 	if _value == null:
 		return
 	
-	var children = attr_container.get_children()
-	var current_size = _value.size()
-	var display_size = children.size()
+	_calculate_total_pages()
 	
-	# 处理数组大小变化
-	if current_size < display_size:
-		# 数组变小，删除多余元素（从后往前删）
-		for i in range(display_size - 1, current_size - 1, -1):
-			if i < children.size():
-				var child = children[i]
+	# 确保当前页码有效
+	if _current_page >= _total_pages:
+		_current_page = max(0, _total_pages - 1)
+	
+	var start_index = _current_page * page_size
+	var end_index = min(start_index + page_size, _value.size())
+	var page_element_count = end_index - start_index
+	
+	var children = attr_container.get_children()
+	# 跳过PageBtnContainer
+	var display_children = []
+	for child in children:
+		if child is DsAttrItem:
+			display_children.append(child)
+	
+	var display_size = display_children.size()
+	
+	# 处理显示元素数量变化
+	if page_element_count < display_size:
+		# 元素变少，删除多余元素（从后往前删）
+		for i in range(display_size - 1, page_element_count - 1, -1):
+			if i < display_children.size():
+				var child = display_children[i]
 				attr_container.remove_child(child)
 				child.queue_free()
+		display_children.resize(page_element_count)
 	
 	# 更新现有元素的值和索引标签
-	for i in range(min(current_size, display_size)):
-		if i < children.size() and children[i] is DsAttrItem:
-			var attr_item: DsAttrItem = children[i]
-			var element_value = _value[i]
+	for i in range(min(page_element_count, display_size)):
+		var array_index = start_index + i
+		if i < display_children.size() and display_children[i] is DsAttrItem:
+			var attr_item: DsAttrItem = display_children[i]
+			var element_value = _value[array_index]
 			
 			# 更新索引标签
-			attr_item.label.text = "[%d]" % i
-			attr_item._attr_name = str(i)
+			attr_item.label.text = "[%d]" % array_index
+			attr_item._attr_name = str(array_index)
 			
 			# 更新attr的索引和引用的包装器
 			if attr_item._attr != null:
 				# 确保attr引用的是最新的数组包装器
 				if attr_item._attr.has_method("set_node"):
 					attr_item._attr._node = _array_wrapper
-				attr_item._attr.set_attr_name(str(i))
+				attr_item._attr.set_attr_name(str(array_index))
 			
 			# 检测类型是否变化，如果变化则重新创建
 			if attr_item._should_recreate_attr(element_value):
@@ -222,7 +263,7 @@ func _update_elements():
 				
 				# 创建新的attr
 				var prop = {
-					"name": str(i),
+					"name": str(array_index),
 					"hint": PROPERTY_HINT_NONE
 				}
 				var attr = attr_item._create_attr_for_value(element_value, prop)
@@ -230,7 +271,7 @@ func _update_elements():
 				attr_item._attr = attr
 				
 				attr.set_node(_array_wrapper, _inspector_container)
-				attr.set_attr_name(str(i))
+				attr.set_attr_name(str(array_index))
 				attr.set_value(element_value)
 				
 				# 更新类型信息
@@ -239,12 +280,66 @@ func _update_elements():
 				# 只更新值
 				attr_item._attr.set_value(element_value)
 	
-	# 数组变大，添加新元素
-	if current_size > display_size:
-		for i in range(display_size, current_size):
-			_create_element_at_index(i)
+	# 需要添加新元素
+	if page_element_count > display_size:
+		for i in range(display_size, page_element_count):
+			var array_index = start_index + i
+			_create_element_at_index(array_index)
+	
+	_update_page_buttons()
 
 # 清除所有元素
 func _clear_elements():
 	for child in attr_container.get_children():
-		child.queue_free()
+		if child is DsAttrItem:
+			child.queue_free()
+
+# 计算总页数
+func _calculate_total_pages():
+	if _value == null or _value.size() == 0:
+		_total_pages = 0
+	else:
+		_total_pages = ceili(float(_value.size()) / float(page_size))
+
+# 更新分页按钮状态
+func _update_page_buttons():
+	_calculate_total_pages()
+	
+	# 如果总数小于等于页面大小，隐藏分页按钮
+	if _value == null or _value.size() <= page_size:
+		page_btn_root.visible = false
+		return
+	
+	page_btn_root.visible = true
+	
+	# 更新按钮文本
+	prev_btn.text = "上一页 (%d/%d)" % [_current_page + 1, _total_pages]
+	next_btn.text = "下一页 (%d/%d)" % [_current_page + 1, _total_pages]
+	
+	# 更新按钮启用状态
+	prev_btn.disabled = _current_page <= 0
+	next_btn.disabled = _current_page >= _total_pages - 1
+
+# 上一页
+func _on_prev_page():
+	if _current_page > 0:
+		_current_page -= 1
+		_refresh_page()
+
+# 下一页
+func _on_next_page():
+	if _current_page < _total_pages - 1:
+		_current_page += 1
+		_refresh_page()
+
+# 刷新当前页显示
+func _refresh_page():
+	# 清除当前显示的元素
+	for child in attr_container.get_children():
+		if child is DsAttrItem:
+			attr_container.remove_child(child)
+			child.queue_free()
+	
+	# 重新初始化当前页元素
+	_initialize_elements()
+	_update_page_buttons()

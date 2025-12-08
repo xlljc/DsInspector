@@ -21,7 +21,8 @@ prev_btn = NodePath("AttrContainer/PageBtnContainer/Next")
 
 [node name="ExpandBtn" type="Button" parent="."]
 layout_mode = 2
-text = "Array[100]"
+disabled = true
+text = "Array[0]"
 icon = ExtResource("2_u86em")
 
 [node name="AttrContainer" type="VBoxContainer" parent="."]
@@ -31,12 +32,12 @@ size_flags_vertical = 3
 [node name="PageBtnContainer" type="HBoxContainer" parent="AttrContainer"]
 layout_mode = 2
 
-[node name="Prev" type="Button" parent="AttrContainer/PageBtnContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "上一页"
-
 [node name="Next" type="Button" parent="AttrContainer/PageBtnContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "下一页"
+
+[node name="Prev" type="Button" parent="AttrContainer/PageBtnContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "上一页"
