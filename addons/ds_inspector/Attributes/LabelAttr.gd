@@ -1,11 +1,13 @@
 @tool
 extends BaseAttr
-class_name LabelAttr
+
 
 @export
 var label: Label
 @export
 var text: Label
+
+var type: String = "label"
 
 var _node: Node
 

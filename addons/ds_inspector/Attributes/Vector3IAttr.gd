@@ -1,6 +1,5 @@
 @tool
 extends BaseAttr
-class_name Vector3IAttr
 
 @export
 var label: Label
@@ -10,6 +9,8 @@ var x_line_edit: LineEdit
 var y_line_edit: LineEdit
 @export
 var z_line_edit: LineEdit
+
+var type: String = "vector3i"
 
 var _attr: String
 var _node: Node

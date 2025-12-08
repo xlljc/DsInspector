@@ -1,6 +1,5 @@
 @tool
 extends BaseAttr
-class_name Vector2Attr
 
 @export
 var label: Label
@@ -8,6 +7,8 @@ var label: Label
 var x_line_edit: LineEdit
 @export
 var y_line_edit: LineEdit
+
+var type: String = "vector2"
 
 var _attr: String
 var _node: Node

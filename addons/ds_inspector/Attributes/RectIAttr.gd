@@ -1,6 +1,5 @@
 @tool
 extends BaseAttr
-class_name RectIAttr
 
 
 @export
@@ -13,6 +12,8 @@ var y_line_edit: LineEdit
 var w_line_edit: LineEdit
 @export
 var h_line_edit: LineEdit
+
+var type: String = "recti"
 
 var _attr: String
 var _node: Node

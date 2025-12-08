@@ -1,11 +1,12 @@
 @tool
 extends BaseAttr
-class_name BoolAttr
 
 @export
 var label: Label
 @export
 var check_box: CheckBox
+
+var type: String = "bool"
 
 var _attr: String
 var _node: Node

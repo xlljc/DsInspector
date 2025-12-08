@@ -1,6 +1,5 @@
 @tool
 extends BaseAttr
-class_name ColorAttr
 
 
 @export
@@ -15,6 +14,8 @@ var b_line_edit: LineEdit
 var a_line_edit: LineEdit
 @export
 var color_picker: ColorPickerButton
+
+var type: String = "color"
 
 var _attr: String
 var _node: Node

@@ -208,7 +208,7 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 	attr.set_node(_curr_node)
 	attr.set_title(prop.name)
 	
-	if attr is EnumAttr:
+	if attr.type == "enum":
 		attr.set_enum_options(prop.hint_string)
 	
 	attr.set_value(v)
@@ -216,7 +216,7 @@ func _create_node_attr(prop: Dictionary) -> AttrItem:
 	return AttrItem.new(attr, prop.name, prop.usage, prop.type)
 
 func _create_label_attr(node: Node, title: String, value: String) -> void:
-	var attr: RichTextAttr = rich_text_attr.instantiate()
+	var attr: BaseAttr = rich_text_attr.instantiate()
 	add_child(attr)
 	attr.set_node(node)
 	attr.set_title(title)

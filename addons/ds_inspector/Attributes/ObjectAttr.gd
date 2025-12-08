@@ -1,11 +1,12 @@
 @tool
 extends BaseAttr
-class_name ObjectAttr
 
 @export
 var label: Label
 @export
 var vboxcontainer: VBoxContainer
+
+var type: String = "object"
 
 var _attr: String
 var _node: Node
@@ -202,7 +203,7 @@ func _create_attr_for_property(obj: Object, prop: Dictionary) -> AttrItem:
 	attr.set_title(prop.name)
 	
 	# 如果是枚举类型，设置枚举选项
-	if attr is EnumAttr and prop.hint == PROPERTY_HINT_ENUM:
+	if attr.type == "enum" and prop.hint == PROPERTY_HINT_ENUM:
 		attr.set_enum_options(prop.hint_string)
 	
 	attr.set_value(prop_value)

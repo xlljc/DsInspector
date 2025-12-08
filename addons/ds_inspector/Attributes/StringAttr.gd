@@ -1,11 +1,12 @@
 @tool
 extends BaseAttr
-class_name StringAttr
 
 @export
 var label: Label
 @export
 var line_edit: LineEdit
+
+var type: String = "string"
 
 var _attr: String
 var _node: Node

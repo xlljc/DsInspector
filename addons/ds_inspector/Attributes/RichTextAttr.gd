@@ -1,11 +1,12 @@
 @tool
 extends BaseAttr
-class_name RichTextAttr
 
 @export
 var label: Label
 @export
 var text: RichTextLabel
+
+var type: String = "rich_text"
 
 var _node: Node
 

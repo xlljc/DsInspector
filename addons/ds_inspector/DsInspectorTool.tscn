@@ -141,7 +141,7 @@ visible = false
 transient = true
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
-tree = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/NodeTree")
+tree = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot/NodeTree")
 exclude_list = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
 select_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
 save_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
@@ -285,8 +285,8 @@ script = ExtResource("11_gi7kt")
 search_btn_path = NodePath("HBoxContainer/Search")
 clear_search_btn_path = NodePath("HBoxContainer/ClearSearch")
 search_input_path = NodePath("HBoxContainer/SearchInput")
-node_tree_path = NodePath("NodeTree")
-search_tree_path = NodePath("SerachTree")
+node_tree_path = NodePath("VSplitContainer/TreeRoot/NodeTree")
+search_tree_path = NodePath("VSplitContainer/TreeRoot/SerachTree")
 debug_tool_path = NodePath("../../../../../../..")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
@@ -305,21 +305,52 @@ text = "搜索"
 layout_mode = 2
 text = "清除"
 
-[node name="NodeTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
+[node name="VSplitContainer" type="VSplitContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TreeRoot" type="Control" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="NodeTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 focus_mode = 0
 hide_root = true
 script = ExtResource("12_n858a")
-debug_tool_path = NodePath("../../../../../../../..")
+debug_tool_path = NodePath("../../../../../../../../../..")
 
-[node name="SerachTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer"]
+[node name="SerachTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot"]
 visible = false
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_vertical = 3
 hide_root = true
 script = ExtResource("13_n5350")
 node_tree_path = NodePath("../NodeTree")
+
+[node name="Control" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/Control"]
+layout_mode = 2
+text = "记录节点对象"
+
+[node name="KeepTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/Control"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+hide_root = true
 
 [node name="TabContainer" type="TabContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer"]
 layout_mode = 2
@@ -662,8 +693,10 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_right = 48.0
-offset_bottom = 48.0
+offset_left = 2026.0
+offset_top = 20.0
+offset_right = 2074.0
+offset_bottom = 68.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")
 texture_hover = ExtResource("23_qya0n")

@@ -1,11 +1,12 @@
 @tool
 extends BaseAttr
-class_name TextureAttr
 
 @export
 var label: Label
 @export
 var texture_node: TextureRect
+
+var type: String = "texture"
 
 var _attr: String
 var _node: Node

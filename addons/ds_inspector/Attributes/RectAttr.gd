@@ -1,7 +1,5 @@
 @tool
 extends BaseAttr
-class_name RectAttr
-
 
 @export
 var label: Label
@@ -13,6 +11,8 @@ var y_line_edit: LineEdit
 var w_line_edit: LineEdit
 @export
 var h_line_edit: LineEdit
+
+var type: String = "rect"
 
 var _attr: String
 var _node: Node

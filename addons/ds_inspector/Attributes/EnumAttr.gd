@@ -1,11 +1,12 @@
 @tool
 extends BaseAttr
-class_name EnumAttr
 
 @export
 var label: Label
 @export
 var option_button: OptionButton
+
+var type: String = "enum"
 
 var _attr: String
 var _node: Node
