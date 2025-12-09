@@ -141,9 +141,8 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(3216, 416)
+position = Vector2i(0, 24)
 size = Vector2i(2472, 1724)
-visible = false
 transient = true
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
@@ -392,10 +391,12 @@ text_overrun_behavior = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
+current_tab = 4
 script = ExtResource("14_x52hf")
 tab_names = ["检查器", "收藏路径", "排除路径", "作弊", "设置"]
 
 [node name="Inspector" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = "检查器"
@@ -534,7 +535,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Container" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 color = Color(0.129412, 0.14902, 0.180392, 1)
@@ -558,7 +558,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="SettingList" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer" node_paths=PackedStringArray("debug_tool", "tree_container", "use_system_window_checkbox", "auto_open_checkbox", "auto_search_checkbox", "scale_options")]
+[node name="SettingList" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer" node_paths=PackedStringArray("debug_tool", "tree_container", "use_system_window_checkbox", "auto_open_checkbox", "auto_search_checkbox", "scale_options", "server_checkbox", "server_port_input", "server_port_container")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -569,6 +569,9 @@ use_system_window_checkbox = NodePath("SettingItem/CheckBox")
 auto_open_checkbox = NodePath("SettingItem3/CheckBox")
 auto_search_checkbox = NodePath("SettingItem2/CheckBox")
 scale_options = NodePath("SettingItem4/OptionButton")
+server_checkbox = NodePath("SettingItem5/HBoxContainer/CheckBox")
+server_port_input = NodePath("SettingItem5/HBoxContainer2/ServerPort")
+server_port_container = NodePath("SettingItem5/HBoxContainer2")
 
 [node name="SettingItem" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
 visible = false
@@ -586,7 +589,7 @@ autowrap_mode = 3
 [node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem"]
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 5
+size_flags_vertical = 0
 
 [node name="SettingItem3" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
 layout_mode = 2
@@ -603,7 +606,7 @@ autowrap_mode = 3
 [node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem3"]
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 5
+size_flags_vertical = 0
 
 [node name="SettingItem2" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
 layout_mode = 2
@@ -620,7 +623,7 @@ autowrap_mode = 3
 [node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem2"]
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 5
+size_flags_vertical = 0
 
 [node name="SettingItem4" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
 layout_mode = 2
@@ -638,7 +641,7 @@ autowrap_mode = 3
 custom_minimum_size = Vector2(75, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 5
+size_flags_vertical = 0
 item_count = 9
 selected = 2
 popup/item_0/text = "50%"
@@ -659,6 +662,44 @@ popup/item_7/text = "250%"
 popup/item_7/id = 7
 popup/item_8/text = "300%"
 popup/item_8/id = 8
+
+[node name="SettingItem5" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5/HBoxContainer"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "远程通知Godot编辑器打开场景、脚本，该设置会开启一个服务器（需要重启编辑器）"
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5/HBoxContainer2"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "服务端口："
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="ServerPort" type="LineEdit" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5/HBoxContainer2"]
+layout_mode = 2
+text = "6004"
+placeholder_text = "服务器端口"
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
 title = "保存场景"

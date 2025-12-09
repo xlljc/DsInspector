@@ -18,6 +18,8 @@ class ConfigData:
 	var auto_open: bool = false
 	var auto_search: bool = false
 	var scale_index: int = 2
+	var enable_server: bool = false
+	var server_port: int = 6004
 
 # 统一的配置文件路径
 static var save_path: String = "user://ds_inspector_config.json"
@@ -61,7 +63,9 @@ func _serialize_value(value) -> Variant:
 			"use_system_window": value.use_system_window,
 			"auto_open": value.auto_open,
 			"auto_search": value.auto_search,
-			"scale_index": value.scale_index
+			"scale_index": value.scale_index,
+			"enable_server": value.enable_server,
+			"server_port": value.server_port
 		}
 	else:
 		return value
@@ -85,6 +89,11 @@ func _deserialize_value(value) -> Variant:
 	config.auto_open = value.get("auto_open", false)
 	config.auto_search = value.get("auto_search", false)
 	config.scale_index = value.get("scale_index", 2)
+	# 处理可能为 null 的服务器字段
+	var enable_server = value.get("enable_server", false)
+	config.enable_server = enable_server if enable_server != null else false
+	var server_port = value.get("server_port", 6004)
+	config.server_port = server_port if server_port != null else 6004
 	return config
 
 # 保存所有配置到文件
@@ -290,3 +299,23 @@ func get_scale_factor() -> float:
 	if _config_data.scale_index >= 0 and _config_data.scale_index < SCALE_FACTORS.size():
 		return SCALE_FACTORS[_config_data.scale_index]
 	return 1.0
+
+# ==================== 服务器相关 ====================
+
+# 设置是否开启服务器
+func set_enable_server(enabled: bool) -> void:
+	_config_data.enable_server = enabled
+	_needs_save = true
+
+# 获取是否开启服务器
+func get_enable_server() -> bool:
+	return _config_data.enable_server
+
+# 设置服务器端口
+func set_server_port(port: int) -> void:
+	_config_data.server_port = port
+	_needs_save = true
+
+# 获取服务器端口
+func get_server_port() -> int:
+	return _config_data.server_port

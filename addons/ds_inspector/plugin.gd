@@ -12,14 +12,18 @@ var server_clients: Array = []
 var server_timer: Timer = null  # 用于定期检查连接的定时器
 
 func _enter_tree():
-	# 启动HTTP服务器
-	_start_http_server()
 	# 创建工具菜单
 	tool_menu = PopupMenu.new()
 	tool_menu.add_check_item("在编辑器运行", 0)
 	tool_menu.add_check_item("在游戏中运行", 1)
-	tool_menu.add_item("打开脚本", 2)
-	tool_menu.add_item("打开场景", 3)
+
+	DsSaveConfig.save_path = "user://ds_inspector_config.json"
+	var client_config = DsSaveConfig.new()
+	if client_config.get_enable_server():
+		server_port = client_config.get_server_port()
+		_start_http_server()
+	else:
+		_stop_http_server()
 
 	DsSaveConfig.save_path = "user://ds_inspector_editor_config.json"
 	# 设置初始状态
@@ -60,10 +64,6 @@ func _on_tool_menu_pressed(id: int):
 		save_config.set_enable_in_game(enabled)
 		tool_menu.set_item_checked(1, enabled)
 		_refresh_debug_tool_in_game(enabled)
-	elif id == 2: # 打开脚本
-		_on_open_script_btn_pressed()
-	elif id == 3: # 打开场景
-		_on_open_scene_btn_pressed()
 
 func _refresh_debug_tool(enabled: bool):
 	if enabled:
@@ -84,22 +84,6 @@ func _refresh_debug_tool_in_game(enabled: bool):
 	else:
 		# 移除自动加载场景
 		remove_autoload_singleton("DsInspector")
-
-func _on_open_script_btn_pressed():
-	print("打开脚本")
-	# 测试打开一个脚本
-	var script: Script = preload("res://addons/ds_inspector/DsInspector.gd")
-
-	get_editor_interface().edit_resource(script)
-	print("打开脚本成功")
-	pass
-
-func _on_open_scene_btn_pressed():
-	print("打开场景")
-	# 测试打开一个场景
-	get_editor_interface().open_scene_from_path("res://addons/ds_inspector/DsInspectorTool.tscn")
-	print("打开场景成功")
-	pass
 
 ## ==================== HTTP服务器相关 ====================
 
@@ -298,8 +282,3 @@ func _open_scene_in_editor(scene_path: String):
 
 func _do_open_scene(scene_path: String):
 	get_editor_interface().open_scene_from_path(scene_path)
-
-## 获取服务器端口（供游戏进程使用）
-static func get_server_port() -> int:
-	# 返回默认端口，如果需要可以从配置文件读取
-	return 6004
