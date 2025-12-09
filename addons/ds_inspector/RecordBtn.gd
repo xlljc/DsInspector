@@ -33,12 +33,17 @@ func _set_expand_state(is_expand: bool):
 		icon = expand_icon_tex
 		record_root.custom_minimum_size.y = 200
 		vsc.split_offset = 200
+		# 判断是否有 dragging_enabled 属性
+		if vsc.has_method("set_dragging_enabled"):
+			vsc.set_dragging_enabled(true)
 		vsc.dragger_visibility = SplitContainer.DRAGGER_VISIBLE
 		scroll_container.visible = true
 	else:
 		icon = collapse_icon_tex
 		record_root.custom_minimum_size.y = 0
 		vsc.split_offset = 0
+		if vsc.has_method("set_dragging_enabled"):
+			vsc.set_dragging_enabled(false)
 		vsc.dragger_visibility = SplitContainer.DRAGGER_HIDDEN
 		scroll_container.visible = false
 	pass

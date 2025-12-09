@@ -1,6 +1,6 @@
 @tool
 extends Tree
-class_name DsExcludeList
+class_name DsCollectList
 
 @export
 var add_btn_path: NodePath
@@ -19,23 +19,23 @@ var _is_button_clicked: bool = false  # 标记是否刚刚点击了按钮
 var _delete_icon: Texture = preload("res://addons/ds_inspector/icon/delete.svg")
 
 func _ready():
-	add_btn.pressed.connect(_on_add_click);
+	add_btn.pressed.connect(_on_add_click)
 	item_selected.connect(_on_item_selected)
-	button_clicked.connect(_on_button_pressed);
+	button_clicked.connect(_on_button_pressed)
 	_root_item = create_item()
 
 	# 载入文件
-	_load_exclude_list()
+	_load_collect_list()
 	pass
 
-func has_excludeL_path(s: String) -> bool:
+func has_collect_path(s: String) -> bool:
 	if debug_tool.save_config:
-		return debug_tool.save_config.has_exclude_path(s)
+		return debug_tool.save_config.has_collect_path(s)
 	return _list.has(s)
 
-# 添加排除路径
-func add_excludeL_path(s: String) -> void:
-	if has_excludeL_path(s):
+# 添加收集路径
+func add_collect_path(s: String) -> void:
+	if has_collect_path(s):
 		return
 
 	_list.append(s)
@@ -44,7 +44,7 @@ func add_excludeL_path(s: String) -> void:
 	item.add_button(0, _delete_icon)
 
 	if debug_tool.save_config:
-		debug_tool.save_config.add_exclude_path(s)
+		debug_tool.save_config.add_collect_path(s)
 	pass
 
 func _on_add_click():
@@ -52,7 +52,7 @@ func _on_add_click():
 		var node: Node = debug_tool.brush.get_draw_node()
 		if node != null and is_instance_valid(node):
 			var s: String = debug_tool.get_node_path(node)
-			add_excludeL_path(s)
+			add_collect_path(s)
 	pass
 
 func _on_item_selected():
@@ -75,7 +75,7 @@ func _on_button_pressed(item: TreeItem, column: int, id: int, mouse_button_index
 	if index >= 0:
 		_list.remove_at(index)
 		if debug_tool.save_config:
-			debug_tool.save_config.remove_exclude_path(s)
+			debug_tool.save_config.remove_collect_path(s)
 	pass
 
 # 跳转到指定路径的节点
@@ -126,7 +126,7 @@ func _jump_to_node(path: String) -> void:
 		# 没有找到节点，输出日志
 		debug_tool.tips.text = "无法找到路径为 '" + path + "' 的节点"
 		debug_tool.tips_anim.play("show")
-		print("ExcludeList: 无法找到路径为 '", path, "' 的节点")
+		print("CollectList: 无法找到路径为 '", path, "' 的节点")
 	pass
 
 # 递归查找节点（通过路径字符串匹配）
@@ -166,10 +166,10 @@ func _get_relative_path(node: Node) -> String:
 		current = p
 	return s
 
-# 加载排除列表
-func _load_exclude_list():
+# 加载收集列表
+func _load_collect_list():
 	if debug_tool.save_config:
-		_list = debug_tool.save_config.get_exclude_list()
+		_list = debug_tool.save_config.get_collect_list()
 		for s in _list:
 			var item: TreeItem = create_item(_root_item)
 			item.set_text(0, s)

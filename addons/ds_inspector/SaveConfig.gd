@@ -11,6 +11,7 @@ class ConfigData:
 	var hover_icon_position_x: float = 0.0
 	var hover_icon_position_y: float = 0.0
 	var exclude_list: Array = []
+	var collect_list: Array = []
 	var enable_in_editor: bool = false
 	var enable_in_game: bool = true
 	var use_system_window: bool = false
@@ -54,6 +55,7 @@ func _serialize_value(value) -> Variant:
 			"hover_icon_position_x": value.hover_icon_position_x,
 			"hover_icon_position_y": value.hover_icon_position_y,
 			"exclude_list": value.exclude_list,
+			"collect_list": value.collect_list,
 			"enable_in_editor": value.enable_in_editor,
 			"enable_in_game": value.enable_in_game,
 			"use_system_window": value.use_system_window,
@@ -73,6 +75,7 @@ func _deserialize_value(value) -> Variant:
 	config.hover_icon_position_x = value.get("hover_icon_position_x", 0.0)
 	config.hover_icon_position_y = value.get("hover_icon_position_y", 0.0)
 	config.exclude_list = value.get("exclude_list", [])
+	config.collect_list = value.get("collect_list", [])
 	config.enable_in_editor = value.get("enable_in_editor", false)
 	config.enable_in_game = value.get("enable_in_game", true)
 	config.use_system_window = value.get("use_system_window", false)
@@ -183,6 +186,38 @@ func remove_exclude_path(path: String) -> bool:
 # 检查路径是否在排除列表中
 func has_exclude_path(path: String) -> bool:
 	return _config_data.exclude_list.has(path)
+
+# ==================== 收集列表相关 ====================
+
+# 保存收集列表
+func save_collect_list(collect_list: Array) -> void:
+	_config_data.collect_list = collect_list.duplicate()
+	_needs_save = true
+
+# 获取收集列表
+func get_collect_list() -> Array:
+	return _config_data.collect_list.duplicate()
+
+# 添加收集路径
+func add_collect_path(path: String) -> bool:
+	if not _config_data.collect_list.has(path):
+		_config_data.collect_list.append(path)
+		_needs_save = true
+		return true
+	return false
+
+# 移除收集路径
+func remove_collect_path(path: String) -> bool:
+	var index: int = _config_data.collect_list.find(path)
+	if index >= 0:
+		_config_data.collect_list.remove_at(index)
+		_needs_save = true
+		return true
+	return false
+
+# 检查路径是否在收集列表中
+func has_collect_path(path: String) -> bool:
+	return _config_data.collect_list.has(path)
 
 # ==================== 启用/禁用相关 ====================
 

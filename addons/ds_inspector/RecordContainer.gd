@@ -4,12 +4,12 @@ extends VBoxContainer
 @export
 var record_node_item_scene: PackedScene
 
-# 获取 NodeTree 引用的路径
-@export
-var node_tree_path: NodePath
 
-@onready
-var node_tree = get_node(node_tree_path) if node_tree_path else null
+@export
+var tip_label: Label
+
+@export
+var node_tree: DsNodeTree
 
 # 存储已记录的节点信息
 var recorded_nodes: Dictionary = {}  # key: node_path, value: {node_ref: WeakRef, item: RecordNodeItem}
@@ -17,6 +17,8 @@ var recorded_nodes: Dictionary = {}  # key: node_path, value: {node_ref: WeakRef
 func _ready():
 	# 启用拖放接收功能
 	set_drag_forwarding(Callable(), _can_drop_data_fw, _drop_data_fw)
+	# 初始化 tip_label 的可见性
+	_update_tip_label_visibility()
 
 # 判断是否可以接收拖放的数据
 func _can_drop_data_fw(_position: Vector2, drag_data: Variant) -> bool:
@@ -88,6 +90,9 @@ func _add_record_item(node: Node) -> void:
 		"node_ref": weakref(node),
 		"item": record_item
 	}
+	
+	# 更新 tip_label 的可见性
+	_update_tip_label_visibility()
 
 # 当记录项被删除时
 func _on_record_item_deleted(record_item) -> void:
@@ -99,6 +104,15 @@ func _on_record_item_deleted(record_item) -> void:
 	
 	# 删除记录项节点
 	record_item.queue_free()
+	
+	# 更新 tip_label 的可见性
+	_update_tip_label_visibility()
+
+# 更新 tip_label 的可见性
+func _update_tip_label_visibility() -> void:
+	if tip_label:
+		# 当节点数量为0时显示，大于0时隐藏
+		tip_label.visible = recorded_nodes.size() == 0
 
 # 清理已失效的节点记录
 func _process(_delta: float) -> void:
@@ -119,3 +133,7 @@ func _process(_delta: float) -> void:
 		if is_instance_valid(item):
 			item.queue_free()
 		recorded_nodes.erase(node_path)
+	
+	# 如果有移除操作，更新 tip_label 的可见性
+	if to_remove.size() > 0:
+		_update_tip_label_visibility()
