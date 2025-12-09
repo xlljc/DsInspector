@@ -74,8 +74,11 @@ func _deserialize_value(value) -> Variant:
 	config.window_position_y = value.get("window_position_y", 100.0)
 	config.hover_icon_position_x = value.get("hover_icon_position_x", 0.0)
 	config.hover_icon_position_y = value.get("hover_icon_position_y", 0.0)
-	config.exclude_list = value.get("exclude_list", [])
-	config.collect_list = value.get("collect_list", [])
+	# 处理可能为 null 的数组字段
+	var exclude_list = value.get("exclude_list", [])
+	config.exclude_list = exclude_list if exclude_list != null else []
+	var collect_list = value.get("collect_list", [])
+	config.collect_list = collect_list if collect_list != null else []
 	config.enable_in_editor = value.get("enable_in_editor", false)
 	config.enable_in_game = value.get("enable_in_game", true)
 	config.use_system_window = value.get("use_system_window", false)
@@ -99,6 +102,7 @@ func save_config() -> void:
 
 # 加载配置文件
 func _load_config() -> void:
+	print("加载配置文件", save_path)
 	if FileAccess.file_exists(save_path):
 		var file := FileAccess.open(save_path, FileAccess.READ)
 		if file:
