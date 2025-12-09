@@ -320,7 +320,7 @@ dragger_visibility = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="NodeTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot"]
+[node name="NodeTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot" node_paths=PackedStringArray("debug_tool")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -331,7 +331,7 @@ size_flags_vertical = 3
 focus_mode = 0
 hide_root = true
 script = ExtResource("12_n858a")
-debug_tool_path = NodePath("../../../../../../../../../..")
+debug_tool = NodePath("../../../../../../../../../..")
 
 [node name="SerachTree" type="Tree" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot"]
 visible = false

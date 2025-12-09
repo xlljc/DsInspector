@@ -263,11 +263,12 @@ class IconMapping:
 		pass
 pass
 
-@export
-var debug_tool_path: NodePath
 
 @export
 var update_time: float = 1  # 更新间隔时间
+@export
+var debug_tool = Node
+
 var _timer: float = 0.0  # 计时器
 var _is_show: bool = false
 var _init_tree: bool = false  # 是否已初始化树
@@ -277,8 +278,7 @@ var _next_frame_index: int = 0
 var _next_frame_select: TreeItem = null # 下一帧要选中的item
 @onready
 var icon_mapping: IconMapping = IconMapping.new()
-@onready
-var debug_tool = get_node(debug_tool_path)
+
 @onready
 var _script_icon: Texture = preload("res://addons/ds_inspector/icon/icon_script.svg")
 @onready
@@ -586,18 +586,42 @@ func _on_button_pressed(_item: TreeItem, _column: int, _id: int, mouse_button_in
 				data.node.visible = data.visible
 				_item.set_button(0, _id, get_visible_icon(data.visible))  # 更新按钮图标
 		elif _id == data.script_icon_index: # 按下脚本图标
-			# # 执行 cmd 使用文件管理器打开脚本文件
-			# var node_path: String = data.node.get_script().get_path() # 这里返回的路径为  res://path/to/file.gd
-			# # 需要先转换路径为资源路径 res://path/to/file.gd -> path/to/file.gd
 			var script: Script = data.node.get_script()
 			if script:
 				var res_path: String = script.get_path()  # 得到 res://path/to/file.gd
-				_open_file(res_path)
+				_open_script_in_editor(res_path)
 		elif _id == data.scene_icon_index: # 按下场景按钮
-			_open_file(data.node.scene_file_path)
+			_open_scene_in_editor(data.node.scene_file_path)
 			pass
-			
-func _open_file(res_path: String):
+
+## 在编辑器中打开脚本（通过HTTP请求）
+func _open_script_in_editor(script_path: String):
+	if script_path.is_empty():
+		return
+	
+	# 尝试通过DsInspector单例请求打开脚本
+	if OS.has_feature("editor"):
+		DsInspector.request_open_script(script_path)
+		return
+	
+	# 如果无法通过编辑器打开，则打开文件管理器
+	_open_file_in_explorer(script_path)
+
+## 在编辑器中打开场景（通过HTTP请求）
+func _open_scene_in_editor(scene_path: String):
+	if scene_path.is_empty():
+		return
+	
+	# 尝试通过DsInspector单例请求打开场景
+	if OS.has_feature("editor"):
+		DsInspector.request_open_scene(scene_path)
+		return
+	
+	# 如果无法通过编辑器打开，则打开文件管理器
+	_open_file_in_explorer(scene_path)
+
+## 在文件管理器中打开文件（备用方法）
+func _open_file_in_explorer(res_path: String):
 	var project_root: String = ProjectSettings.globalize_path("res://")
 	var file_path: String = res_path.replace("res://", project_root).replace("/", "\\")
 	if OS.get_name() == "Windows":
