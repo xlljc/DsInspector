@@ -141,8 +141,9 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(0, 24)
+position = Vector2i(2548, 716)
 size = Vector2i(2472, 1724)
+visible = false
 transient = true
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
@@ -664,6 +665,7 @@ popup/item_8/text = "300%"
 popup/item_8/id = 8
 
 [node name="SettingItem5" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5"]
@@ -684,6 +686,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5"]
+visible = false
 layout_mode = 2
 
 [node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5/HBoxContainer2"]
@@ -797,10 +800,8 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 1478.0
-offset_top = 19.0
-offset_right = 1526.0
-offset_bottom = 67.0
+offset_right = 48.0
+offset_bottom = 48.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")
 texture_hover = ExtResource("23_qya0n")

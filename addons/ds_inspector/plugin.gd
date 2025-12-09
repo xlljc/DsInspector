@@ -1,5 +1,6 @@
 @tool
 extends EditorPlugin
+class_name DsInspectorPlugin
 
 var debug_tool: Node
 var tool_menu: PopupMenu
@@ -11,7 +12,10 @@ var server_port: int = 6004  # 默认端口
 var server_clients: Array = []
 var server_timer: Timer = null  # 用于定期检查连接的定时器
 
+static var editor_instance: DsInspectorPlugin = null
+
 func _enter_tree():
+	editor_instance = self
 	# 创建工具菜单
 	tool_menu = PopupMenu.new()
 	tool_menu.add_check_item("在编辑器运行", 0)
@@ -52,6 +56,7 @@ func _exit_tree():
 	if debug_tool != null:
 		debug_tool.free()
 		debug_tool = null
+	editor_instance = null
 
 func _on_tool_menu_pressed(id: int):
 	if id == 0: # 启用编辑器运行

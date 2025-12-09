@@ -267,7 +267,7 @@ pass
 @export
 var update_time: float = 1  # 更新间隔时间
 @export
-var debug_tool = Node
+var debug_tool: Node
 
 var _timer: float = 0.0  # 计时器
 var _is_show: bool = false
@@ -599,10 +599,19 @@ func _open_script_in_editor(script_path: String):
 	if script_path.is_empty():
 		return
 	
-	# 尝试通过DsInspector单例请求打开脚本
-	if OS.has_feature("editor"):
-		DsInspector.request_open_script(script_path)
+	# 在编辑器中，直接打开
+	if Engine.is_editor_hint():
+		if DsInspectorPlugin.editor_instance != null:
+			DsInspectorPlugin.editor_instance._do_open_script(load(script_path))
+		else:
+			_open_file_in_explorer(script_path)
 		return
+	elif debug_tool.save_config.get_enable_server():
+		# 尝试通过DsInspector单例请求打开脚本
+		var ds_inspector = debug_tool.get_node("DsInspector")
+		if ds_inspector:
+			ds_inspector.request_open_script(script_path)
+			return
 	
 	# 如果无法通过编辑器打开，则打开文件管理器
 	_open_file_in_explorer(script_path)
@@ -612,10 +621,19 @@ func _open_scene_in_editor(scene_path: String):
 	if scene_path.is_empty():
 		return
 	
-	# 尝试通过DsInspector单例请求打开场景
-	if OS.has_feature("editor"):
-		DsInspector.request_open_scene(scene_path)
+	# 在编辑器中，直接打开
+	if Engine.is_editor_hint():
+		if DsInspectorPlugin.editor_instance != null:
+			DsInspectorPlugin.editor_instance._do_open_scene(scene_path)
+		else:
+			_open_file_in_explorer(scene_path)
 		return
+	elif debug_tool.save_config.get_enable_server():
+		# 尝试通过DsInspector单例请求打开场景
+		var ds_inspector = debug_tool.get_node("DsInspector")
+		if ds_inspector:
+			ds_inspector.request_open_scene(scene_path)
+			return
 	
 	# 如果无法通过编辑器打开，则打开文件管理器
 	_open_file_in_explorer(scene_path)
