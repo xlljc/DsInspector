@@ -799,9 +799,9 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 1786.0
+offset_left = 1824.0
 offset_top = 20.0
-offset_right = 1834.0
+offset_right = 1872.0
 offset_bottom = 68.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")

@@ -18,7 +18,7 @@ class ConfigData:
 	var auto_open: bool = false
 	var auto_search: bool = false
 	var scale_index: int = 2
-	var enable_server: bool = false
+	var enable_server: bool = true
 	var server_port: int = 6004
 
 # 统一的配置文件路径
@@ -91,7 +91,7 @@ func _deserialize_value(value) -> Variant:
 	config.scale_index = value.get("scale_index", 2)
 	# 处理可能为 null 的服务器字段
 	var enable_server = value.get("enable_server", false)
-	config.enable_server = enable_server if enable_server != null else false
+	config.enable_server = enable_server if enable_server != null else true
 	var server_port = value.get("server_port", 6004)
 	config.server_port = server_port if server_port != null else 6004
 	return config

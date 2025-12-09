@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://cibl6pnjmm7tt"]
+
+[ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="3_j24b1"]
+
+[node name="Main" type="Node2D"]
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_left = 144.0
+offset_top = 100.0
+offset_right = 656.0
+offset_bottom = 612.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+
+[node name="Camera2D" type="Camera2D" parent="SubViewportContainer/SubViewport"]
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
+texture = ExtResource("3_j24b1")
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+offset_left = 144.0
+offset_top = 100.0
+offset_right = 656.0
+offset_bottom = 612.0
+border_color = Color(0.168627, 0.592157, 0.690196, 0.419608)
+editor_only = false
