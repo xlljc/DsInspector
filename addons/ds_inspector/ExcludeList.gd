@@ -21,6 +21,7 @@ var _delete_icon: Texture = preload("res://addons/ds_inspector/icon/delete.svg")
 func _ready():
 	add_btn.pressed.connect(_on_add_click);
 	item_selected.connect(_on_item_selected)
+	item_activated.connect(_on_item_activated)  # 添加激活信号，用于处理已选中项的点击
 	button_clicked.connect(_on_button_pressed);
 	_root_item = create_item()
 
@@ -65,6 +66,40 @@ func _on_item_selected():
 	if selected_item:
 		var path: String = selected_item.get_text(0)
 		_jump_to_node(path)
+	pass
+
+func _on_item_activated():
+	# 处理项目激活（双击或单击已选中项）
+	# 如果刚刚点击了按钮，不执行跳转
+	if _is_button_clicked:
+		_is_button_clicked = false
+		return
+	
+	var selected_item: TreeItem = get_selected()
+	if selected_item:
+		var path: String = selected_item.get_text(0)
+		_jump_to_node(path)
+	pass
+
+func _gui_input(event: InputEvent) -> void:
+	# 检测鼠标点击，确保每次点击都触发跳转
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+			# 如果刚刚点击了按钮，不执行跳转
+			if _is_button_clicked:
+				_is_button_clicked = false
+				return
+			
+			# 获取鼠标位置下的项目
+			var clicked_item: TreeItem = get_item_at_position(mouse_event.position)
+			if clicked_item and clicked_item != _root_item:
+				# 检查是否是同一个项目（已选中的项目）
+				var selected_item: TreeItem = get_selected()
+				if clicked_item == selected_item:
+					# 即使已经选中，也触发跳转
+					var path: String = clicked_item.get_text(0)
+					_jump_to_node(path)
 	pass
 
 func _on_button_pressed(item: TreeItem, column: int, id: int, mouse_button_index: int):
