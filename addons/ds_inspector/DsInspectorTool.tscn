@@ -392,12 +392,10 @@ text_overrun_behavior = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-current_tab = 4
 script = ExtResource("14_x52hf")
 tab_names = ["检查器", "收藏路径", "排除路径", "作弊", "设置"]
 
 [node name="Inspector" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = "检查器"
@@ -536,6 +534,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Container" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 color = Color(0.129412, 0.14902, 0.180392, 1)
