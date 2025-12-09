@@ -441,7 +441,7 @@ filtr_input = NodePath("../../../../FiltrInput")
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
-metadata/_tab_name = "排除路径"
+metadata/_tab_name = "收藏路径"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/CollectContainer"]
 layout_mode = 2
@@ -756,10 +756,10 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 1691.0
-offset_top = 20.0
-offset_right = 1739.0
-offset_bottom = 68.0
+offset_left = 1478.0
+offset_top = 19.0
+offset_right = 1526.0
+offset_bottom = 67.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")
 texture_hover = ExtResource("23_qya0n")
