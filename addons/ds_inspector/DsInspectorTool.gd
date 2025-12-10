@@ -21,7 +21,7 @@ var hover_iton: TextureButton
 
 var save_config: DsSaveConfig = null
 
-var main_camera: Camera2D = null
+var curr_camera: Camera2D = null
 var prev_click: bool = false
 var _check_camer_timer: float = 0.0
 
@@ -51,8 +51,8 @@ func _ready():
 ## func _on_idle_frame() -> void:
 func _process(delta: float) -> void:
 	if window.visible:
-		if main_camera == null or !is_instance_valid(main_camera) or !main_camera.is_current():
-			main_camera = null
+		if curr_camera == null or !is_instance_valid(curr_camera) or !curr_camera.is_current():
+			curr_camera = null
 		_check_camer_timer -= delta
 		if _check_camer_timer <= 0:
 			## print("重新开始检测Camer相机")
@@ -113,8 +113,8 @@ func get_check_node() -> Node:
 	if !_has_exclude_coll:
 		var space_state: PhysicsDirectSpaceState2D = brush.get_viewport().get_world_2d().direct_space_state
 		var pos: Vector2
-		if main_camera:
-			pos = main_camera.get_global_mouse_position()
+		if curr_camera:
+			pos = curr_camera.get_global_mouse_position()
 		else:
 			pos = mousePos
 		var query = PhysicsPointQueryParameters2D.new()
@@ -135,12 +135,11 @@ func get_check_node() -> Node:
 				if !_is_path_excluded(node_path):
 					return collision_shape
 	
-	var camera_trans: DsCameraTransInfo = get_camera_trans()
-	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_trans.zoom, false, _exclude_list);
+	var camera_trans: DsCameraTransInfo = get_camera_trans(curr_camera)
+	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_trans.zoom, false, _exclude_list, []);
 	if node != null:
 		_exclude_list.append(node)
 	return node
-	return null;
 
 func _find_collision_shape(node: Node):
 	if node == null:
@@ -163,7 +162,8 @@ func _is_path_excluded(node_path: String) -> bool:
 	
 	return false
 
-func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_zoom: Vector2, in_canvaslayer: bool, exclude_list: Array) -> Node:
+func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_zoom: Vector2,
+					in_canvaslayer: bool, exclude_list: Array, viewport_list: Array[DsViewportTransInfo]) -> Node:
 	if node == self or window.exclude_list.has_excludeL_path(path):
 		return null
 
@@ -173,17 +173,28 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 	if exclude_list.has(node) or (node is Control and !node.visible) or (node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible):
 		return null
 
+	var rect: DsNodeTransInfo = null
+	var my_viewport_list: Array[DsViewportTransInfo] = []
+	my_viewport_list.append_array(viewport_list)
+	if node is Viewport:
+		rect = calc_node_rect(node)
+		var view_trans: DsViewportTransInfo = DsViewportTransInfo.new()
+		view_trans.position = rect.position
+		view_trans.scale = rect.size
+		view_trans.rotation = rect.rotation
+		my_viewport_list.append(view_trans)
+
 	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
 		var child := node.get_child(i, true)
-		if child is Viewport:
-			continue
+		# if child is Viewport:
+		# 	continue
 		var new_path: String
 		if path.length() > 0:
 			new_path = path + "/" + child.name
 		else:
 			new_path = child.name
-		var result: Node = _each_and_check(child, new_path, mouse_position, camera_zoom, in_canvaslayer, exclude_list)
+		var result: Node = _each_and_check(child, new_path, mouse_position, camera_zoom, in_canvaslayer, exclude_list, my_viewport_list)
 		if result != null:
 			return result
 
@@ -197,14 +208,15 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon):
 			return node
 	else:
-		var rect: DsNodeTransInfo = calc_node_rect(node)
+		if rect == null:
+			rect = calc_node_rect(node)
 		if rect.size == Vector2.ZERO:
 			return null
 		var mpos: Vector2
 		if in_canvaslayer:
 			mpos = mouse_position
 		else:
-			mpos = ui_to_scene(mouse_position)
+			mpos = ui_to_scene(mouse_position, curr_camera)
 		if is_in_rotated_rect(mpos, Rect2(rect.position.x, rect.position.y, rect.size.x, rect.size.y), rect.rotation, Vector2.ZERO):
 			return node
 	return null
@@ -215,7 +227,7 @@ func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Ve
 		var local_mouse_pos: Vector2 = mouse_position
 		# 如果不在CanvasLayer中，需要将UI坐标转换回场景坐标
 		if !in_canvaslayer:
-			local_mouse_pos = ui_to_scene(mouse_position)
+			local_mouse_pos = ui_to_scene(mouse_position, curr_camera)
 		# 转换到节点的局部坐标系
 		local_mouse_pos = node.to_local(local_mouse_pos)
 		# 使用Godot内置的几何检测函数
@@ -374,44 +386,44 @@ func get_polygon_bounding_rect(polygon: PackedVector2Array) -> Rect2:
 	
 	return Rect2(Vector2(min_x, min_y), Vector2(max_x - min_x, max_y - min_y))
 
-func scene_to_ui(scene_position: Vector2) -> Vector2:
-	if main_camera == null or !is_instance_valid(main_camera):
+func scene_to_ui(scene_position: Vector2, camera: Camera2D) -> Vector2:
+	if camera == null or !is_instance_valid(camera):
 		return scene_position
 	
-	var viewport = main_camera.get_viewport()
+	var viewport = camera.get_viewport()
 	if viewport == null:
 		return scene_position
 	
 	# 使用 Godot 4 内置的坐标转换
 	# 先将世界坐标转换为画布坐标，再转换为屏幕坐标
-	var canvas_transform = main_camera.get_canvas_transform()
+	var canvas_transform = camera.get_canvas_transform()
 	var screen_position = canvas_transform * scene_position
 	
 	return screen_position
 
 # 将UI坐标转换回场景坐标（scene_to_ui的逆操作）
-func ui_to_scene(ui_position: Vector2) -> Vector2:
-	if main_camera == null or !is_instance_valid(main_camera):
+func ui_to_scene(ui_position: Vector2, camera: Camera2D) -> Vector2:
+	if camera == null or !is_instance_valid(camera):
 		return ui_position
 	
-	var viewport = main_camera.get_viewport()
+	var viewport = camera.get_viewport()
 	if viewport == null:
 		return ui_position
 	
 	# 使用 Godot 4 内置的坐标转换
 	# 获取画布变换的逆变换，将屏幕坐标转换回场景坐标
-	var canvas_transform = main_camera.get_canvas_transform()
+	var canvas_transform = camera.get_canvas_transform()
 	var scene_position = canvas_transform.affine_inverse() * ui_position
 	
 	return scene_position
 
 # 获取相机位置信息
-func get_camera_trans() -> DsCameraTransInfo:
-	if main_camera != null and is_instance_valid(main_camera):
-		if main_camera.ignore_rotation:
-			return DsCameraTransInfo.new(main_camera.global_position, main_camera.zoom, 0.0, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
+func get_camera_trans(camera: Camera2D) -> DsCameraTransInfo:
+	if camera != null and is_instance_valid(camera):
+		if camera.ignore_rotation:
+			return DsCameraTransInfo.new(camera.global_position, camera.zoom, 0.0, camera.offset, camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
 		else:
-			return DsCameraTransInfo.new(main_camera.global_position, main_camera.zoom, main_camera.global_rotation, main_camera.offset, main_camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
+			return DsCameraTransInfo.new(camera.global_position, camera.zoom, camera.global_rotation, camera.offset, camera.anchor_mode == Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT)
 	return DsCameraTransInfo.new(Vector2.ZERO, Vector2.ONE, 0.0, Vector2.ZERO, true)
 
 ## 遍历场景树, 在控制台打印出来
@@ -426,14 +438,14 @@ func _each_tree(node: Node) -> void:
 func find_current_camera() -> Camera2D:
 	var viewport = get_viewport()
 	if not viewport:
-		main_camera = null
+		curr_camera = null
 		return null
 	var camera := get_viewport().get_camera_2d()
-	if main_camera != null and is_instance_valid(main_camera):
-		if camera == main_camera:
-			return main_camera
+	if curr_camera != null and is_instance_valid(curr_camera):
+		if camera == curr_camera:
+			return curr_camera
 
-	main_camera = camera
+	curr_camera = camera
 	return camera
 
 # 获取一个节点的路径

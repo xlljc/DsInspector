@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3kmq7fnytwnj"]
+
+[ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="2"]
+
+[node name="ViewportTest" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="MainSceneSprite" type="Sprite2D" parent="."]
+position = Vector2(100, 100)
+texture = ExtResource("2")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_left = 200.0
+offset_top = 50.0
+offset_right = 600.0
+offset_bottom = 450.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(400, 400)
+render_target_update_mode = 4
+
+[node name="ViewportContent" type="Node2D" parent="SubViewportContainer/SubViewport"]
+
+[node name="ViewportSprite1" type="Sprite2D" parent="SubViewportContainer/SubViewport/ViewportContent"]
+position = Vector2(100, 100)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="ViewportSprite2" type="Sprite2D" parent="SubViewportContainer/SubViewport/ViewportContent"]
+position = Vector2(200, 200)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+
+[node name="ViewportControl" type="Control" parent="SubViewportContainer/SubViewport/ViewportContent"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 250.0
+offset_top = 100.0
+offset_right = 350.0
+offset_bottom = 200.0
+
+[node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport/ViewportContent/ViewportControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.5, 1, 1)
+
+[node name="NestedSubViewportContainer" type="SubViewportContainer" parent="SubViewportContainer/SubViewport/ViewportContent"]
+offset_left = 50.0
+offset_top = 250.0
+offset_right = 200.0
+offset_bottom = 350.0
+
+[node name="NestedSubViewport" type="SubViewport" parent="SubViewportContainer/SubViewport/ViewportContent/NestedSubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(150, 100)
+render_target_update_mode = 4
+
+[node name="NestedSprite" type="Sprite2D" parent="SubViewportContainer/SubViewport/ViewportContent/NestedSubViewportContainer/NestedSubViewport"]
+position = Vector2(75, 50)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 200.0
+offset_top = 10.0
+offset_right = 600.0
+offset_bottom = 40.0
+text = "Viewport 测试场景 - 请使用检查器工具拣选子节点"
+horizontal_alignment = 1

@@ -21,9 +21,10 @@ var debug_tool_path: NodePath
 @onready
 var debug_tool = get_node(debug_tool_path)
 
+var is_draw_in_window: bool = true
+
 var _icon: Texture
 var _show_text: bool = false
-var _in_viewport: bool = false
 
 func _ready():
 	node_path_tips.visible = false
@@ -42,7 +43,6 @@ func get_draw_node() -> Node:
 	if !is_instance_valid(_draw_node):
 		_draw_node = null
 		_has_draw_node = false
-		_in_viewport = false
 		return null
 	return _draw_node
 
@@ -57,7 +57,7 @@ func set_draw_node(node: Node) -> void:
 	_in_canvaslayer = debug_tool.is_in_canvaslayer(node)
 	
 	# 递归检查 node 是否在 Viewport 下
-	_in_viewport = debug_tool.is_under_inner_viewport(node)
+	# _in_viewprt = debug_tool.is_under_inner_viewport(node)
 	
 	var icon_path = node_tree.icon_mapping.get_icon(_draw_node)
 	_icon = load(icon_path)
@@ -74,27 +74,25 @@ func set_show_text(flag: bool):
 	pass
 
 func _draw():
-	if !_has_draw_node or _in_viewport:
+	if !_has_draw_node:
 		return
 	if _draw_node == null or !is_instance_valid(_draw_node):
 		_draw_node = null
 		_has_draw_node = false
 		return
 
-	var camera_trans: DsCameraTransInfo = debug_tool.get_camera_trans()
+	var scale: Vector2
+
+	var camera_trans: DsCameraTransInfo = debug_tool.get_camera_trans(debug_tool.curr_camera)
 	var node_trans: DsNodeTransInfo = debug_tool.calc_node_rect(_draw_node)
 	var pos: Vector2
 	var rot: float
-	var scale: Vector2
-	if _in_canvaslayer:
-		pos = node_trans.position
-		scale = Vector2.ONE
-		rot = node_trans.rotation
-	else:
-		pos = debug_tool.scene_to_ui(node_trans.position)
-		scale = camera_trans.zoom
-		rot = node_trans.rotation - camera_trans.rotation
-	
+
+	var trans = get_node_trans(_draw_node)
+	pos = trans.position
+	scale = trans.scale
+	rot = trans.rotation
+
 	if _draw_node is CollisionShape2D:
 		_draw_node_shape(_draw_node.shape, pos, scale, rot)
 	elif _draw_node is CollisionPolygon2D or _draw_node is Polygon2D:
@@ -127,6 +125,45 @@ func _draw():
 			text_pos.y = 0
 		node_path_tips.position = text_pos
 	pass
+
+func get_node_trans(node: Node) -> DsViewportTransInfo:
+	var curr_node: Node = node
+	var root_viewport: Viewport = get_viewport()
+	var result: DsViewportTransInfo = DsViewportTransInfo.new()
+	
+	while curr_node != null:
+
+		var in_canvaslayer: bool = false
+		var temp_curr: Node = curr_node
+		var viewport: Viewport = null
+
+		while temp_curr != null:
+			if temp_curr is CanvasLayer:
+				in_canvaslayer = true
+			elif temp_curr is Viewport:
+				viewport = temp_curr
+				temp_curr = temp_curr.get_parent()
+				break
+			temp_curr = temp_curr.get_parent()
+		
+		if viewport != null:
+			calc_node_trans(curr_node, viewport, in_canvaslayer, result)
+
+		curr_node = temp_curr
+	return result
+
+func calc_node_trans(node: Node, viewport: Viewport, in_canvaslayer: bool, view_trans: DsViewportTransInfo) -> void:
+	var camera: Camera2D = viewport.get_camera_2d()
+	var camera_trans: DsCameraTransInfo = debug_tool.get_camera_trans(camera)
+	var node_trans: DsNodeTransInfo = debug_tool.calc_node_rect(node)
+	if in_canvaslayer:
+		view_trans.position += node_trans.position
+		view_trans.rotation += node_trans.rotation
+	else:
+		view_trans.position += debug_tool.scene_to_ui(node_trans.position, camera)
+		view_trans.rotation += node_trans.rotation - camera_trans.rotation
+		view_trans.scale *= camera_trans.zoom
+
 
 func _draw_node_shape(shape: Shape2D, pos: Vector2, scale: Vector2, rot: float):
 	draw_circle(pos, 3, Color(1, 0, 0))
