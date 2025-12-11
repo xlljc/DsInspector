@@ -10,16 +10,10 @@ var _has_draw_node: bool = false
 var _in_canvaslayer: bool = false
 
 @export
-var node_path_tips: Control# = $"../Control"
-@export
-var icon_tex_rect: TextureRect# = $"../Control/ColorRect/Icon"
-@export
-var path_label: Label# = $"../Control/Path"
-@export
-var debug_tool_path: NodePath
+var node_path_tips: DsNodePathTips# = $"../Control"
 
-@onready
-var debug_tool = get_node(debug_tool_path)
+@export
+var debug_tool: CanvasLayer
 
 var _is_draw_in_viewport: bool = true
 var _viewport_brush_layer: CanvasLayer
@@ -35,6 +29,8 @@ var _prev_click_view_size: Vector2 = Vector2.ZERO
 var _icon: Texture
 var _show_text: bool = false
 
+var _root_viewport: Viewport = null
+
 func _ready():
 	_label_origin_root = node_path_tips.get_parent()
 	node_path_tips.visible = false
@@ -45,13 +41,15 @@ func _ready():
 	_viewport_brush_layer.name = "ViewportBrushLayer"
 	_viewport_brush_layer.layer = 128
 	_viewport_brush_layer.add_child(_viewport_brush)
+	_root_viewport = get_viewport()
 	pass
 
 func _process(_delta):
 	if _has_draw_node and (_draw_node == null or !is_instance_valid(_draw_node) or !_draw_node.is_inside_tree()):
 		set_draw_node(null)
 	queue_redraw()
-	_viewport_brush.queue_redraw()
+	if _viewport_brush != null:
+		_viewport_brush.queue_redraw()
 	pass
 
 func get_draw_node() -> Node:
@@ -84,11 +82,19 @@ func set_draw_node(node: Node) -> void:
 	
 	var icon_path = node_tree.icon_mapping.get_icon(_draw_node)
 	_icon = load(icon_path)
-	icon_tex_rect.texture = _icon
-	
-	path_label.size.x = 0
-	node_path_tips.size.x = 0
-	path_label.text = debug_tool.get_node_path(node)
+	node_path_tips.set_show_icon(_icon)
+	# 往上找是否有window节点，如果有则获取窗口大小，否则获取屏幕大小
+	var window: Window = null
+	var curr_node: Node = node.get_parent()
+	while curr_node != null:
+		if curr_node is Window and curr_node != _root_viewport:
+			window = curr_node
+			break
+		curr_node = curr_node.get_parent()
+	if window != null:
+		node_path_tips.set_show_text(debug_tool.get_node_path(node), window.size.x)
+	else:
+		node_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
 	pass
 
 func set_show_text(flag: bool):
@@ -237,9 +243,8 @@ func calc_node_trans(node: Node) -> DsViewportTransInfo:
 # 查找 node 的父级 Viewport 节点，不包括 root_viewport
 func find_viewport_node(node: Node) -> Viewport:
 	var curr_node: Node = node.get_parent()
-	var root_viewport: Viewport = get_viewport()
 	while curr_node != null:
-		if curr_node is Viewport and curr_node != root_viewport:
+		if curr_node is Viewport and curr_node != _root_viewport:
 			return curr_node
 		curr_node = curr_node.get_parent()
 	return null

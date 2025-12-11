@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=37 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
@@ -31,6 +31,8 @@
 [ext_resource type="Texture2D" uid="uid://cpfmuxcanm03r" path="res://addons/ds_inspector/icon/Icon_Pressed.png" id="22_0afkq"]
 [ext_resource type="Texture2D" uid="uid://df6spnjut8st4" path="res://addons/ds_inspector/icon/Icon_Hover.png" id="23_qya0n"]
 [ext_resource type="Script" path="res://addons/ds_inspector/HoverIcon.gd" id="24_c6x5m"]
+[ext_resource type="Script" path="res://addons/ds_inspector/NodePathTips.gd" id="27_t6suy"]
+[ext_resource type="FontFile" uid="uid://bf3q4oxcxieqb" path="res://addons/ds_inspector/DebugFont.tres" id="28_ox6dc"]
 
 [sub_resource type="Animation" id="3"]
 length = 0.001
@@ -723,29 +725,29 @@ theme = ExtResource("2_rwegl")
 ok_button_text = "确定"
 cancel_button_text = "取消"
 
-[node name="Brush" type="Node2D" parent="." node_paths=PackedStringArray("node_path_tips", "icon_tex_rect", "path_label")]
+[node name="Brush" type="Node2D" parent="." node_paths=PackedStringArray("node_path_tips", "debug_tool")]
 script = ExtResource("19_1ycqc")
 node_path_tips = NodePath("../NodePathTips")
-icon_tex_rect = NodePath("../NodePathTips/ColorRect/Icon")
-path_label = NodePath("../NodePathTips/Path")
-debug_tool_path = NodePath("..")
+debug_tool = NodePath("..")
 
-[node name="NodePathTips" type="Control" parent="."]
-visible = false
-layout_mode = 3
-anchors_preset = 0
-offset_right = 127.0
-offset_bottom = 27.0
+[node name="NodePathTips" type="CenterContainer" parent="." node_paths=PackedStringArray("icon", "label")]
+theme = ExtResource("2_rwegl")
+use_top_left = true
+script = ExtResource("27_t6suy")
+use_font = ExtResource("28_ox6dc")
+icon = NodePath("BoxContainer/ColorRect/Icon")
+label = NodePath("BoxContainer/Path")
+
+[node name="BoxContainer" type="HBoxContainer" parent="NodePathTips"]
+layout_mode = 2
 theme = ExtResource("2_rwegl")
 
-[node name="ColorRect" type="ColorRect" parent="NodePathTips"]
+[node name="ColorRect" type="ColorRect" parent="NodePathTips/BoxContainer"]
 custom_minimum_size = Vector2(30, 30)
-layout_mode = 0
-offset_right = 30.0
-offset_bottom = 30.0
+layout_mode = 2
 color = Color(0.203922, 0.203922, 0.203922, 1)
 
-[node name="Icon" type="TextureRect" parent="NodePathTips/ColorRect"]
+[node name="Icon" type="TextureRect" parent="NodePathTips/BoxContainer/ColorRect"]
 custom_minimum_size = Vector2(22, 22)
 layout_mode = 1
 anchors_preset = 15
@@ -756,19 +758,14 @@ grow_vertical = 2
 texture = ExtResource("20_bgw6s")
 stretch_mode = 5
 
-[node name="Path" type="Label" parent="NodePathTips"]
-custom_minimum_size = Vector2(700, 0)
-layout_mode = 0
-offset_left = 34.0
-offset_top = 2.0
-offset_right = 734.0
-offset_bottom = 32.0
+[node name="Path" type="Label" parent="NodePathTips/BoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_constants/shadow_outline_size = 2
 text = "Path:a/b/c"
-autowrap_mode = 2
 
 [node name="Tips" type="Label" parent="."]
 anchors_preset = 7
