@@ -36,6 +36,8 @@ var _prev_mouse_position: Vector2 = Vector2.ZERO
 var _is_open_check_ui: bool = false
 var _mouse_in_hover_btn: bool = false
 
+var _root_viewport: Viewport = null
+
 func _enter_tree():
 	if save_config == null:
 		save_config = DsSaveConfig.new()
@@ -46,6 +48,7 @@ func _enter_tree():
 func _ready():
 	brush.node_tree = window.tree
 	tips_anim.animation_finished.connect(on_tip_anim_finished)
+	_root_viewport = get_viewport()
 	pass
 
 ## func _on_idle_frame() -> void:
@@ -135,8 +138,7 @@ func get_check_node() -> Node:
 				if !_is_path_excluded(node_path):
 					return collision_shape
 	
-	var camera_trans: DsCameraTransInfo = get_camera_trans(curr_camera)
-	var node: Node = _each_and_check(get_tree().root, "", mousePos, camera_trans.zoom, false, _exclude_list, []);
+	var node: Node = _each_and_check(get_tree().root, "", mousePos, curr_camera, false, _exclude_list);
 	if node != null:
 		_exclude_list.append(node)
 	return node
@@ -162,8 +164,8 @@ func _is_path_excluded(node_path: String) -> bool:
 	
 	return false
 
-func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_zoom: Vector2,
-					in_canvaslayer: bool, exclude_list: Array, viewport_list: Array[DsViewportTransInfo]) -> Node:
+func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: Camera2D,
+					in_canvaslayer: bool, exclude_list: Array) -> Node:
 	if node == self or window.exclude_list.has_excludeL_path(path):
 		return null
 
@@ -173,16 +175,10 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 	if exclude_list.has(node) or (node is Control and !node.visible) or (node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible):
 		return null
 
-	var rect: DsNodeTransInfo = null
-	var my_viewport_list: Array[DsViewportTransInfo] = []
-	my_viewport_list.append_array(viewport_list)
-	if node is Viewport:
-		rect = calc_node_rect(node)
-		var view_trans: DsViewportTransInfo = DsViewportTransInfo.new()
-		view_trans.position = rect.position
-		view_trans.scale = rect.size
-		view_trans.rotation = rect.rotation
-		my_viewport_list.append(view_trans)
+	if node is Viewport and node != _root_viewport:
+		mouse_position = node.get_mouse_position()
+		in_canvaslayer = false
+		camera = node.get_camera_2d()
 
 	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
@@ -194,7 +190,7 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 			new_path = path + "/" + child.name
 		else:
 			new_path = child.name
-		var result: Node = _each_and_check(child, new_path, mouse_position, camera_zoom, in_canvaslayer, exclude_list, my_viewport_list)
+		var result: Node = _each_and_check(child, new_path, mouse_position, camera, in_canvaslayer, exclude_list)
 		if result != null:
 			return result
 
@@ -208,15 +204,14 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera_z
 		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon):
 			return node
 	else:
-		if rect == null:
-			rect = calc_node_rect(node)
+		var rect = calc_node_rect(node)
 		if rect.size == Vector2.ZERO:
 			return null
 		var mpos: Vector2
 		if in_canvaslayer:
 			mpos = mouse_position
 		else:
-			mpos = ui_to_scene(mouse_position, curr_camera)
+			mpos = ui_to_scene(mouse_position, camera)
 		if is_in_rotated_rect(mpos, Rect2(rect.position.x, rect.position.y, rect.size.x, rect.size.y), rect.rotation, Vector2.ZERO):
 			return node
 	return null

@@ -3,15 +3,26 @@
 [ext_resource type="Script" path="res://demo/Main2.gd" id="1_cd67i"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="3_j24b1"]
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("window")]
+[node name="Main" type="Node2D"]
 script = ExtResource("1_cd67i")
-window = NodePath("")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 offset_left = 209.0
 offset_top = 126.0
 offset_right = 721.0
 offset_bottom = 638.0
+
+[node name="ReferenceRect" type="ReferenceRect" parent="SubViewportContainer"]
+custom_minimum_size = Vector2(512, 512)
+layout_mode = 2
+border_color = Color(0.168627, 0.592157, 0.690196, 1)
+border_width = 2.0
+editor_only = false
+
+[node name="Label" type="Label" parent="SubViewportContainer/ReferenceRect"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "2d场景中的viewport"
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
 handle_input_locally = false
@@ -21,48 +32,74 @@ render_target_update_mode = 4
 anchor_mode = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
-position = Vector2(150, 150)
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_j24b1")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="SubViewportContainer/SubViewport"]
-offset_left = 209.0
-offset_top = 126.0
-offset_right = 721.0
-offset_bottom = 638.0
+offset_left = 150.0
+offset_top = 150.0
+offset_right = 406.0
+offset_bottom = 406.0
+
+[node name="ReferenceRect" type="ReferenceRect" parent="SubViewportContainer/SubViewport/SubViewportContainer"]
+custom_minimum_size = Vector2(350, 350)
+layout_mode = 2
+border_color = Color(0.168627, 0.592157, 0.690196, 1)
+border_width = 2.0
+editor_only = false
+
+[node name="Label" type="Label" parent="SubViewportContainer/SubViewport/SubViewportContainer/ReferenceRect"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "viewport套viewport"
 
 [node name="SubViewport" type="SubViewport" parent="SubViewportContainer/SubViewport/SubViewportContainer"]
 handle_input_locally = false
+size = Vector2i(350, 350)
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
 anchor_mode = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
-position = Vector2(150, 150)
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_j24b1")
 
-[node name="ReferenceRect" type="ReferenceRect" parent="."]
-offset_left = 209.0
-offset_top = 126.0
-offset_right = 721.0
-offset_bottom = 638.0
-border_color = Color(0.168627, 0.592157, 0.690196, 0.419608)
+[node name="SubViewportContainer" type="SubViewportContainer" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+offset_left = 150.0
+offset_top = 150.0
+offset_right = 406.0
+offset_bottom = 406.0
+
+[node name="ReferenceRect" type="ReferenceRect" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer"]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+border_color = Color(0.168627, 0.592157, 0.690196, 1)
+border_width = 2.0
 editor_only = false
 
-[node name="ReferenceRect2" type="ReferenceRect" parent="."]
-offset_left = -50.0
-offset_top = -50.0
-offset_right = 50.0
-offset_bottom = 50.0
-border_color = Color(0.168627, 0.592157, 0.690196, 0.419608)
-editor_only = false
+[node name="Label" type="Label" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/ReferenceRect"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "viewport套viewport"
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(150, 150)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+anchor_mode = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_j24b1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(105, 225)
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(337, 5)
-texture = ExtResource("3_j24b1")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 scale = Vector2(0.03125, 0.03125)
@@ -71,13 +108,27 @@ texture = ExtResource("3_j24b1")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer"]
-offset_left = 97.0
-offset_top = 446.0
-offset_right = 609.0
-offset_bottom = 958.0
+offset_left = 106.0
+offset_top = 398.0
+offset_right = 362.0
+offset_bottom = 654.0
+
+[node name="ReferenceRect2" type="ReferenceRect" parent="CanvasLayer/SubViewportContainer"]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 2
+border_color = Color(0.168627, 0.592157, 0.690196, 1)
+border_width = 2.0
+editor_only = false
+
+[node name="Label" type="Label" parent="CanvasLayer/SubViewportContainer/ReferenceRect2"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "ui上的viewport"
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/SubViewportContainer"]
 handle_input_locally = false
+size = Vector2i(256, 256)
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]

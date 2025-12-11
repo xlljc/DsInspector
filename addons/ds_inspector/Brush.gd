@@ -68,9 +68,6 @@ func set_draw_node(node: Node) -> void:
 	_has_draw_node = true
 	_in_canvaslayer = debug_tool.is_in_canvaslayer(node)
 	
-	# 递归检查 node 是否在 Viewport 下
-	# _in_viewprt = debug_tool.is_under_inner_viewport(node)
-	
 	var icon_path = node_tree.icon_mapping.get_icon(_draw_node)
 	_icon = load(icon_path)
 	icon_tex_rect.texture = _icon
@@ -142,11 +139,17 @@ func _draw_border(brush_node: CanvasItem):
 
 	if _show_text:
 		node_path_tips.visible = true
-		var view_size: Vector2 = brush_node.get_viewport().size
 		var label_size: Vector2 = path_label.size
 		var tips_size: Vector2 = node_path_tips.size
 		var text_size: Vector2 = Vector2(max(label_size.x, tips_size.x), max(label_size.y, tips_size.y))
-		var text_pos: Vector2 = trans.position + Vector2(-50, 50)
+		var text_pos: Vector2
+		var view_size: Vector2
+		if _viewport_node == null:
+			text_pos = trans.position + Vector2(-50, 50)
+			view_size = brush_node.get_viewport().size
+		else:
+			text_pos = get_global_mouse_position() + Vector2(-50, 50)
+			view_size = get_viewport_rect().size
 		# 限制在屏幕内，结合 path_label 的大小
 		if text_pos.x + text_size.x > view_size.x:
 			text_pos.x = view_size.x - text_size.x

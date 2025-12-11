@@ -8,7 +8,7 @@ func _ready():
 
 func _test():
 	var window = Window.new()
-	window.title = "Test"
+	window.title = "Window中拣选"
 	window.size = Vector2(500, 500)
 	window.position = Vector2(100, 100)
 
