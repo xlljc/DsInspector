@@ -245,19 +245,31 @@ func calc_node_trans(node: Node) -> DsViewportTransInfo:
 			break
 		curr_node = curr_node.get_parent()
 
-	var camera: Camera2D = viewport.get_camera_2d()
+	var camera: Camera2D = null
+	if viewport != null:
+		camera = viewport.get_camera_2d()
 	var node_trans: DsNodeTransInfo = debug_tool.calc_node_rect(node)
 	var view_trans: DsViewportTransInfo = DsViewportTransInfo.new()
+	var scale: Vector2 = Vector2.ONE
+
+	if node is CollisionShape2D:
+		scale = node.global_scale
+	elif node is CollisionPolygon2D or node is Polygon2D:
+		scale = node.global_scale
+	elif node is LightOccluder2D:
+		if node.occluder != null:
+			scale = node.global_scale
+
 	if in_canvaslayer:
 		view_trans.position = node_trans.position
 		view_trans.rotation = node_trans.rotation
-		view_trans.scale = Vector2.ONE
+		view_trans.scale = scale
 		view_trans.size = node_trans.size
 	else:
 		var camera_trans: DsCameraTransInfo = debug_tool.get_camera_trans(camera)
 		view_trans.position = debug_tool.scene_to_ui(node_trans.position, camera)
 		view_trans.rotation = node_trans.rotation - camera_trans.rotation
-		view_trans.scale = camera_trans.zoom
+		view_trans.scale = camera_trans.zoom * scale
 		view_trans.size = node_trans.size
 	return view_trans
 

@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cibl6pnjmm7tt"]
+[gd_scene load_steps=4 format=3 uid="uid://cibl6pnjmm7tt"]
 
 [ext_resource type="Script" path="res://demo/Main2.gd" id="1_cd67i"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="3_j24b1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mb71u"]
+size = Vector2(128, 128)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cd67i")
@@ -100,6 +103,16 @@ anchor_mode = 0
 position = Vector2(50, 50)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_j24b1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SubViewportContainer/SubViewport"]
+position = Vector2(150, 50)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/StaticBody2D"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/StaticBody2D"]
+shape = SubResource("RectangleShape2D_mb71u")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(105, 225)

@@ -686,6 +686,8 @@ func _load_children_item(item: TreeItem, add_slot: bool = true):
 		if !is_instance_valid(data.node): # 节点可能已被删除
 			return
 		for child in data.node.get_children(true):
+			if debug_tool and !Engine.is_editor_hint() and (child == debug_tool or child == debug_tool.brush._viewport_brush_layer):
+				continue  # 跳过 DsInspectorTool 和 viewport_brush_layer 节点
 			create_node_item(child, item, add_slot)
 			
 func get_visible_icon(v: bool) -> Texture:
