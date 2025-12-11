@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://cibl6pnjmm7tt"]
+[gd_scene load_steps=3 format=3 uid="uid://cibl6pnjmm7tt"]
 
+[ext_resource type="Script" path="res://demo/Main2.gd" id="1_cd67i"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="3_j24b1"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("window")]
+script = ExtResource("1_cd67i")
+window = NodePath("")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 offset_left = 209.0
@@ -18,6 +21,23 @@ render_target_update_mode = 4
 anchor_mode = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport"]
+position = Vector2(150, 150)
+texture = ExtResource("3_j24b1")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="SubViewportContainer/SubViewport"]
+offset_left = 209.0
+offset_top = 126.0
+offset_right = 721.0
+offset_bottom = 638.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer/SubViewport/SubViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+anchor_mode = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
 position = Vector2(150, 150)
 texture = ExtResource("3_j24b1")
 
@@ -46,14 +66,6 @@ texture = ExtResource("3_j24b1")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 scale = Vector2(0.03125, 0.03125)
-texture = ExtResource("3_j24b1")
-
-[node name="Window" type="Window" parent="."]
-position = Vector2i(300, 100)
-size = Vector2i(500, 500)
-
-[node name="Sprite2D" type="Sprite2D" parent="Window"]
-position = Vector2(100, 100)
 texture = ExtResource("3_j24b1")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

@@ -111,7 +111,7 @@ func save_config() -> void:
 
 # 加载配置文件
 func _load_config() -> void:
-	print("加载配置文件", save_path)
+	# print("加载配置文件", save_path)
 	if FileAccess.file_exists(save_path):
 		var file := FileAccess.open(save_path, FileAccess.READ)
 		if file:

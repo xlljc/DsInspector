@@ -330,7 +330,7 @@ func init_tree():
 	
 	# 递归添加子节点
 	for child in root.get_children(true):
-		if debug_tool and child == debug_tool and !Engine.is_editor_hint():
+		if debug_tool and !Engine.is_editor_hint() and (child == debug_tool or child == debug_tool.brush._viewport_brush_layer):
 			continue  # 跳过 DsInspectorTool 节点
 		create_node_item(child, root_item, true)
 
@@ -461,10 +461,10 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 			parent_data.slot_item = null
 		return
 
-	# 获取实际子节点列表（过滤掉 debug_tool）
+	# 获取实际子节点列表（过滤掉 debug_tool、brush._window_brush）
 	var actual_children: Array = []
 	for child_node in parent_data.node.get_children(true):
-		if debug_tool and child_node == debug_tool and !Engine.is_editor_hint():
+		if debug_tool and !Engine.is_editor_hint() and (child_node == debug_tool or child_node == debug_tool.brush._viewport_brush_layer):
 			continue
 		actual_children.append(child_node)
 	
