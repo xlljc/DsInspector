@@ -272,6 +272,7 @@ func _open_script_in_editor(script_path: String):
 
 func _do_open_script(script: Script):
 	get_editor_interface().edit_resource(script)
+	_focus_editor_window()
 
 ## 在编辑器中打开场景
 func _open_scene_in_editor(scene_path: String):
@@ -287,3 +288,18 @@ func _open_scene_in_editor(scene_path: String):
 
 func _do_open_scene(scene_path: String):
 	get_editor_interface().open_scene_from_path(scene_path)
+	_focus_editor_window()
+
+## 尝试让编辑器窗口获得焦点
+func _focus_editor_window():
+	var base_control = get_editor_interface().get_base_control()
+	if base_control:
+		var editor_window = base_control.get_window()
+		if editor_window:
+			# 尝试让窗口获得焦点
+			editor_window.grab_focus()
+			# 如果窗口被最小化，恢复它
+			if editor_window.mode == Window.MODE_MINIMIZED:
+				editor_window.mode = Window.MODE_WINDOWED
+			# 将窗口移到最前面
+			editor_window.move_to_foreground()

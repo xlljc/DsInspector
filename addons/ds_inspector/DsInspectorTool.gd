@@ -134,9 +134,12 @@ func get_check_node() -> Node:
 			var collider = item["collider"]
 			if collider and is_instance_valid(collider) and !(collider is TileMap):
 				var collision_shape = _find_collision_shape(collider)
-				var node_path: String = get_node_path(collision_shape)
-				if !_is_path_excluded(node_path):
-					return collision_shape
+				# 检查是否已经在排除列表中
+				if !_exclude_list.has(collision_shape):
+					var node_path: String = get_node_path(collision_shape)
+					if !_is_path_excluded(node_path):
+						_exclude_list.append(collision_shape)  # 加入排除列表
+						return collision_shape
 	
 	var node: Node = _each_and_check(get_tree().root, "", mousePos, curr_camera, false, _exclude_list);
 	if node != null:
@@ -164,13 +167,41 @@ func _is_path_excluded(node_path: String) -> bool:
 	
 	return false
 
+# 封装的碰撞检测函数，用于检测指定 world2d 中的碰撞体
+func _check_collision_in_world(viewport: Viewport, mouse_pos: Vector2, camera: Camera2D, exclude_list: Array) -> Node:
+	var space_state: PhysicsDirectSpaceState2D = viewport.get_world_2d().direct_space_state
+	if space_state == null:
+		return null
+	
+	var pos: Vector2
+	if camera:
+		pos = camera.get_global_mouse_position()
+	else:
+		pos = mouse_pos
+	
+	var query = PhysicsPointQueryParameters2D.new()
+	query.position = pos
+	query.collision_mask = 2147483647
+	query.collide_with_areas = true
+	var coll_results = space_state.intersect_point(query)
+	
+	# 遍历碰撞结果，返回第一个有效的非 TileMap 碰撞体
+	for item in coll_results:
+		var collider = item["collider"]
+		if collider and is_instance_valid(collider) and !(collider is TileMap):
+			var collision_shape = _find_collision_shape(collider)
+			# 检查是否已经在排除列表中
+			if !exclude_list.has(collision_shape):
+				var node_path: String = get_node_path(collision_shape)
+				if !_is_path_excluded(node_path):
+					return collision_shape
+	
+	return null
+
 func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: Camera2D,
 					in_canvaslayer: bool, exclude_list: Array) -> Node:
 	if node == self or node == brush.node_path_tips or window.exclude_list.has_excludeL_path(path):
 		return null
-	
-	# if node is Viewport and !save_config.get_check_viewport():
-	# 	return null
 
 	if !in_canvaslayer and node is CanvasLayer:
 		in_canvaslayer = true;
@@ -182,6 +213,12 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 		mouse_position = node.get_mouse_position()
 		in_canvaslayer = false
 		camera = node.get_camera_2d()
+		
+		# 检测该 Viewport 的 world2d 中的碰撞体
+		var collision_node = _check_collision_in_world(node, mouse_position, camera, exclude_list)
+		if collision_node != null:
+			exclude_list.append(collision_node)  # 加入排除列表
+			return collision_node
 
 	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点

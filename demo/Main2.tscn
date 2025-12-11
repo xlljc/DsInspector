@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cibl6pnjmm7tt"]
+[gd_scene load_steps=5 format=3 uid="uid://cibl6pnjmm7tt"]
 
 [ext_resource type="Script" path="res://demo/Main2.gd" id="1_cd67i"]
+[ext_resource type="PackedScene" uid="uid://dg7yokqpg14u" path="res://demo/TestWindow.tscn" id="2_xdwq8"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="3_j24b1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mb71u"]
@@ -8,6 +9,7 @@ size = Vector2(128, 128)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_cd67i")
+window_scene = ExtResource("2_xdwq8")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 offset_left = 209.0
@@ -104,6 +106,46 @@ position = Vector2(50, 50)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_j24b1")
 
+[node name="StaticBody2D" type="StaticBody2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+position = Vector2(85, 50)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D"]
+shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+position = Vector2(115, 75)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D2"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D2"]
+shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+position = Vector2(150, 50)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D"]
+shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
+position = Vector2(175, 75)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D2"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/StaticBody2D2"]
+shape = SubResource("RectangleShape2D_mb71u")
+
 [node name="StaticBody2D" type="StaticBody2D" parent="SubViewportContainer/SubViewport"]
 position = Vector2(150, 50)
 scale = Vector2(0.5, 0.5)
@@ -112,6 +154,16 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_j24b1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/StaticBody2D"]
+shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="SubViewportContainer/SubViewport"]
+position = Vector2(175, 75)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="SubViewportContainer/SubViewport/StaticBody2D2"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/StaticBody2D2"]
 shape = SubResource("RectangleShape2D_mb71u")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -150,6 +202,46 @@ anchor_mode = 0
 position = Vector2(150, 150)
 texture = ExtResource("3_j24b1")
 
+[node name="StaticBody2D" type="StaticBody2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
+position = Vector2(85, 50)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/StaticBody2D"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/SubViewportContainer/SubViewport/StaticBody2D"]
+shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
+position = Vector2(115, 75)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport/StaticBody2D2"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/SubViewportContainer/SubViewport/StaticBody2D2"]
+shape = SubResource("RectangleShape2D_mb71u")
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(81, 75)
 texture = ExtResource("3_j24b1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(225, 48)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(254, 68)
+scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D2"]
+texture = ExtResource("3_j24b1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+shape = SubResource("RectangleShape2D_mb71u")
