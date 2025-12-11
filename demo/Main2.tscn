@@ -101,10 +101,6 @@ texture = ExtResource("3_j24b1")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(105, 225)
 
-[node name="Sprite2D2" type="Sprite2D" parent="."]
-scale = Vector2(0.03125, 0.03125)
-texture = ExtResource("3_j24b1")
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer"]
@@ -136,4 +132,8 @@ anchor_mode = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/SubViewportContainer/SubViewport"]
 position = Vector2(150, 150)
+texture = ExtResource("3_j24b1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(81, 75)
 texture = ExtResource("3_j24b1")

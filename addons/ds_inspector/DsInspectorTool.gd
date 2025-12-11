@@ -166,7 +166,7 @@ func _is_path_excluded(node_path: String) -> bool:
 
 func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: Camera2D,
 					in_canvaslayer: bool, exclude_list: Array) -> Node:
-	if node == self or window.exclude_list.has_excludeL_path(path):
+	if node == self or node == brush.node_path_tips or window.exclude_list.has_excludeL_path(path):
 		return null
 
 	if !in_canvaslayer and node is CanvasLayer:

@@ -24,12 +24,19 @@ var debug_tool = get_node(debug_tool_path)
 var _is_draw_in_viewport: bool = true
 var _viewport_brush_layer: CanvasLayer
 var _viewport_brush: Node2D
+
 var _viewport_node: Viewport
+var _label_origin_root: Node
+
+var _has_prev_click: bool = false
+var _prev_click_pos: Vector2 = Vector2.ZERO
+var _prev_click_view_size: Vector2 = Vector2.ZERO
 
 var _icon: Texture
 var _show_text: bool = false
 
 func _ready():
+	_label_origin_root = node_path_tips.get_parent()
 	node_path_tips.visible = false
 	_viewport_brush = Node2D.new()
 	_viewport_brush.draw.connect(_on_viewport_brush_draw)
@@ -63,7 +70,14 @@ func set_draw_node(node: Node) -> void:
 		if _viewport_node != null:
 			_viewport_node.remove_child(_viewport_brush_layer)
 			_viewport_node = null
+		# 还原
+		var lb_parent = node_path_tips.get_parent()
+		if lb_parent != _label_origin_root:
+			if lb_parent != null:
+				lb_parent.remove_child(node_path_tips)
+			_label_origin_root.add_child(node_path_tips)
 		return
+	_has_prev_click = false
 	_draw_node = node
 	_has_draw_node = true
 	_in_canvaslayer = debug_tool.is_in_canvaslayer(node)
@@ -111,11 +125,33 @@ func _draw():
 					_viewport_node = null
 				_viewport_node = viewport_node
 				_viewport_node.add_child(_viewport_brush_layer)
+
+				if viewport_node is Window:
+					var lb_parent = node_path_tips.get_parent()
+					if lb_parent != _viewport_brush_layer:
+						if lb_parent != null:
+							lb_parent.remove_child(node_path_tips)
+						_viewport_brush_layer.add_child(node_path_tips)
+						_has_prev_click = false
+				else: # 还原
+					var lb_parent = node_path_tips.get_parent()
+					if lb_parent != null:
+						lb_parent.remove_child(node_path_tips)
+					_label_origin_root.add_child(node_path_tips)
+					_has_prev_click = false
+
 			return
 		else:
 			if _viewport_node != null:
 				_viewport_node.remove_child(_viewport_brush_layer)
 				_viewport_node = null
+			# 还原
+			var lb_parent = node_path_tips.get_parent()
+			if lb_parent != _label_origin_root:
+				if lb_parent != null:
+					lb_parent.remove_child(node_path_tips)
+				_label_origin_root.add_child(node_path_tips)
+				_has_prev_click = false
 
 	_draw_border(self)
 	pass
@@ -148,8 +184,16 @@ func _draw_border(brush_node: CanvasItem):
 			text_pos = trans.position + Vector2(-50, 50)
 			view_size = brush_node.get_viewport().size
 		else:
-			text_pos = get_global_mouse_position() + Vector2(-50, 50)
-			view_size = get_viewport_rect().size
+			if !_has_prev_click:
+				_has_prev_click = true
+				if _viewport_node is Window:
+					_prev_click_pos = _viewport_node.get_mouse_position()
+					_prev_click_view_size = _viewport_node.size
+				else:
+					_prev_click_pos = get_global_mouse_position()
+					_prev_click_view_size = get_viewport_rect().size
+			text_pos = _prev_click_pos + Vector2(-50, 50)
+			view_size = _prev_click_view_size
 		# 限制在屏幕内，结合 path_label 的大小
 		if text_pos.x + text_size.x > view_size.x:
 			text_pos.x = view_size.x - text_size.x
