@@ -181,13 +181,12 @@ func _draw_border(brush_node: CanvasItem):
 
 	if _show_text:
 		node_path_tips.visible = true
-		var label_size: Vector2 = path_label.size
-		var tips_size: Vector2 = node_path_tips.size
-		var text_size: Vector2 = Vector2(max(label_size.x, tips_size.x), max(label_size.y, tips_size.y))
-		var text_pos: Vector2
+		# 获取 node_path_tips 的实际尺寸（包括 icon 和 label）
+		var text_size: Vector2 = node_path_tips.get_show_size()
+		var center_pos: Vector2
 		var view_size: Vector2
 		if _viewport_node == null:
-			text_pos = trans.position + Vector2(-50, 50)
+			center_pos = trans.position + Vector2(0, 50)
 			view_size = brush_node.get_viewport().size
 		else:
 			if !_has_prev_click:
@@ -198,18 +197,26 @@ func _draw_border(brush_node: CanvasItem):
 				else:
 					_prev_click_pos = get_global_mouse_position()
 					_prev_click_view_size = get_viewport_rect().size
-			text_pos = _prev_click_pos + Vector2(-50, 50)
+			center_pos = _prev_click_pos + Vector2(0, 50)
 			view_size = _prev_click_view_size
-		# 限制在屏幕内，结合 path_label 的大小
-		if text_pos.x + text_size.x > view_size.x:
-			text_pos.x = view_size.x - text_size.x
-		elif text_pos.x < 0:
-			text_pos.x = 0
-		if text_pos.y + text_size.y > view_size.y:
-			text_pos.y = view_size.y - text_size.y
-		elif text_pos.y < 0:
-			text_pos.y = 0
-		node_path_tips.position = text_pos
+		
+		# node_path_tips.position 现在是中心点位置，需要计算左上角位置来限制边界
+		var half_size: Vector2 = text_size / 2.0
+		var top_left: Vector2 = center_pos - half_size
+		
+		# 限制左上角在屏幕内
+		if top_left.x + text_size.x > view_size.x:
+			top_left.x = view_size.x - text_size.x
+		elif top_left.x < 0:
+			top_left.x = 0
+		if top_left.y + text_size.y > view_size.y:
+			top_left.y = view_size.y - text_size.y
+		elif top_left.y < 0:
+			top_left.y = 0
+		
+		# 将限制后的左上角位置转换回中心点位置
+		center_pos = top_left + half_size
+		node_path_tips.position = center_pos
 	pass
 
 func calc_node_trans(node: Node) -> DsViewportTransInfo:

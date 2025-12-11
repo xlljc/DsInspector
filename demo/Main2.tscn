@@ -70,8 +70,8 @@ texture = ExtResource("3_j24b1")
 [node name="SubViewportContainer" type="SubViewportContainer" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport"]
 offset_left = 150.0
 offset_top = 150.0
-offset_right = 406.0
-offset_bottom = 406.0
+offset_right = 300.0
+offset_bottom = 300.0
 
 [node name="ReferenceRect" type="ReferenceRect" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer"]
 custom_minimum_size = Vector2(150, 150)

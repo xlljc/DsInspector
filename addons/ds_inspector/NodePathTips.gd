@@ -54,26 +54,42 @@ func set_show_text(text: String, view_width: int):
 		# 重置宽度限制，让label根据内容自动调整
 		label.custom_minimum_size.x = 0
 
-func get_show_width() -> int:
-	# 计算icon宽度
+func get_show_size() -> Vector2:
+	# 计算icon尺寸
 	var icon_width: float = 0.0
+	var icon_height: float = 0.0
 	if icon != null:
 		icon_width = icon.size.x
 		if icon_width == 0:
 			icon_width = icon.custom_minimum_size.x
+		icon_height = icon.size.y
+		if icon_height == 0:
+			icon_height = icon.custom_minimum_size.y
 	
-	# 获取label的实际宽度
+	# 获取label的实际尺寸
 	var label_width: float = 0.0
+	var label_height: float = 0.0
 	
-	# 优先使用实际渲染后的宽度
+	# 优先使用实际渲染后的尺寸
 	if label.size.x > 0:
 		label_width = label.size.x
-	# 如果设置了custom_minimum_size，使用它
-	elif label.custom_minimum_size.x > 0:
-		label_width = label.custom_minimum_size.x
-	# 否则计算文本宽度（单行）
-	elif label.text.length() > 0:
-		label_width = use_font.get_string_size(label.text).x
+	if label.size.y > 0:
+		label_height = label.size.y
 	
-	# 返回总宽度（icon宽度 + label宽度）
-	return int(icon_width + label_width)
+	# 如果设置了custom_minimum_size，使用它
+	if label_width == 0 and label.custom_minimum_size.x > 0:
+		label_width = label.custom_minimum_size.x
+	if label_height == 0 and label.custom_minimum_size.y > 0:
+		label_height = label.custom_minimum_size.y
+	
+	# 否则计算文本尺寸
+	if label.text.length() > 0:
+		if label_width == 0:
+			label_width = use_font.get_string_size(label.text).x
+		if label_height == 0:
+			# use_font 就是 label 使用的字体，直接使用 label 的字体大小
+			var font_size = label.get_theme_font_size("font_size")
+			label_height = use_font.get_height(font_size)
+	
+	# 返回总尺寸（宽度：icon宽度 + label宽度，高度：icon和label的最大值）
+	return Vector2(icon_width + label_width, max(icon_height, label_height))
