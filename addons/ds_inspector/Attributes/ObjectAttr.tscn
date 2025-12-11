@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bq48f7kbgdc6k"]
+[gd_scene load_steps=5 format=3 uid="uid://bq48f7kbgdc6k"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/Attributes/ObjectAttr.gd" id="1_2c03v"]
 [ext_resource type="Texture2D" uid="uid://b4gygo74kouha" path="res://addons/ds_inspector/icon/Down.png" id="2_hj0lq"]
 [ext_resource type="Texture2D" uid="uid://cu3j2ca30o87w" path="res://addons/ds_inspector/icon/Right.png" id="2_lhutd"]
+[ext_resource type="Texture2D" uid="uid://drmwgwciyvoxq" path="res://addons/ds_inspector/icon/Select.svg" id="4_ahmu3"]
 
-[node name="ObjectAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container")]
+[node name="ObjectAttr" type="VBoxContainer" node_paths=PackedStringArray("expand_btn", "attr_container", "junp_button")]
 offset_left = 770.0
 offset_right = 1920.0
 offset_bottom = 1080.0
@@ -13,14 +14,26 @@ size_flags_stretch_ratio = 6.0
 script = ExtResource("1_2c03v")
 expand_icon_tex = ExtResource("2_hj0lq")
 collapse_icon_tex = ExtResource("2_lhutd")
-expand_btn = NodePath("ExpandBtn")
+expand_btn = NodePath("HBoxContainer/ExpandBtn")
 attr_container = NodePath("AttrContainer")
+junp_button = NodePath("HBoxContainer/JumpBtn")
 
-[node name="ExpandBtn" type="Button" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
-text = "Object[Node]"
+
+[node name="ExpandBtn" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Object[null]"
 icon = ExtResource("2_lhutd")
 
+[node name="JumpBtn" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+tooltip_text = "跳转节点"
+icon = ExtResource("4_ahmu3")
+
 [node name="AttrContainer" type="VBoxContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3

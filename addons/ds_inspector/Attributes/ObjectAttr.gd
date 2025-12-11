@@ -9,6 +9,8 @@ var collapse_icon_tex: Texture2D
 var expand_btn: Button
 @export
 var attr_container: VBoxContainer
+@export
+var junp_button: Button
 
 var type: String = "object"
 
@@ -24,6 +26,8 @@ func _ready():
 	expand_btn.pressed.connect(on_expand_btn_pressed)
 	expand_btn.icon = collapse_icon_tex
 	attr_container.visible = false
+	junp_button.pressed.connect(_on_jump_button_pressed)
+	junp_button.visible = false  # 默认隐藏跳转按钮
 	_update_button_state()
 	pass
 
@@ -71,6 +75,7 @@ func set_value(value):
 	
 	_value = value
 	_update_button_state()
+	_update_jump_button_visibility()
 	
 	# 如果已经展开且有值，更新所有子属性
 	if _is_expanded and _is_initialized and value != null:
@@ -144,6 +149,24 @@ func _update_children():
 func _clear_children():
 	for child in attr_container.get_children():
 		child.queue_free()
+
+# 更新跳转按钮的显示状态
+func _update_jump_button_visibility():
+	# 只有当 _value 是 Node 类型时才显示跳转按钮
+	if _value != null and _value is Node:
+		junp_button.visible = true
+	else:
+		junp_button.visible = false
+	pass
+
+# 跳转按钮点击回调
+func _on_jump_button_pressed():
+	if _value != null and _value is Node and _inspector_container != null:
+		# 访问 NodeTree 对象并定位到该节点
+		var dt = _inspector_container.debug_tool
+		if dt and dt.window and dt.window.tree:
+			dt.window.tree.locate_selected(_value)
+	pass
 
 func _should_display_property(prop: Dictionary) -> bool:
 	# 过滤掉不需要显示的属性

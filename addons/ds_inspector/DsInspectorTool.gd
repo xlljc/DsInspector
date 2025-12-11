@@ -49,7 +49,6 @@ func _enter_tree():
 			get_viewport().gui_embed_subwindows = false
 
 func _ready():
-	brush.node_tree = window.tree
 	tips_anim.animation_finished.connect(on_tip_anim_finished)
 	_root_viewport = get_viewport()
 	pass

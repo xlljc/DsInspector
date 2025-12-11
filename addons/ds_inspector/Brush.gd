@@ -3,7 +3,6 @@ extends Node2D
 class_name DsBrush
 
 
-var node_tree
 # 当前绘制的节点
 var _draw_node: Node = null
 var _has_draw_node: bool = false
@@ -79,7 +78,7 @@ func set_draw_node(node: Node) -> void:
 	_has_draw_node = true
 	_in_canvaslayer = debug_tool.is_in_canvaslayer(node)
 	
-	var icon_path = node_tree.icon_mapping.get_icon(_draw_node)
+	var icon_path = debug_tool.window.tree.icon_mapping.get_icon(_draw_node)
 	_icon = load(icon_path)
 	node_path_tips.set_show_icon(_icon)
 	# 往上找是否有window节点，如果有则获取窗口大小，否则获取屏幕大小

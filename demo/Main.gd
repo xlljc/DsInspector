@@ -8,6 +8,11 @@ class TestData:
 	var color_value: Color = Color.WHITE
 	var ch_data
 
+@export
+var ref_node: Node
+@export
+var ref_node2: Node
+
 var timer: float = 0.0
 var timer2: float = 0.0
 

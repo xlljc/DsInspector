@@ -6,6 +6,8 @@ class_name DsInspectorContainer
 var update_time: float = 0.2 # 更新时间
 @export
 var filtr_input: LineEdit # 过滤属性输入框
+@export
+var debug_tool: CanvasLayer
 
 var _curr_node: Node
 var _has_node: bool = false

@@ -143,7 +143,7 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(3418, 312)
+position = Vector2i(2168, 958)
 size = Vector2i(2472, 1724)
 visible = false
 transient = true
@@ -433,11 +433,12 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/BgColor/Scroll/MarginContainer" node_paths=PackedStringArray("filtr_input")]
+[node name="InspectorContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/BgColor/Scroll/MarginContainer" node_paths=PackedStringArray("filtr_input", "debug_tool")]
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("15_teqd0")
 filtr_input = NodePath("../../../../FiltrInput")
+debug_tool = NodePath("../../../../../../../../../../../..")
 
 [node name="CollectContainer" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
 visible = false
@@ -818,9 +819,9 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 2015.0
+offset_left = 1795.0
 offset_top = 20.0
-offset_right = 2063.0
+offset_right = 1843.0
 offset_bottom = 68.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")
