@@ -20,6 +20,7 @@ border_width = 2.0
 editor_only = false
 
 [node name="Label" type="Label" parent="SubViewportContainer/ReferenceRect"]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 text = "2d场景中的viewport"
@@ -50,6 +51,7 @@ border_width = 2.0
 editor_only = false
 
 [node name="Label" type="Label" parent="SubViewportContainer/SubViewport/SubViewportContainer/ReferenceRect"]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 text = "viewport套viewport"
@@ -81,6 +83,7 @@ border_width = 2.0
 editor_only = false
 
 [node name="Label" type="Label" parent="SubViewportContainer/SubViewport/SubViewportContainer/SubViewport/SubViewportContainer/ReferenceRect"]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 text = "viewport套viewport"

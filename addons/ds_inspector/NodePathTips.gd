@@ -1,3 +1,4 @@
+@tool
 extends CenterContainer
 class_name DsNodePathTips
 

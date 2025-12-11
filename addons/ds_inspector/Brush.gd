@@ -183,10 +183,13 @@ func _draw_border(brush_node: CanvasItem):
 		node_path_tips.visible = true
 		# 获取 node_path_tips 的实际尺寸（包括 icon 和 label）
 		var text_size: Vector2 = node_path_tips.get_show_size()
+		var half_size: Vector2 = text_size / 2.0
 		var center_pos: Vector2
 		var view_size: Vector2
+		var base_pos: Vector2
+		
 		if _viewport_node == null:
-			center_pos = trans.position + Vector2(0, 50)
+			base_pos = trans.position
 			view_size = brush_node.get_viewport().size
 		else:
 			if !_has_prev_click:
@@ -197,11 +200,22 @@ func _draw_border(brush_node: CanvasItem):
 				else:
 					_prev_click_pos = get_global_mouse_position()
 					_prev_click_view_size = get_viewport_rect().size
-			center_pos = _prev_click_pos + Vector2(0, 50)
+			base_pos = _prev_click_pos
 			view_size = _prev_click_view_size
 		
+		# 计算垂直偏移，考虑提示框高度，避免遮挡鼠标点击区域
+		# 基础偏移50像素，加上提示框的半高，确保提示框底部不会遮挡鼠标
+		var vertical_offset: float = 50.0 + half_size.y
+		
+		# 如果提示框高度太大，可能会超出屏幕下方，尝试放在鼠标上方
+		var bottom_edge: float = base_pos.y + vertical_offset + half_size.y
+		if bottom_edge > view_size.y:
+			# 放在鼠标上方
+			vertical_offset = -(50.0 + half_size.y)
+		
+		center_pos = base_pos + Vector2(0, vertical_offset)
+		
 		# node_path_tips.position 现在是中心点位置，需要计算左上角位置来限制边界
-		var half_size: Vector2 = text_size / 2.0
 		var top_left: Vector2 = center_pos - half_size
 		
 		# 限制左上角在屏幕内

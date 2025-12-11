@@ -143,7 +143,7 @@ grow_vertical = 2
 
 [node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
 title = "DsInspector"
-position = Vector2i(2314, 724)
+position = Vector2i(3418, 312)
 size = Vector2i(2472, 1724)
 visible = false
 transient = true
@@ -632,6 +632,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 0
 
 [node name="SettingItem" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+visible = false
 layout_mode = 2
 
 [node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem"]
@@ -681,8 +682,10 @@ autowrap_mode = 3
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 0
+button_pressed = true
 
 [node name="SettingItem5" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5"]
@@ -747,12 +750,14 @@ node_path_tips = NodePath("../NodePathTips")
 debug_tool = NodePath("..")
 
 [node name="NodePathTips" type="CenterContainer" parent="." node_paths=PackedStringArray("icon", "label")]
+visible = false
 theme = ExtResource("2_rwegl")
 use_top_left = true
 script = ExtResource("27_t6suy")
 use_font = ExtResource("28_ox6dc")
 icon = NodePath("BoxContainer/ColorRect/Icon")
 label = NodePath("BoxContainer/Path")
+max_width = 1100
 
 [node name="BoxContainer" type="HBoxContainer" parent="NodePathTips"]
 layout_mode = 2
@@ -761,6 +766,7 @@ theme = ExtResource("2_rwegl")
 [node name="ColorRect" type="ColorRect" parent="NodePathTips/BoxContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
+size_flags_vertical = 0
 color = Color(0.203922, 0.203922, 0.203922, 1)
 
 [node name="Icon" type="TextureRect" parent="NodePathTips/BoxContainer/ColorRect"]
@@ -812,9 +818,9 @@ libraries = {
 }
 
 [node name="HoverIcon" type="TextureButton" parent="."]
-offset_left = 1899.0
+offset_left = 2015.0
 offset_top = 20.0
-offset_right = 1947.0
+offset_right = 2063.0
 offset_bottom = 68.0
 texture_normal = ExtResource("21_pv2ua")
 texture_pressed = ExtResource("22_0afkq")
