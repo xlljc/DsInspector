@@ -20,6 +20,7 @@ class ConfigData:
 	var scale_index: int = 2
 	var enable_server: bool = true
 	var server_port: int = 6004
+	var check_viewport: bool = true
 
 # 统一的配置文件路径
 static var save_path: String = "user://ds_inspector_config.json"
@@ -65,7 +66,8 @@ func _serialize_value(value) -> Variant:
 			"auto_search": value.auto_search,
 			"scale_index": value.scale_index,
 			"enable_server": value.enable_server,
-			"server_port": value.server_port
+			"server_port": value.server_port,
+			"check_viewport": value.check_viewport
 		}
 	else:
 		return value
@@ -83,17 +85,28 @@ func _deserialize_value(value) -> Variant:
 	config.exclude_list = exclude_list if exclude_list != null else []
 	var collect_list = value.get("collect_list", [])
 	config.collect_list = collect_list if collect_list != null else []
-	config.enable_in_editor = value.get("enable_in_editor", false)
-	config.enable_in_game = value.get("enable_in_game", true)
-	config.use_system_window = value.get("use_system_window", false)
-	config.auto_open = value.get("auto_open", false)
-	config.auto_search = value.get("auto_search", false)
-	config.scale_index = value.get("scale_index", 2)
+	# 处理可能为 null 的布尔字段
+	var enable_in_editor = value.get("enable_in_editor", false)
+	config.enable_in_editor = enable_in_editor if enable_in_editor != null else false
+	var enable_in_game = value.get("enable_in_game", true)
+	config.enable_in_game = enable_in_game if enable_in_game != null else true
+	var use_system_window = value.get("use_system_window", false)
+	config.use_system_window = use_system_window if use_system_window != null else false
+	var auto_open = value.get("auto_open", false)
+	config.auto_open = auto_open if auto_open != null else false
+	var auto_search = value.get("auto_search", false)
+	config.auto_search = auto_search if auto_search != null else false
+	# 处理可能为 null 的数值字段
+	var scale_index = value.get("scale_index", 2)
+	config.scale_index = scale_index if scale_index != null else 2
 	# 处理可能为 null 的服务器字段
-	var enable_server = value.get("enable_server", false)
+	var enable_server = value.get("enable_server", true)
 	config.enable_server = enable_server if enable_server != null else true
 	var server_port = value.get("server_port", 6004)
 	config.server_port = server_port if server_port != null else 6004
+	# 处理可能为 null 的视口检查字段
+	var check_viewport = value.get("check_viewport", true)
+	config.check_viewport = check_viewport if check_viewport != null else true
 	return config
 
 # 保存所有配置到文件
@@ -319,3 +332,14 @@ func set_server_port(port: int) -> void:
 # 获取服务器端口
 func get_server_port() -> int:
 	return _config_data.server_port
+
+# ==================== 视口检查相关 ====================
+
+# 设置检查视口
+func set_check_viewport(enabled: bool) -> void:
+	_config_data.check_viewport = enabled
+	_needs_save = true
+
+# 获取检查视口
+func get_check_viewport() -> bool:
+	return _config_data.check_viewport

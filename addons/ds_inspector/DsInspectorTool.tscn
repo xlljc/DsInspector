@@ -560,7 +560,7 @@ theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="SettingList" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer" node_paths=PackedStringArray("debug_tool", "tree_container", "use_system_window_checkbox", "auto_open_checkbox", "auto_search_checkbox", "scale_options", "server_checkbox", "server_port_input", "server_port_container")]
+[node name="SettingList" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer" node_paths=PackedStringArray("debug_tool", "tree_container", "use_system_window_checkbox", "auto_open_checkbox", "auto_search_checkbox", "scale_options", "server_checkbox", "server_port_input", "server_port_container", "check_viewport_checkbox")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -574,58 +574,7 @@ scale_options = NodePath("SettingItem4/OptionButton")
 server_checkbox = NodePath("SettingItem5/HBoxContainer/CheckBox")
 server_port_input = NodePath("SettingItem5/HBoxContainer2/ServerPort")
 server_port_container = NodePath("SettingItem5/HBoxContainer2")
-
-[node name="SettingItem" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
-visible = false
-layout_mode = 2
-
-[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem"]
-custom_minimum_size = Vector2(150, 27)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-size_flags_stretch_ratio = 8.0
-text = "使用系统原生弹窗（会影响游戏中所有弹窗，下一次启动游戏生效）"
-autowrap_mode = 3
-
-[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 0
-
-[node name="SettingItem3" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
-layout_mode = 2
-
-[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem3"]
-custom_minimum_size = Vector2(150, 27)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-size_flags_stretch_ratio = 8.0
-text = "启动游戏自动打弹窗"
-autowrap_mode = 3
-
-[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem3"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 0
-
-[node name="SettingItem2" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
-layout_mode = 2
-
-[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem2"]
-custom_minimum_size = Vector2(150, 27)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 5
-size_flags_stretch_ratio = 8.0
-text = "场景树自动搜索（可能造成卡顿）"
-autowrap_mode = 3
-
-[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem2"]
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 0
+check_viewport_checkbox = NodePath("SettingItem6/CheckBox")
 
 [node name="SettingItem4" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
 layout_mode = 2
@@ -665,8 +614,75 @@ popup/item_7/id = 7
 popup/item_8/text = "300%"
 popup/item_8/id = 8
 
+[node name="SettingItem3" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem3"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "启动游戏自动打弹窗"
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem3"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
+[node name="SettingItem" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "使用系统原生弹窗（会影响游戏中所有弹窗，下一次启动游戏生效）"
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
+[node name="SettingItem2" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem2"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "场景树自动搜索（可能造成卡顿）"
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem2"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
+[node name="SettingItem6" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem6"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "允许拣选Viewport、Window节点（会在视窗下生成绘制节点）"
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem6"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
 [node name="SettingItem5" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList"]
-visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/SettingItem5"]

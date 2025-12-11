@@ -15,7 +15,6 @@ var node_path_tips: DsNodePathTips# = $"../Control"
 @export
 var debug_tool: CanvasLayer
 
-var _is_draw_in_viewport: bool = true
 var _viewport_brush_layer: CanvasLayer
 var _viewport_brush: Node2D
 
@@ -121,8 +120,9 @@ func _draw():
 		set_draw_node(null)
 		return
 
-	# 先找是不是在 viewport 中
-	if _is_draw_in_viewport:
+	# 检查是否开启视口检查
+	if debug_tool.save_config.get_check_viewport():
+		# 先找是不是在 viewport 中
 		var viewport_node = find_viewport_node(_draw_node)
 		if viewport_node != null:
 			if viewport_node != _viewport_node:

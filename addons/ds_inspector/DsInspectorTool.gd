@@ -168,6 +168,9 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 					in_canvaslayer: bool, exclude_list: Array) -> Node:
 	if node == self or node == brush.node_path_tips or window.exclude_list.has_excludeL_path(path):
 		return null
+	
+	# if node is Viewport and !save_config.get_check_viewport():
+	# 	return null
 
 	if !in_canvaslayer and node is CanvasLayer:
 		in_canvaslayer = true;
@@ -183,8 +186,8 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
 		var child := node.get_child(i, true)
-		# if child is Viewport:
-		# 	continue
+		if child is Viewport and !save_config.get_check_viewport():
+			continue
 		var new_path: String
 		if path.length() > 0:
 			new_path = path + "/" + child.name

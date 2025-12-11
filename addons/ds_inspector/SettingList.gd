@@ -22,6 +22,9 @@ var server_port_input: LineEdit
 @export
 var server_port_container: HBoxContainer
 
+@export
+var check_viewport_checkbox: CheckBox
+
 func _ready():
 	# 读取并设置 checkbox 状态
 	if !Engine.is_editor_hint():
@@ -49,6 +52,10 @@ func _ready():
 	server_port_input.text_submitted.connect(_on_server_port_submitted)
 	server_port_input.focus_exited.connect(_on_server_port_focus_exited)
 	_update_server_port_visibility()
+
+	# 视口检查设置
+	check_viewport_checkbox.button_pressed = debug_tool.save_config.get_check_viewport()
+	check_viewport_checkbox.toggled.connect(_on_check_viewport_toggled)
 
 	call_deferred("init_config")
 
@@ -109,3 +116,6 @@ func _save_server_port():
 	else:
 		# 输入无效，恢复为当前配置值
 		server_port_input.text = str(debug_tool.save_config.get_server_port())
+
+func _on_check_viewport_toggled(enabled: bool):
+	debug_tool.save_config.set_check_viewport(enabled)
