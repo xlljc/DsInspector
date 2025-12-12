@@ -50,18 +50,20 @@ class ShortcutKeyData:
 	var focus_search_node: Dictionary = {"keycode": KEY_F, "ctrl": true, "alt": false, "shift": false, "meta": false}
 	# 聚焦搜索属性：ctrl + g
 	var focus_search_attr: Dictionary = {"keycode": KEY_G, "ctrl": true, "alt": false, "shift": false, "meta": false}
-	# 隐藏/显示选中节点：ctrl + j
-	var toggle_selected_node: Dictionary = {"keycode": KEY_J, "ctrl": true, "alt": false, "shift": false, "meta": false}
-	# 打开选中节点的场景：ctrl + k
-	var open_node_scene: Dictionary = {"keycode": KEY_K, "ctrl": true, "alt": false, "shift": false, "meta": false}
-	# 打开选中节点的脚本：ctrl + l
-	var open_node_script: Dictionary = {"keycode": KEY_L, "ctrl": true, "alt": false, "shift": false, "meta": false}
+	# 隐藏/显示选中节点：ctrl + l
+	var toggle_selected_node: Dictionary = {"keycode": KEY_L, "ctrl": true, "alt": false, "shift": false, "meta": false}
+	# 打开选中节点的场景：ctrl + j
+	var open_node_scene: Dictionary = {"keycode": KEY_J, "ctrl": true, "alt": false, "shift": false, "meta": false}
+	# 打开选中节点的脚本：ctrl + k
+	var open_node_script: Dictionary = {"keycode": KEY_K, "ctrl": true, "alt": false, "shift": false, "meta": false}
 	# 记录节点实例：ctrl + \
 	var record_node_instance: Dictionary = {"keycode": KEY_BACKSLASH, "ctrl": true, "alt": false, "shift": false, "meta": false}
 	# 收藏当前路径：ctrl + [
 	var collect_path: Dictionary = {"keycode": KEY_BRACKETLEFT, "ctrl": true, "alt": false, "shift": false, "meta": false}
 	# 排除当前路径：ctrl + ]
 	var exclude_path: Dictionary = {"keycode": KEY_BRACKETRIGHT, "ctrl": true, "alt": false, "shift": false, "meta": false}
+	# 关闭绘制轮廓：ctrl + ;
+	var disable_outline: Dictionary = {"keycode": KEY_SEMICOLON, "ctrl": true, "alt": false, "shift": false, "meta": false}
 
 # 统一的配置文件路径
 static var save_path: String = "user://ds_inspector_config.json"
@@ -127,7 +129,8 @@ func _serialize_value(value) -> Variant:
 				"open_node_script": value.shortcut_key_data.open_node_script,
 				"record_node_instance": value.shortcut_key_data.record_node_instance,
 				"collect_path": value.shortcut_key_data.collect_path,
-				"exclude_path": value.shortcut_key_data.exclude_path
+				"exclude_path": value.shortcut_key_data.exclude_path,
+				"disable_outline": value.shortcut_key_data.disable_outline
 			}
 		}
 	else:
@@ -209,6 +212,8 @@ func _deserialize_value(value) -> Variant:
 		config.shortcut_key_data.collect_path = collect_path if collect_path != null else config.shortcut_key_data.collect_path
 		var exclude_path = shortcut_data.get("exclude_path", config.shortcut_key_data.exclude_path)
 		config.shortcut_key_data.exclude_path = exclude_path if exclude_path != null else config.shortcut_key_data.exclude_path
+		var disable_outline = shortcut_data.get("disable_outline", config.shortcut_key_data.disable_outline)
+		config.shortcut_key_data.disable_outline = disable_outline if disable_outline != null else config.shortcut_key_data.disable_outline
 	else:
 		config.shortcut_key_data = ShortcutKeyData.new()
 	return config
@@ -620,3 +625,12 @@ func set_exclude_path_shortcut(keycode: int, ctrl: bool = false, alt: bool = fal
 # 获取排除当前路径快捷键
 func get_exclude_path_shortcut() -> Dictionary:
 	return _config_data.shortcut_key_data.exclude_path
+
+# 设置关闭绘制轮廓快捷键
+func set_disable_outline_shortcut(keycode: int, ctrl: bool = false, alt: bool = false, shift: bool = false, meta: bool = false) -> void:
+	_config_data.shortcut_key_data.disable_outline = {"keycode": keycode, "ctrl": ctrl, "alt": alt, "shift": shift, "meta": meta}
+	_needs_save = true
+
+# 获取关闭绘制轮廓快捷键
+func get_disable_outline_shortcut() -> Dictionary:
+	return _config_data.shortcut_key_data.disable_outline

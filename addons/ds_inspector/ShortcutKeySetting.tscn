@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/ds_inspector/ShortcutKeySetting.gd" id="1_8gsyf"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_6whlk"]
 
-[node name="ShortcutKeySetting" type="VBoxContainer" node_paths=PackedStringArray("shortcut_dialog", "toggle_window_btn", "pause_play_btn", "step_execute_btn", "prev_node_btn", "next_node_btn", "save_node_btn", "delete_node_btn", "pick_node_btn", "collapse_expand_btn", "focus_search_node_btn", "focus_search_attr_btn", "toggle_selected_node_btn", "open_node_scene_btn", "open_node_script_btn", "record_node_instance_btn", "collect_path_btn", "exclude_path_btn")]
+[node name="ShortcutKeySetting" type="VBoxContainer" node_paths=PackedStringArray("shortcut_dialog", "toggle_window_btn", "pause_play_btn", "step_execute_btn", "prev_node_btn", "next_node_btn", "save_node_btn", "delete_node_btn", "pick_node_btn", "collapse_expand_btn", "focus_search_node_btn", "focus_search_attr_btn", "toggle_selected_node_btn", "open_node_scene_btn", "open_node_script_btn", "record_node_instance_btn", "collect_path_btn", "exclude_path_btn", "disable_outline_btn")]
 offset_right = 774.0
 offset_bottom = 685.0
 script = ExtResource("1_8gsyf")
@@ -25,6 +25,7 @@ open_node_script_btn = NodePath("VBoxContainer2/Item14/KeyBtn")
 record_node_instance_btn = NodePath("VBoxContainer2/Item15/KeyBtn")
 collect_path_btn = NodePath("VBoxContainer2/Item16/KeyBtn")
 exclude_path_btn = NodePath("VBoxContainer2/Item17/KeyBtn")
+disable_outline_btn = NodePath("VBoxContainer2/Item18/KeyBtn")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -189,6 +190,24 @@ autowrap_mode = 3
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 text = "Ctrl + ="
+
+[node name="Item18" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item18"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "隐藏轮廓"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item18"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + D"
 
 [node name="Item9" type="HBoxContainer" parent="VBoxContainer2"]
 layout_mode = 2

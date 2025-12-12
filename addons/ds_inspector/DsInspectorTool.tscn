@@ -434,12 +434,10 @@ text_overrun_behavior = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-current_tab = 4
 script = ExtResource("14_x52hf")
 tab_names = ["检查器", "收藏路径", "排除路径", "作弊", "设置"]
 
 [node name="Inspector" type="VBoxContainer" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = "检查器"
@@ -579,6 +577,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Container" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 color = Color(0.129412, 0.14902, 0.180392, 1)
@@ -843,10 +842,17 @@ stretch_mode = 5
 script = ExtResource("24_c6x5m")
 debug_tool_path = NodePath("..")
 
-[node name="ShortcutKey" type="Node" parent="." node_paths=PackedStringArray("debug_tool", "shortcut_key_setting")]
+[node name="ShortcutKey" type="Node" parent="." node_paths=PackedStringArray("debug_tool", "shortcut_key_setting", "tab_container", "search_node_input", "search_tree_input", "collect_node_btn", "exclude_node_btn", "record_expand_btn", "record_container")]
 script = ExtResource("36_m6bni")
 debug_tool = NodePath("..")
 shortcut_key_setting = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting")
+tab_container = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer")
+search_node_input = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/HBoxContainer/SearchInput")
+search_tree_input = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Inspector/FiltrInput")
+collect_node_btn = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/CollectContainer/HBoxContainer/AddButton")
+exclude_node_btn = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/HBoxContainer/AddButton")
+record_expand_btn = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/HBoxContainer/RecordBtn")
+record_container = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/RecordRoot/ScrollContainer/RecordContainer")
 
 [editable path="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting"]
 [editable path="NodePathTips"]

@@ -2,28 +2,9 @@
 extends VBoxContainer
 
 """
-如果关闭了窗口则不监听其他快捷键（只监听隐藏/显示窗口）
+如果关闭了窗口则不监听其他快捷键（只监听隐藏/显示窗口、暂停/播放、单步执行、拣选节点）
 可以自己录制快捷键，支持 ctrl、alt、shift、command 组合键
 可以设置是否启用快捷键
-
-默认快捷键：
-隐藏/显示窗口：f5
-暂停/播放：ctrl + p
-单步执行：ctrl + i
-上一个节点：ctrl + 左
-下一个节点：ctrl + 右
-保存节点：ctrl + s
-删除节点：ctrl + d
-拣选节点：ctrl + =
-收起展开：ctrl + -
-聚焦搜索节点：ctrl + f
-聚焦搜索属性：ctrl + g
-隐藏/显示选中节点：ctrl + j
-打开选中节点的场景：ctrl + k
-打开选中节点的脚本：ctrl + l
-记录节点实例：ctrl + \
-收藏当前路径：ctrl + [
-排除当前路径：ctrl + ]
 """
 
 @export
@@ -67,6 +48,8 @@ var record_node_instance_btn: Button
 var collect_path_btn: Button
 @export
 var exclude_path_btn: Button
+@export
+var disable_outline_btn: Button
 
 # 弹窗中的标签
 var _dialog_label: Label
@@ -102,7 +85,8 @@ const SHORTCUT_TO_ACTION = {
 	"open_node_script": "ds_inspector_open_node_script",
 	"record_node_instance": "ds_inspector_record_node_instance",
 	"collect_path": "ds_inspector_collect_path",
-	"exclude_path": "ds_inspector_exclude_path"
+	"exclude_path": "ds_inspector_exclude_path",
+	"disable_outline": "ds_inspector_disable_outline"
 }
 
 func _ready():
@@ -130,6 +114,7 @@ func _ready():
 	record_node_instance_btn.pressed.connect(_on_shortcut_btn_pressed.bind("record_node_instance", "记录节点实例"))
 	collect_path_btn.pressed.connect(_on_shortcut_btn_pressed.bind("collect_path", "收藏当前路径"))
 	exclude_path_btn.pressed.connect(_on_shortcut_btn_pressed.bind("exclude_path", "排除当前路径"))
+	disable_outline_btn.pressed.connect(_on_shortcut_btn_pressed.bind("disable_outline", "关闭绘制轮廓"))
 	
 	# 初始化所有 Input Action
 	_init_input_actions()
@@ -172,6 +157,7 @@ func _init_input_actions():
 	_create_or_update_action("record_node_instance", shortcut_data.record_node_instance)
 	_create_or_update_action("collect_path", shortcut_data.collect_path)
 	_create_or_update_action("exclude_path", shortcut_data.exclude_path)
+	_create_or_update_action("disable_outline", shortcut_data.disable_outline)
 
 func _create_or_update_action(shortcut_name: String, shortcut_dict: Dictionary):
 	"""创建或更新一个 Input Action"""
@@ -309,6 +295,8 @@ func _on_dialog_confirmed():
 			save_config.set_collect_path_shortcut(_recorded_keycode, _recorded_ctrl, _recorded_alt, _recorded_shift, _recorded_meta)
 		"exclude_path":
 			save_config.set_exclude_path_shortcut(_recorded_keycode, _recorded_ctrl, _recorded_alt, _recorded_shift, _recorded_meta)
+		"disable_outline":
+			save_config.set_disable_outline_shortcut(_recorded_keycode, _recorded_ctrl, _recorded_alt, _recorded_shift, _recorded_meta)
 	
 	# 更新对应的 Input Action
 	var shortcut_dict = {
@@ -351,6 +339,7 @@ func _load_shortcuts():
 	_update_button_text(record_node_instance_btn, shortcut_data.record_node_instance)
 	_update_button_text(collect_path_btn, shortcut_data.collect_path)
 	_update_button_text(exclude_path_btn, shortcut_data.exclude_path)
+	_update_button_text(disable_outline_btn, shortcut_data.disable_outline)
 
 func _update_button_text(button: Button, shortcut_dict: Dictionary):
 	if !button or shortcut_dict.is_empty():
