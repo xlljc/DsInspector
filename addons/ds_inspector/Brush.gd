@@ -9,13 +9,18 @@ var _has_draw_node: bool = false
 var _in_canvaslayer: bool = false
 
 @export
-var node_path_tips: DsNodePathTips# = $"../Control"
+var golobal_path_tips: DsNodePathTips
+
+@export
+var viewport_layer_tscn: PackedScene
 
 @export
 var debug_tool: CanvasLayer
 
-var _viewport_brush_layer: CanvasLayer
-var _viewport_brush: Node2D
+# ViewportBrushLayer 实例（用于所有 viewport，包括 window）
+var window_layer_instance: CanvasLayer = null
+var _window_brush: Node2D = null
+var _window_path_tips: DsNodePathTips = null
 
 var _viewport_node: Viewport
 var _label_origin_root: Node
@@ -30,24 +35,57 @@ var _show_text: bool = false
 var _root_viewport: Viewport = null
 
 func _ready():
-	_label_origin_root = node_path_tips.get_parent()
-	node_path_tips.visible = false
-	_viewport_brush = Node2D.new()
-	_viewport_brush.draw.connect(_on_viewport_brush_draw)
-	_viewport_brush.name = "ViewportBrush"
-	_viewport_brush_layer = CanvasLayer.new()
-	_viewport_brush_layer.name = "ViewportBrushLayer"
-	_viewport_brush_layer.layer = 128
-	_viewport_brush_layer.add_child(_viewport_brush)
+	_label_origin_root = golobal_path_tips.get_parent()
+	golobal_path_tips.visible = false
 	_root_viewport = get_viewport()
 	pass
+
+# 为 window 创建或重新创建笔刷层实例
+func _ensure_window_layer_instance() -> bool:
+	if window_layer_instance == null or !is_instance_valid(window_layer_instance) or !window_layer_instance.is_inside_tree():
+		# 如果笔刷层被销毁了，重新创建
+		if viewport_layer_tscn == null:
+			push_error("viewport_layer_tscn is null")
+			return false
+		
+		window_layer_instance = viewport_layer_tscn.instantiate()
+		window_layer_instance.layer = 128
+		_window_brush = window_layer_instance.get_node("Brush")
+		_window_brush.draw.connect(_on_window_brush_draw)
+		_window_path_tips = window_layer_instance.get_node("NodePathTips")
+		_window_path_tips.visible = false
+		
+		# 重置状态
+		_has_prev_click = false
+		return true
+	return false
 
 func _process(_delta):
 	if _has_draw_node and (_draw_node == null or !is_instance_valid(_draw_node) or !_draw_node.is_inside_tree()):
 		set_draw_node(null)
+	
+	# 检查笔刷层是否被销毁，如果被销毁且有绘制节点在 viewport 中，则需要重新创建
+	if _has_draw_node and _viewport_node != null and is_instance_valid(_viewport_node):
+		if _ensure_window_layer_instance():
+			# 笔刷层被重新创建了，需要重新添加到目标 viewport
+			if _draw_node != null and is_instance_valid(_draw_node):
+				_viewport_node.add_child(window_layer_instance)
+				# 重新设置提示信息
+				_window_path_tips.set_show_icon(_icon)
+				_window_path_tips.set_show_text(debug_tool.get_node_path(_draw_node), _viewport_node.size.x)
+				
+				if _viewport_node is Window:
+					# Window 情况：显示实例的 path tips，隐藏全局的
+					_window_path_tips.visible = _show_text
+					golobal_path_tips.visible = false
+				else:
+					# 普通 viewport 情况：显示全局 path tips
+					_window_path_tips.visible = false
+					golobal_path_tips.visible = _show_text
+	
 	queue_redraw()
-	if _viewport_brush != null:
-		_viewport_brush.queue_redraw()
+	if _window_brush != null and is_instance_valid(_window_brush):
+		_window_brush.queue_redraw()
 	pass
 
 func get_draw_node() -> Node:
@@ -63,15 +101,25 @@ func set_draw_node(node: Node) -> void:
 		_draw_node = null
 		_has_draw_node = false
 		set_show_text(false)
+		
+		# 清理 viewport 相关
 		if _viewport_node != null:
-			_viewport_node.remove_child(_viewport_brush_layer)
+			# 移除并销毁笔刷层实例
+			if window_layer_instance != null and is_instance_valid(window_layer_instance):
+				if is_instance_valid(_viewport_node):
+					_viewport_node.remove_child(window_layer_instance)
+				window_layer_instance.queue_free()
+			window_layer_instance = null
+			_window_brush = null
+			_window_path_tips = null
 			_viewport_node = null
-		# 还原
-		var lb_parent = node_path_tips.get_parent()
+		
+		# 还原全局 path tips
+		var lb_parent = golobal_path_tips.get_parent()
 		if lb_parent != _label_origin_root:
 			if lb_parent != null:
-				lb_parent.remove_child(node_path_tips)
-			_label_origin_root.add_child(node_path_tips)
+				lb_parent.remove_child(golobal_path_tips)
+			_label_origin_root.add_child(golobal_path_tips)
 		return
 	_has_prev_click = false
 	_draw_node = node
@@ -80,7 +128,7 @@ func set_draw_node(node: Node) -> void:
 	
 	var icon_path = debug_tool.window.tree.icon_mapping.get_icon(_draw_node)
 	_icon = load(icon_path)
-	node_path_tips.set_show_icon(_icon)
+	golobal_path_tips.set_show_icon(_icon)
 	# 往上找是否有window节点，如果有则获取窗口大小，否则获取屏幕大小
 	var window: Window = null
 	var curr_node: Node = node.get_parent()
@@ -90,18 +138,36 @@ func set_draw_node(node: Node) -> void:
 			break
 		curr_node = curr_node.get_parent()
 	if window != null:
-		node_path_tips.set_show_text(debug_tool.get_node_path(node), window.size.x)
+		golobal_path_tips.set_show_text(debug_tool.get_node_path(node), window.size.x)
 	else:
-		node_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
+		golobal_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
+	
+	# 如果当前在 window 中，同时更新 window 实例的图标和文本
+	if _window_path_tips != null and is_instance_valid(_window_path_tips):
+		_window_path_tips.set_show_icon(_icon)
+		if _viewport_node != null and _viewport_node is Window:
+			_window_path_tips.set_show_text(debug_tool.get_node_path(node), _viewport_node.size.x)
+		else:
+			_window_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
 	pass
 
 func set_show_text(flag: bool):
 	_show_text = flag
-	node_path_tips.visible = flag
+	# 根据当前是否在 window 中来决定显示哪个 path tips
+	if _viewport_node != null and is_instance_valid(_viewport_node) and _viewport_node is Window:
+		# 在 window 中，显示 window 实例的 path tips，隐藏全局的
+		if _window_path_tips != null and is_instance_valid(_window_path_tips):
+			_window_path_tips.visible = flag
+		golobal_path_tips.visible = false
+	else:
+		# 不在 window 中，显示全局的 path tips
+		golobal_path_tips.visible = flag
+		if _window_path_tips != null and is_instance_valid(_window_path_tips):
+			_window_path_tips.visible = false
 	pass
 
 
-func _on_viewport_brush_draw():
+func _on_window_brush_draw():
 	# print("on_window_brush_draw")
 	if !_has_draw_node:
 		return
@@ -109,7 +175,9 @@ func _on_viewport_brush_draw():
 		set_draw_node(null)
 		return
 
-	_draw_border(_viewport_brush)
+	# 根据是否在 window 中来决定使用哪个 path tips
+	var path_tips = _window_path_tips if (_viewport_node != null and _viewport_node is Window) else golobal_path_tips
+	_draw_border(_window_brush, path_tips)
 	pass
 
 func _draw():
@@ -125,43 +193,78 @@ func _draw():
 		var viewport_node = find_viewport_node(_draw_node)
 		if viewport_node != null:
 			if viewport_node != _viewport_node:
+				# 清理旧的实例
 				if _viewport_node != null:
-					_viewport_node.remove_child(_viewport_brush_layer)
-					_viewport_node = null
+					if window_layer_instance != null and is_instance_valid(window_layer_instance):
+						if is_instance_valid(_viewport_node):
+							_viewport_node.remove_child(window_layer_instance)
+						window_layer_instance.queue_free()
+					window_layer_instance = null
+					_window_brush = null
+					_window_path_tips = null
+				
+				# 设置新的 viewport
 				_viewport_node = viewport_node
-				_viewport_node.add_child(_viewport_brush_layer)
-
+				
+				# 创建新的笔刷层实例
+				_ensure_window_layer_instance()
+				_viewport_node.add_child(window_layer_instance)
+				
+				# 设置节点路径提示
+				_window_path_tips.set_show_icon(_icon)
+				_window_path_tips.set_show_text(debug_tool.get_node_path(_draw_node), _viewport_node.size.x)
+				
 				if viewport_node is Window:
-					var lb_parent = node_path_tips.get_parent()
-					if lb_parent != _viewport_brush_layer:
+					# Window 情况：显示实例的 path tips，隐藏全局的
+					_window_path_tips.visible = _show_text
+					golobal_path_tips.visible = false
+					
+					# 还原全局 path tips 到原位置
+					var lb_parent = golobal_path_tips.get_parent()
+					if lb_parent != _label_origin_root:
 						if lb_parent != null:
-							lb_parent.remove_child(node_path_tips)
-						_viewport_brush_layer.add_child(node_path_tips)
-						_has_prev_click = false
-				else: # 还原
-					var lb_parent = node_path_tips.get_parent()
-					if lb_parent != null:
-						lb_parent.remove_child(node_path_tips)
-					_label_origin_root.add_child(node_path_tips)
-					_has_prev_click = false
+							lb_parent.remove_child(golobal_path_tips)
+						_label_origin_root.add_child(golobal_path_tips)
+				else:
+					# 普通 viewport 情况：显示全局 path tips
+					_window_path_tips.visible = false
+					golobal_path_tips.visible = _show_text
+					
+					# 还原全局 path tips 到原位置
+					var lb_parent = golobal_path_tips.get_parent()
+					if lb_parent != _label_origin_root:
+						if lb_parent != null:
+							lb_parent.remove_child(golobal_path_tips)
+						_label_origin_root.add_child(golobal_path_tips)
+				
+				_has_prev_click = false
 
 			return
 		else:
+			# 不在 viewport 中，清理
 			if _viewport_node != null:
-				_viewport_node.remove_child(_viewport_brush_layer)
+				if window_layer_instance != null and is_instance_valid(window_layer_instance):
+					if is_instance_valid(_viewport_node):
+						_viewport_node.remove_child(window_layer_instance)
+					window_layer_instance.queue_free()
+				window_layer_instance = null
+				_window_brush = null
+				_window_path_tips = null
 				_viewport_node = null
-			# 还原
-			var lb_parent = node_path_tips.get_parent()
+			
+			# 还原全局 path tips
+			var lb_parent = golobal_path_tips.get_parent()
 			if lb_parent != _label_origin_root:
 				if lb_parent != null:
-					lb_parent.remove_child(node_path_tips)
-				_label_origin_root.add_child(node_path_tips)
-				_has_prev_click = false
+					lb_parent.remove_child(golobal_path_tips)
+				_label_origin_root.add_child(golobal_path_tips)
+			golobal_path_tips.visible = _show_text
+			_has_prev_click = false
 
-	_draw_border(self)
+	_draw_border(self, golobal_path_tips)
 	pass
 
-func _draw_border(brush_node: CanvasItem):
+func _draw_border(brush_node: CanvasItem, path_tips: DsNodePathTips):
 	var trans = calc_node_trans(_draw_node)
 
 	if _draw_node is CollisionShape2D:
@@ -178,10 +281,10 @@ func _draw_border(brush_node: CanvasItem):
 	else:
 		_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, false)
 
-	if _show_text:
-		node_path_tips.visible = true
-		# 获取 node_path_tips 的实际尺寸（包括 icon 和 label）
-		var text_size: Vector2 = node_path_tips.get_show_size()
+	if _show_text and path_tips != null and is_instance_valid(path_tips):
+		path_tips.visible = true
+		# 获取 path_tips 的实际尺寸（包括 icon 和 label）
+		var text_size: Vector2 = path_tips.get_show_size()
 		var half_size: Vector2 = text_size / 2.0
 		var center_pos: Vector2
 		var view_size: Vector2
@@ -214,7 +317,7 @@ func _draw_border(brush_node: CanvasItem):
 		
 		center_pos = base_pos + Vector2(0, vertical_offset)
 		
-		# node_path_tips.position 现在是中心点位置，需要计算左上角位置来限制边界
+		# path_tips.position 现在是中心点位置，需要计算左上角位置来限制边界
 		var top_left: Vector2 = center_pos - half_size
 		
 		# 限制左上角在屏幕内
@@ -229,7 +332,7 @@ func _draw_border(brush_node: CanvasItem):
 		
 		# 将限制后的左上角位置转换回中心点位置
 		center_pos = top_left + half_size
-		node_path_tips.position = center_pos
+		path_tips.position = center_pos
 	pass
 
 func calc_node_trans(node: Node) -> DsViewportTransInfo:

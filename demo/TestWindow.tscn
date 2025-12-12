@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dg7yokqpg14u"]
+[gd_scene load_steps=4 format=3 uid="uid://dg7yokqpg14u"]
 
+[ext_resource type="Script" path="res://demo/TestWindow.gd" id="1_8yqle"]
 [ext_resource type="Texture2D" uid="uid://cfko0vbhcdsj3" path="res://icon.svg" id="1_cohnc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uar6p"]
@@ -7,6 +8,7 @@ size = Vector2(128, 128)
 
 [node name="TestWindow" type="Window"]
 size = Vector2i(500, 500)
+script = ExtResource("1_8yqle")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(81, 75)

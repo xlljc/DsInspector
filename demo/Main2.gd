@@ -1,14 +1,16 @@
 extends Node2D
 
 @export
+var open_window_button: Button
+
+@export
 var window_scene: PackedScene
 
 func _ready():
-	# 一秒后调用 _test
-	await get_tree().create_timer(1.0).timeout
-	_test()
+	# 绑定按钮点击事件
+	open_window_button.pressed.connect(_on_open_window_button_pressed)
 
-func _test():
+func _on_open_window_button_pressed():
 	var window = window_scene.instantiate()
 	add_child(window)
 	window.popup()

@@ -7,8 +7,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mb71u"]
 size = Vector2(128, 128)
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("open_window_button")]
 script = ExtResource("1_cd67i")
+open_window_button = NodePath("CanvasLayer/OpenWindow")
 window_scene = ExtResource("2_xdwq8")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
@@ -221,6 +222,13 @@ texture = ExtResource("3_j24b1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CanvasLayer/SubViewportContainer/SubViewport/StaticBody2D2"]
 shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="OpenWindow" type="Button" parent="CanvasLayer"]
+offset_left = 90.0
+offset_top = 73.0
+offset_right = 193.0
+offset_bottom = 105.0
+text = "打开Window"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(81, 75)

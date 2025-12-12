@@ -29,6 +29,7 @@ text = "Object[null]"
 icon = ExtResource("2_lhutd")
 
 [node name="JumpBtn" type="Button" parent="HBoxContainer"]
+visible = false
 layout_mode = 2
 tooltip_text = "跳转节点"
 icon = ExtResource("4_ahmu3")

@@ -216,7 +216,7 @@ func _check_collision_in_world(viewport: Viewport, mouse_pos: Vector2, camera: C
 
 func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: Camera2D,
 					in_canvaslayer: bool, exclude_list: Array) -> Node:
-	if node == self or node == brush.node_path_tips or window.exclude_list.has_excludeL_path(path):
+	if node == self or node == brush.golobal_path_tips or node == brush.window_layer_instance or window.exclude_list.has_excludeL_path(path):
 		return null
 
 	if !in_canvaslayer and node is CanvasLayer:

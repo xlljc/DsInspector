@@ -330,7 +330,7 @@ func init_tree():
 	
 	# 递归添加子节点
 	for child in root.get_children(true):
-		if debug_tool and !Engine.is_editor_hint() and (child == debug_tool or child == debug_tool.brush._viewport_brush_layer):
+		if debug_tool and !Engine.is_editor_hint() and (child == debug_tool or child == debug_tool.brush.window_layer_instance):
 			continue  # 跳过 DsInspectorTool 节点
 		create_node_item(child, root_item, true)
 
@@ -464,7 +464,7 @@ func _update_children(parent_item: TreeItem, parent_data: NodeData):
 	# 获取实际子节点列表（过滤掉 debug_tool、brush._window_brush）
 	var actual_children: Array = []
 	for child_node in parent_data.node.get_children(true):
-		if debug_tool and !Engine.is_editor_hint() and (child_node == debug_tool or child_node == debug_tool.brush._viewport_brush_layer):
+		if debug_tool and !Engine.is_editor_hint() and (child_node == debug_tool or child_node == debug_tool.brush.window_layer_instance):
 			continue
 		actual_children.append(child_node)
 	
@@ -686,7 +686,7 @@ func _load_children_item(item: TreeItem, add_slot: bool = true):
 		if !is_instance_valid(data.node): # 节点可能已被删除
 			return
 		for child in data.node.get_children(true):
-			if debug_tool and !Engine.is_editor_hint() and (child == debug_tool or child == debug_tool.brush._viewport_brush_layer):
+			if debug_tool and !Engine.is_editor_hint() and (child == debug_tool or child == debug_tool.brush.window_layer_instance):
 				continue  # 跳过 DsInspectorTool 和 viewport_brush_layer 节点
 			create_node_item(child, item, add_slot)
 			

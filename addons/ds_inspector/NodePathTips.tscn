@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://djy61jldo2bud"]
+
+[ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="1_e5xr0"]
+[ext_resource type="Script" path="res://addons/ds_inspector/NodePathTips.gd" id="2_32u26"]
+[ext_resource type="FontFile" uid="uid://bf3q4oxcxieqb" path="res://addons/ds_inspector/DebugFont.tres" id="3_5kdo5"]
+[ext_resource type="Texture2D" uid="uid://k6nfbn6oroyw" path="res://addons/ds_inspector/node_icon/AnimatedSprite2D.svg" id="4_jhd0y"]
+
+[node name="NodePathTips" type="CenterContainer" node_paths=PackedStringArray("icon", "label")]
+visible = false
+theme = ExtResource("1_e5xr0")
+use_top_left = true
+script = ExtResource("2_32u26")
+use_font = ExtResource("3_5kdo5")
+icon = NodePath("BoxContainer/ColorRect/Icon")
+label = NodePath("BoxContainer/Path")
+max_width = 1100
+
+[node name="BoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("1_e5xr0")
+
+[node name="ColorRect" type="ColorRect" parent="BoxContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_vertical = 0
+color = Color(0.203922, 0.203922, 0.203922, 1)
+
+[node name="Icon" type="TextureRect" parent="BoxContainer/ColorRect"]
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_jhd0y")
+stretch_mode = 5
+
+[node name="Path" type="Label" parent="BoxContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_outline_size = 2
+text = "Path:a/b/c"
