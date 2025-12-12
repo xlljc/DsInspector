@@ -81,6 +81,30 @@ var _recorded_alt: bool = false
 var _recorded_shift: bool = false
 var _recorded_meta: bool = false
 
+# Input Action 名称前缀
+const ACTION_PREFIX = "ds_inspector_"
+
+# 快捷键名称到 Action 名称的映射
+const SHORTCUT_TO_ACTION = {
+	"toggle_window": "ds_inspector_toggle_window",
+	"pause_play": "ds_inspector_pause_play",
+	"step_execute": "ds_inspector_step_execute",
+	"prev_node": "ds_inspector_prev_node",
+	"next_node": "ds_inspector_next_node",
+	"save_node": "ds_inspector_save_node",
+	"delete_node": "ds_inspector_delete_node",
+	"pick_node": "ds_inspector_pick_node",
+	"collapse_expand": "ds_inspector_collapse_expand",
+	"focus_search_node": "ds_inspector_focus_search_node",
+	"focus_search_attr": "ds_inspector_focus_search_attr",
+	"toggle_selected_node": "ds_inspector_toggle_selected_node",
+	"open_node_scene": "ds_inspector_open_node_scene",
+	"open_node_script": "ds_inspector_open_node_script",
+	"record_node_instance": "ds_inspector_record_node_instance",
+	"collect_path": "ds_inspector_collect_path",
+	"exclude_path": "ds_inspector_exclude_path"
+}
+
 func _ready():
 	if !debug_tool:
 		return
@@ -107,8 +131,74 @@ func _ready():
 	collect_path_btn.pressed.connect(_on_shortcut_btn_pressed.bind("collect_path", "收藏当前路径"))
 	exclude_path_btn.pressed.connect(_on_shortcut_btn_pressed.bind("exclude_path", "排除当前路径"))
 	
+	# 初始化所有 Input Action
+	_init_input_actions()
+	
 	# 加载并显示当前的快捷键
 	_load_shortcuts()
+
+func _exit_tree():
+	"""节点退出时清理 Input Actions"""
+	_cleanup_input_actions()
+
+func _cleanup_input_actions():
+	"""清理所有创建的 Input Action"""
+	for action_name in SHORTCUT_TO_ACTION.values():
+		if InputMap.has_action(action_name):
+			InputMap.erase_action(action_name)
+
+func _init_input_actions():
+	"""初始化所有 Input Action"""
+	if !debug_tool or !debug_tool.save_config:
+		return
+	
+	var shortcut_data = debug_tool.save_config.get_shortcut_key_data()
+	
+	# 为每个快捷键创建对应的 Action
+	_create_or_update_action("toggle_window", shortcut_data.toggle_window)
+	_create_or_update_action("pause_play", shortcut_data.pause_play)
+	_create_or_update_action("step_execute", shortcut_data.step_execute)
+	_create_or_update_action("prev_node", shortcut_data.prev_node)
+	_create_or_update_action("next_node", shortcut_data.next_node)
+	_create_or_update_action("save_node", shortcut_data.save_node)
+	_create_or_update_action("delete_node", shortcut_data.delete_node)
+	_create_or_update_action("pick_node", shortcut_data.pick_node)
+	_create_or_update_action("collapse_expand", shortcut_data.collapse_expand)
+	_create_or_update_action("focus_search_node", shortcut_data.focus_search_node)
+	_create_or_update_action("focus_search_attr", shortcut_data.focus_search_attr)
+	_create_or_update_action("toggle_selected_node", shortcut_data.toggle_selected_node)
+	_create_or_update_action("open_node_scene", shortcut_data.open_node_scene)
+	_create_or_update_action("open_node_script", shortcut_data.open_node_script)
+	_create_or_update_action("record_node_instance", shortcut_data.record_node_instance)
+	_create_or_update_action("collect_path", shortcut_data.collect_path)
+	_create_or_update_action("exclude_path", shortcut_data.exclude_path)
+
+func _create_or_update_action(shortcut_name: String, shortcut_dict: Dictionary):
+	"""创建或更新一个 Input Action"""
+	if shortcut_dict.is_empty():
+		return
+	
+	var action_name = SHORTCUT_TO_ACTION.get(shortcut_name, "")
+	if action_name.is_empty():
+		return
+	
+	# 如果 Action 不存在，创建它
+	if !InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+	else:
+		# 清除现有的事件
+		InputMap.action_erase_events(action_name)
+	
+	# 创建键盘事件
+	var event = InputEventKey.new()
+	event.keycode = shortcut_dict.get("keycode", 0)
+	event.ctrl_pressed = shortcut_dict.get("ctrl", false)
+	event.alt_pressed = shortcut_dict.get("alt", false)
+	event.shift_pressed = shortcut_dict.get("shift", false)
+	event.meta_pressed = shortcut_dict.get("meta", false)
+	
+	# 添加事件到 Action
+	InputMap.action_add_event(action_name, event)
 
 func _setup_dialog():
 	if !shortcut_dialog:
@@ -220,6 +310,16 @@ func _on_dialog_confirmed():
 		"exclude_path":
 			save_config.set_exclude_path_shortcut(_recorded_keycode, _recorded_ctrl, _recorded_alt, _recorded_shift, _recorded_meta)
 	
+	# 更新对应的 Input Action
+	var shortcut_dict = {
+		"keycode": _recorded_keycode,
+		"ctrl": _recorded_ctrl,
+		"alt": _recorded_alt,
+		"shift": _recorded_shift,
+		"meta": _recorded_meta
+	}
+	_create_or_update_action(_current_shortcut_name, shortcut_dict)
+	
 	# 更新按钮显示
 	_load_shortcuts()
 
@@ -263,6 +363,28 @@ func _update_button_text(button: Button, shortcut_dict: Dictionary):
 	var meta = shortcut_dict.get("meta", false)
 	
 	button.text = _get_shortcut_text(keycode, ctrl, alt, shift, meta)
+
+func get_action_name(shortcut_name: String) -> String:
+	"""获取快捷键对应的 Action 名称"""
+	return SHORTCUT_TO_ACTION.get(shortcut_name, "")
+
+func is_shortcut_pressed(shortcut_name: String) -> bool:
+	"""检查快捷键是否被按下"""
+	var action_name = get_action_name(shortcut_name)
+	if action_name.is_empty() or !InputMap.has_action(action_name):
+		return false
+	return Input.is_action_pressed(action_name)
+
+func is_shortcut_just_pressed(shortcut_name: String) -> bool:
+	"""检查快捷键是否刚被按下"""
+	var action_name = get_action_name(shortcut_name)
+	if action_name.is_empty() or !InputMap.has_action(action_name):
+		return false
+	return Input.is_action_just_pressed(action_name)
+
+func is_recording() -> bool:
+	"""检查是否正在录制快捷键"""
+	return shortcut_dialog != null and shortcut_dialog.visible
 
 func _get_shortcut_text(keycode: int, ctrl: bool, alt: bool, shift: bool, meta: bool) -> String:
 	var parts: Array[String] = []

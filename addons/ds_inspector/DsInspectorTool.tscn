@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=40 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
@@ -35,6 +35,7 @@
 [ext_resource type="PackedScene" uid="uid://djy61jldo2bud" path="res://addons/ds_inspector/NodePathTips.tscn" id="27_ijy11"]
 [ext_resource type="PackedScene" uid="uid://buanugq8o0n2c" path="res://addons/ds_inspector/ViewportBrushLayer.tscn" id="27_ksmue"]
 [ext_resource type="PackedScene" uid="uid://dj6wf7kwqqvvq" path="res://addons/ds_inspector/ShortcutKeySetting.tscn" id="28_brx0c"]
+[ext_resource type="Script" path="res://addons/ds_inspector/ShortcutKey.gd" id="36_m6bni"]
 
 [sub_resource type="Animation" id="3"]
 length = 0.001
@@ -772,20 +773,8 @@ placeholder_text = "服务器端口"
 layout_mode = 2
 debug_tool = NodePath("../../../../../../../../../../../..")
 
-[node name="KeyBtn" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting/VBoxContainer2/Item8" index="1"]
-text = "Ctrl + Equal"
-
-[node name="KeyBtn" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting/VBoxContainer2/Item9" index="1"]
-text = "Ctrl + Minus"
-
-[node name="KeyBtn" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting/VBoxContainer2/Item15" index="1"]
-text = "Ctrl + BackSlash"
-
-[node name="KeyBtn" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting/VBoxContainer2/Item16" index="1"]
-text = "Ctrl + BracketLeft"
-
-[node name="KeyBtn" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting/VBoxContainer2/Item17" index="1"]
-text = "Ctrl + BracketRight"
+[node name="VBoxContainer2" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting" index="1"]
+visible = false
 
 [node name="SaveFileDialog" type="FileDialog" parent="."]
 title = "保存场景"
@@ -853,6 +842,11 @@ ignore_texture_size = true
 stretch_mode = 5
 script = ExtResource("24_c6x5m")
 debug_tool_path = NodePath("..")
+
+[node name="ShortcutKey" type="Node" parent="." node_paths=PackedStringArray("debug_tool", "shortcut_key_setting")]
+script = ExtResource("36_m6bni")
+debug_tool = NodePath("..")
+shortcut_key_setting = NodePath("../WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting")
 
 [editable path="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Container/Scroll/MarginContainer/SettingList/ShortcutKeySetting"]
 [editable path="NodePathTips"]
