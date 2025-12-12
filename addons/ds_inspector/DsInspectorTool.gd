@@ -118,7 +118,7 @@ func get_check_node() -> Node:
 	if _request_coll_list <= 0:
 		set_physics_process(false)
 	return coll_list
-	
+
 func _get_check_node() -> Node:
 	var mousePos: Vector2 = brush.get_global_mouse_position()
 	if _prev_mouse_position != mousePos:
@@ -222,7 +222,9 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 	if !in_canvaslayer and node is CanvasLayer:
 		in_canvaslayer = true;
 
-	if exclude_list.has(node) or (node is Control and !node.visible) or (node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible):
+	if exclude_list.has(node) or (node is Control and !node.visible) or \
+		(node is CanvasItem and !node.visible) or (node is CanvasLayer and !node.visible) or \
+		(node is Window and !node.visible):
 		return null
 
 	if node is Viewport and node != _root_viewport:
