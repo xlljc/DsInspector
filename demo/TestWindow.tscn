@@ -35,6 +35,16 @@ texture = ExtResource("1_cohnc")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
 shape = SubResource("RectangleShape2D_uar6p")
 
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(150, 300)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CharacterBody2D"]
+polygon = PackedVector2Array(-113, 45, -47, 45, -59, 6, -6, -53, 87, -5, 82, 70, 149, 164, 203, 100, 163, 36, 228, -57, 151, -146, 64, -187, -40, -146, -111, -201, -147, -76, -91, -123, -13, -112, 112, -123, 80, -87, -16, -83, -100, -48)
+
+[node name="Icon2" type="Sprite2D" parent="CharacterBody2D/CollisionPolygon2D"]
+position = Vector2(2.08165e-12, -50)
+texture = ExtResource("1_cohnc")
+
 [node name="Button" type="Button" parent="."]
 offset_left = 200.0
 offset_top = 200.0

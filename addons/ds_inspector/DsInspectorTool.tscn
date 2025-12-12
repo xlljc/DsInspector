@@ -146,6 +146,7 @@ grow_vertical = 2
 title = "DsInspector"
 position = Vector2i(2168, 958)
 size = Vector2i(2472, 1724)
+visible = false
 transient = true
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
@@ -234,6 +235,7 @@ color = Color(0.27451, 0.27451, 0.27451, 1)
 custom_minimum_size = Vector2(29, 29)
 layout_mode = 2
 tooltip_text = "上一个选中的节点"
+disabled = true
 icon = ExtResource("6_nr4t2")
 expand_icon = true
 
@@ -241,6 +243,7 @@ expand_icon = true
 custom_minimum_size = Vector2(29, 29)
 layout_mode = 2
 tooltip_text = "下一个选中的节点"
+disabled = true
 icon = ExtResource("7_nnel7")
 expand_icon = true
 
