@@ -19,11 +19,9 @@ var debug_tool: CanvasLayer
 
 # ViewportBrushLayer 实例（用于所有 viewport，包括 window）
 var window_layer_instance: CanvasLayer = null
-var _window_brush: Node2D = null
-var _window_path_tips: DsNodePathTips = null
 
+# 当前绘制节点所在的 viewport
 var _viewport_node: Viewport
-var _label_origin_root: Node
 
 var _has_prev_click: bool = false
 var _prev_click_pos: Vector2 = Vector2.ZERO
@@ -35,7 +33,6 @@ var _show_text: bool = false
 var _root_viewport: Viewport = null
 
 func _ready():
-	_label_origin_root = golobal_path_tips.get_parent()
 	golobal_path_tips.visible = false
 	_root_viewport = get_viewport()
 	pass
@@ -50,10 +47,9 @@ func _ensure_window_layer_instance() -> bool:
 		
 		window_layer_instance = viewport_layer_tscn.instantiate()
 		window_layer_instance.layer = 128
-		_window_brush = window_layer_instance.get_node("Brush")
-		_window_brush.draw.connect(_on_window_brush_draw)
-		_window_path_tips = window_layer_instance.get_node("NodePathTips")
-		_window_path_tips.visible = false
+		window_layer_instance.brush.draw.connect(_on_window_brush_draw)
+		window_layer_instance.node_path_tips.visible = false
+		window_layer_instance.mask.visible = debug_tool.mask.visible
 		
 		# 重置状态
 		_has_prev_click = false
@@ -71,21 +67,25 @@ func _process(_delta):
 			if _draw_node != null and is_instance_valid(_draw_node):
 				_viewport_node.add_child(window_layer_instance)
 				# 重新设置提示信息
-				_window_path_tips.set_show_icon(_icon)
-				_window_path_tips.set_show_text(debug_tool.get_node_path(_draw_node), _viewport_node.size.x)
+				window_layer_instance.node_path_tips.set_show_icon(_icon)
+				window_layer_instance.node_path_tips.set_show_text(debug_tool.get_node_path(_draw_node), _viewport_node.size.x)
 				
 				if _viewport_node is Window:
 					# Window 情况：显示实例的 path tips，隐藏全局的
-					_window_path_tips.visible = _show_text
+					window_layer_instance.node_path_tips.visible = _show_text
 					golobal_path_tips.visible = false
 				else:
 					# 普通 viewport 情况：显示全局 path tips
-					_window_path_tips.visible = false
+					window_layer_instance.node_path_tips.visible = false
 					golobal_path_tips.visible = _show_text
 	
+	# 同步 mask 可见性
+	if window_layer_instance != null and is_instance_valid(window_layer_instance):
+		window_layer_instance.mask.visible = debug_tool.mask.visible
+
 	queue_redraw()
-	if _window_brush != null and is_instance_valid(_window_brush):
-		_window_brush.queue_redraw()
+	if window_layer_instance != null and is_instance_valid(window_layer_instance):
+		window_layer_instance.brush.queue_redraw()
 	pass
 
 func get_draw_node() -> Node:
@@ -110,16 +110,7 @@ func set_draw_node(node: Node) -> void:
 					_viewport_node.remove_child(window_layer_instance)
 				window_layer_instance.queue_free()
 			window_layer_instance = null
-			_window_brush = null
-			_window_path_tips = null
 			_viewport_node = null
-		
-		# 还原全局 path tips
-		var lb_parent = golobal_path_tips.get_parent()
-		if lb_parent != _label_origin_root:
-			if lb_parent != null:
-				lb_parent.remove_child(golobal_path_tips)
-			_label_origin_root.add_child(golobal_path_tips)
 		return
 	_has_prev_click = false
 	_draw_node = node
@@ -143,12 +134,12 @@ func set_draw_node(node: Node) -> void:
 		golobal_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
 	
 	# 如果当前在 window 中，同时更新 window 实例的图标和文本
-	if _window_path_tips != null and is_instance_valid(_window_path_tips):
-		_window_path_tips.set_show_icon(_icon)
+	if window_layer_instance != null and is_instance_valid(window_layer_instance):
+		window_layer_instance.node_path_tips.set_show_icon(_icon)
 		if _viewport_node != null and _viewport_node is Window:
-			_window_path_tips.set_show_text(debug_tool.get_node_path(node), _viewport_node.size.x)
+			window_layer_instance.node_path_tips.set_show_text(debug_tool.get_node_path(node), _viewport_node.size.x)
 		else:
-			_window_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
+			window_layer_instance.node_path_tips.set_show_text(debug_tool.get_node_path(node), _root_viewport.size.x)
 	pass
 
 func set_show_text(flag: bool):
@@ -156,14 +147,14 @@ func set_show_text(flag: bool):
 	# 根据当前是否在 window 中来决定显示哪个 path tips
 	if _viewport_node != null and is_instance_valid(_viewport_node) and _viewport_node is Window:
 		# 在 window 中，显示 window 实例的 path tips，隐藏全局的
-		if _window_path_tips != null and is_instance_valid(_window_path_tips):
-			_window_path_tips.visible = flag
+		if window_layer_instance != null and is_instance_valid(window_layer_instance):
+			window_layer_instance.node_path_tips.visible = flag
 		golobal_path_tips.visible = false
 	else:
 		# 不在 window 中，显示全局的 path tips
 		golobal_path_tips.visible = flag
-		if _window_path_tips != null and is_instance_valid(_window_path_tips):
-			_window_path_tips.visible = false
+		if window_layer_instance != null and is_instance_valid(window_layer_instance):
+			window_layer_instance.node_path_tips.visible = false
 	pass
 
 
@@ -175,9 +166,12 @@ func _on_window_brush_draw():
 		set_draw_node(null)
 		return
 
+	if window_layer_instance == null or !is_instance_valid(window_layer_instance):
+		return
+	
 	# 根据是否在 window 中来决定使用哪个 path tips
-	var path_tips = _window_path_tips if (_viewport_node != null and _viewport_node is Window) else golobal_path_tips
-	_draw_border(_window_brush, path_tips)
+	var path_tips = window_layer_instance.node_path_tips if (_viewport_node != null and _viewport_node is Window) else golobal_path_tips
+	_draw_border(window_layer_instance.brush, path_tips)
 	pass
 
 func _draw():
@@ -200,8 +194,6 @@ func _draw():
 							_viewport_node.remove_child(window_layer_instance)
 						window_layer_instance.queue_free()
 					window_layer_instance = null
-					_window_brush = null
-					_window_path_tips = null
 				
 				# 设置新的 viewport
 				_viewport_node = viewport_node
@@ -211,31 +203,17 @@ func _draw():
 				_viewport_node.add_child(window_layer_instance)
 				
 				# 设置节点路径提示
-				_window_path_tips.set_show_icon(_icon)
-				_window_path_tips.set_show_text(debug_tool.get_node_path(_draw_node), _viewport_node.size.x)
+				window_layer_instance.node_path_tips.set_show_icon(_icon)
+				window_layer_instance.node_path_tips.set_show_text(debug_tool.get_node_path(_draw_node), _viewport_node.size.x)
 				
 				if viewport_node is Window:
 					# Window 情况：显示实例的 path tips，隐藏全局的
-					_window_path_tips.visible = _show_text
+					window_layer_instance.node_path_tips.visible = _show_text
 					golobal_path_tips.visible = false
-					
-					# 还原全局 path tips 到原位置
-					var lb_parent = golobal_path_tips.get_parent()
-					if lb_parent != _label_origin_root:
-						if lb_parent != null:
-							lb_parent.remove_child(golobal_path_tips)
-						_label_origin_root.add_child(golobal_path_tips)
 				else:
 					# 普通 viewport 情况：显示全局 path tips
-					_window_path_tips.visible = false
+					window_layer_instance.node_path_tips.visible = false
 					golobal_path_tips.visible = _show_text
-					
-					# 还原全局 path tips 到原位置
-					var lb_parent = golobal_path_tips.get_parent()
-					if lb_parent != _label_origin_root:
-						if lb_parent != null:
-							lb_parent.remove_child(golobal_path_tips)
-						_label_origin_root.add_child(golobal_path_tips)
 				
 				_has_prev_click = false
 
@@ -248,16 +226,8 @@ func _draw():
 						_viewport_node.remove_child(window_layer_instance)
 					window_layer_instance.queue_free()
 				window_layer_instance = null
-				_window_brush = null
-				_window_path_tips = null
 				_viewport_node = null
 			
-			# 还原全局 path tips
-			var lb_parent = golobal_path_tips.get_parent()
-			if lb_parent != _label_origin_root:
-				if lb_parent != null:
-					lb_parent.remove_child(golobal_path_tips)
-				_label_origin_root.add_child(golobal_path_tips)
 			golobal_path_tips.visible = _show_text
 			_has_prev_click = false
 

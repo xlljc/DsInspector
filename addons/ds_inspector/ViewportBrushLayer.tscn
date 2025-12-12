@@ -3,8 +3,11 @@
 [ext_resource type="PackedScene" uid="uid://djy61jldo2bud" path="res://addons/ds_inspector/NodePathTips.tscn" id="1_m14ua"]
 [ext_resource type="Script" path="res://addons/ds_inspector/ViewportBrushLayer.gd" id="1_tnuhh"]
 
-[node name="ViewportBrushLayer" type="CanvasLayer"]
+[node name="ViewportBrushLayer" type="CanvasLayer" node_paths=PackedStringArray("mask", "node_path_tips", "brush")]
 script = ExtResource("1_tnuhh")
+mask = NodePath("Mask")
+node_path_tips = NodePath("NodePathTips")
+brush = NodePath("Brush")
 
 [node name="Mask" type="Control" parent="."]
 layout_mode = 3
