@@ -25,6 +25,11 @@ var server_port_container: HBoxContainer
 @export
 var check_viewport_checkbox: CheckBox
 
+@export
+var shortcut_key_checkbox: CheckBox
+@export
+var shortcut_key_container: VBoxContainer
+
 func _ready():
 	# 读取并设置 checkbox 状态
 	if !Engine.is_editor_hint():
@@ -56,6 +61,11 @@ func _ready():
 	# 视口检查设置
 	check_viewport_checkbox.button_pressed = debug_tool.save_config.get_check_viewport()
 	check_viewport_checkbox.toggled.connect(_on_check_viewport_toggled)
+
+	# 快捷键设置
+	shortcut_key_checkbox.button_pressed = debug_tool.save_config.get_use_shortcut_key()
+	shortcut_key_checkbox.toggled.connect(_on_shortcut_key_toggled)
+	_update_shortcut_key_visibility()
 
 	call_deferred("init_config")
 
@@ -119,3 +129,11 @@ func _save_server_port():
 
 func _on_check_viewport_toggled(enabled: bool):
 	debug_tool.save_config.set_check_viewport(enabled)
+
+func _on_shortcut_key_toggled(enabled: bool):
+	debug_tool.save_config.set_use_shortcut_key(enabled)
+	_update_shortcut_key_visibility()
+
+func _update_shortcut_key_visibility():
+	var enabled = debug_tool.save_config.get_use_shortcut_key()
+	shortcut_key_container.visible = enabled

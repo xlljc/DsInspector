@@ -1,0 +1,361 @@
+[gd_scene load_steps=3 format=3 uid="uid://dj6wf7kwqqvvq"]
+
+[ext_resource type="Script" path="res://addons/ds_inspector/ShortcutKeySetting.gd" id="1_8gsyf"]
+[ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_6whlk"]
+
+[node name="ShortcutKeySetting" type="VBoxContainer" node_paths=PackedStringArray("shortcut_dialog", "toggle_window_btn", "pause_play_btn", "step_execute_btn", "prev_node_btn", "next_node_btn", "save_node_btn", "delete_node_btn", "pick_node_btn", "collapse_expand_btn", "focus_search_node_btn", "focus_search_attr_btn", "toggle_selected_node_btn", "open_node_scene_btn", "open_node_script_btn", "record_node_instance_btn", "collect_path_btn", "exclude_path_btn")]
+offset_right = 774.0
+offset_bottom = 685.0
+script = ExtResource("1_8gsyf")
+shortcut_dialog = NodePath("ShortcutKeyDialog")
+toggle_window_btn = NodePath("VBoxContainer2/Item1/KeyBtn")
+pause_play_btn = NodePath("VBoxContainer2/Item2/KeyBtn")
+step_execute_btn = NodePath("VBoxContainer2/Item3/KeyBtn")
+prev_node_btn = NodePath("VBoxContainer2/Item4/KeyBtn")
+next_node_btn = NodePath("VBoxContainer2/Item5/KeyBtn")
+save_node_btn = NodePath("VBoxContainer2/Item6/KeyBtn")
+delete_node_btn = NodePath("VBoxContainer2/Item7/KeyBtn")
+pick_node_btn = NodePath("VBoxContainer2/Item8/KeyBtn")
+collapse_expand_btn = NodePath("VBoxContainer2/Item9/KeyBtn")
+focus_search_node_btn = NodePath("VBoxContainer2/Item10/KeyBtn")
+focus_search_attr_btn = NodePath("VBoxContainer2/Item11/KeyBtn")
+toggle_selected_node_btn = NodePath("VBoxContainer2/Item12/KeyBtn")
+open_node_scene_btn = NodePath("VBoxContainer2/Item13/KeyBtn")
+open_node_script_btn = NodePath("VBoxContainer2/Item14/KeyBtn")
+record_node_instance_btn = NodePath("VBoxContainer2/Item15/KeyBtn")
+collect_path_btn = NodePath("VBoxContainer2/Item16/KeyBtn")
+exclude_path_btn = NodePath("VBoxContainer2/Item17/KeyBtn")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+size_flags_stretch_ratio = 8.0
+text = "启用键盘快捷键"
+autowrap_mode = 3
+
+[node name="CheckBox" type="CheckBox" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Item1" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item1"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "隐藏/显示窗口"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item1"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "F5"
+
+[node name="Item2" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item2"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "暂停/播放"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item2"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + P"
+
+[node name="Item3" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item3"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "单步执行"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item3"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + I"
+
+[node name="Item4" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item4"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "上一个节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item4"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + Left"
+
+[node name="Item5" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item5"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "下一个节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item5"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + Right"
+
+[node name="Item6" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item6"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "保存节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item6"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + S"
+
+[node name="Item7" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item7"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "删除节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item7"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + D"
+
+[node name="Item8" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item8"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "拣选节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item8"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + ="
+
+[node name="Item9" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item9"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "收起展开"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item9"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + -"
+
+[node name="Item10" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item10"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "聚焦搜索节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item10"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + F"
+
+[node name="Item11" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item11"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "聚焦搜索属性"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item11"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + G"
+
+[node name="Item12" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item12"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "隐藏/显示选中节点"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item12"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + J"
+
+[node name="Item13" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item13"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "打开选中节点的场景"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item13"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + K"
+
+[node name="Item14" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item14"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "打开选中节点的脚本"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item14"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + L"
+
+[node name="Item15" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item15"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "记录节点实例"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item15"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + \\"
+
+[node name="Item16" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item16"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "收藏当前路径"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item16"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + ["
+
+[node name="Item17" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2/Item17"]
+custom_minimum_size = Vector2(150, 27)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 5
+text = "排除当前路径"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="KeyBtn" type="Button" parent="VBoxContainer2/Item17"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Ctrl + ]"
+
+[node name="ShortcutKeyDialog" type="ConfirmationDialog" parent="."]
+title = "录制快捷键"
+initial_position = 1
+size = Vector2i(300, 150)
+theme = ExtResource("2_6whlk")
+ok_button_text = "确定"
+cancel_button_text = "取消"
