@@ -100,7 +100,7 @@ size = Vector2(103.5, 95.5)
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_6lvdg"]
 polygon = PackedVector2Array(-48, 41, 108, 55, 135, -78, 43, -45, 4, -88, -58, -56, -187, -116, -218, -41, -126, -18, -130, 110)
 
-[node name="Main" type="Node2D" node_paths=PackedStringArray("ref_node", "ref_node2")]
+[node name="Main2" type="Node2D" node_paths=PackedStringArray("ref_node", "ref_node2")]
 position = Vector2(422, 337)
 script = ExtResource("1_ghtww")
 ref_node = NodePath("Icon5")

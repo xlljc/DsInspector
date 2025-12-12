@@ -1,12 +1,14 @@
-[gd_scene load_steps=36 format=3 uid="uid://8irge7oa55sv"]
+[gd_scene load_steps=38 format=3 uid="uid://8irge7oa55sv"]
 
 [ext_resource type="Script" path="res://addons/ds_inspector/DsInspectorTool.gd" id="1_t800c"]
 [ext_resource type="Theme" uid="uid://bi3tgesxwq7lg" path="res://addons/ds_inspector/DsInspectorTheme.tres" id="2_rwegl"]
 [ext_resource type="Script" path="res://addons/ds_inspector/DebugDialog.gd" id="3_d06wy"]
 [ext_resource type="Texture2D" uid="uid://b6assniwtdgwy" path="res://addons/ds_inspector/icon/Pause.svg" id="4_qjgja"]
 [ext_resource type="Texture2D" uid="uid://kw66syn63sma" path="res://addons/ds_inspector/icon/NextFrame.svg" id="5_albym"]
+[ext_resource type="Texture2D" uid="uid://dysdkuigj4wd3" path="res://addons/ds_inspector/icon/Prev.svg" id="6_nr4t2"]
 [ext_resource type="Texture2D" uid="uid://c51tcljdwj1kr" path="res://addons/ds_inspector/icon/Save.svg" id="6_trprb"]
 [ext_resource type="Texture2D" uid="uid://cba6u3in77t7p" path="res://addons/ds_inspector/icon/delete.svg" id="7_feklu"]
+[ext_resource type="Texture2D" uid="uid://cwa70wuw2r3ns" path="res://addons/ds_inspector/icon/Next.svg" id="7_nnel7"]
 [ext_resource type="Texture2D" uid="uid://drmwgwciyvoxq" path="res://addons/ds_inspector/icon/Select.svg" id="8_vxxi0"]
 [ext_resource type="Texture2D" uid="uid://v37l63676w4b" path="res://addons/ds_inspector/icon/HideBorder.svg" id="9_n43st"]
 [ext_resource type="Texture2D" uid="uid://cp56o3eykphff" path="res://addons/ds_inspector/icon/PutAway.svg" id="10_h81ki"]
@@ -140,17 +142,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation")]
+[node name="WindowDialog" type="Window" parent="." node_paths=PackedStringArray("tree", "exclude_list", "select_btn", "prev_btn", "next_btn", "save_btn", "delete_btn", "hide_border_btn", "play_btn", "next_frame_btn", "file_window", "put_away", "confirmation", "debug_tool")]
 title = "DsInspector"
 position = Vector2i(2168, 958)
 size = Vector2i(2472, 1724)
-visible = false
 transient = true
 theme = ExtResource("2_rwegl")
 script = ExtResource("3_d06wy")
 tree = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TreeContainer/VSplitContainer/TreeRoot/NodeTree")
 exclude_list = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/ExcludeContainer/Exclude")
 select_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SelectNode")
+prev_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PrevNode")
+next_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/NextNode")
 save_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/SaveNode")
 delete_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/DeleteNode")
 hide_border_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/HideBorderNode")
@@ -159,7 +162,7 @@ next_frame_btn = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBox
 file_window = NodePath("../SaveFileDialog")
 put_away = NodePath("Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/PutAwayNode")
 confirmation = NodePath("../ConfirmationDialog")
-debug_tool_path = NodePath("..")
+debug_tool = NodePath("..")
 
 [node name="Bg" type="ColorRect" parent="WindowDialog"]
 anchors_preset = 15
@@ -213,6 +216,39 @@ custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 
 [node name="ColorRect" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control"]
+custom_minimum_size = Vector2(2, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -14.5
+offset_bottom = 14.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.27451, 0.27451, 0.27451, 1)
+
+[node name="PrevNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(29, 29)
+layout_mode = 2
+tooltip_text = "上一个选中的节点"
+icon = ExtResource("6_nr4t2")
+expand_icon = true
+
+[node name="NextNode" type="Button" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(29, 29)
+layout_mode = 2
+tooltip_text = "下一个选中的节点"
+icon = ExtResource("7_nnel7")
+expand_icon = true
+
+[node name="Control3" type="Control" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HBoxContainer/Control3"]
 custom_minimum_size = Vector2(2, 0)
 layout_mode = 1
 anchors_preset = 8

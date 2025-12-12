@@ -16,6 +16,13 @@ var _timer: float = 0
 const flag: int = PROPERTY_USAGE_SCRIPT_VARIABLE | PROPERTY_USAGE_EDITOR
 var _attr_list: Array = [] # value: AttrItem
 
+# 历史记录相关
+var _history: Array[WeakRef] = [] # 存储节点的弱引用
+var _history_index: int = -1 # 当前历史索引
+var _is_navigating_history: bool = false # 标记是否正在浏览历史
+# 限制历史记录数量（可选，防止无限增长）
+var max_history = 50
+
 @onready
 var attr_item: PackedScene = preload("res://addons/ds_inspector/Attributes/AttrItem.tscn")
 
@@ -87,12 +94,19 @@ func _process(delta):
 		if _timer > update_time:
 			_timer = 0
 			_update_node_attr()
+			_clean_invalid_history() # 清理无效的历史节点
 		pass
 
 func set_view_node(node: Node):
 	_clear_node_attr()
 	if node == null or !is_instance_valid(node):
+		_update_history_buttons()
 		return
+	
+	# 如果不是在浏览历史，则添加到历史记录
+	if !_is_navigating_history:
+		_add_to_history(node)
+	
 	_curr_node = node
 	_has_node = true
 	_init_node_attr()
@@ -101,6 +115,8 @@ func set_view_node(node: Node):
 	# 应用当前的过滤条件
 	if filtr_input and filtr_input.text != "":
 		_filter_attributes(filtr_input.text)
+	
+	_update_history_buttons()
 	pass
 
 func _init_node_attr():
@@ -223,3 +239,111 @@ func _filter_attributes(filter_text: String):
 					break
 			item.attr.visible = matches
 	pass
+
+# ==================== 历史记录功能 ====================
+
+# 添加节点到历史记录
+func _add_to_history(node: Node):
+	if node == null or !is_instance_valid(node):
+		return
+	
+	# 检查是否和当前历史位置的节点相同
+	if _history_index >= 0 and _history_index < _history.size():
+		var current_ref = _history[_history_index]
+		var current_node = current_ref.get_ref()
+		if current_node == node:
+			return # 相同节点，不添加
+	
+	# 如果当前不在历史末尾，删除当前位置之后的所有历史
+	if _history_index < _history.size() - 1:
+		_history.resize(_history_index + 1)
+	
+	# 添加新节点到历史
+	_history.append(weakref(node))
+	_history_index = _history.size() - 1
+	
+	if _history.size() > max_history:
+		_history.remove_at(0)
+		_history_index = _history.size() - 1
+
+# 清理无效的历史节点
+func _clean_invalid_history():
+	var i = 0
+	while i < _history.size():
+		var node_ref = _history[i]
+		var node = node_ref.get_ref()
+		if node == null or !is_instance_valid(node):
+			_history.remove_at(i)
+			# 调整当前索引
+			if _history_index >= i:
+				_history_index -= 1
+		else:
+			i += 1
+	
+	# 确保索引有效
+	if _history.size() == 0:
+		_history_index = -1
+	elif _history_index >= _history.size():
+		_history_index = _history.size() - 1
+	elif _history_index < 0 and _history.size() > 0:
+		_history_index = 0
+	
+	_update_history_buttons()
+
+# 导航到上一个节点
+func navigate_prev():
+	if !can_navigate_prev():
+		return
+	
+	_history_index -= 1
+	var node_ref = _history[_history_index]
+	var node = node_ref.get_ref()
+	
+	if node != null and is_instance_valid(node):
+		_is_navigating_history = true
+		set_view_node(node)
+		_is_navigating_history = false
+		
+		# 更新树的选择
+		if debug_tool and debug_tool.window and debug_tool.window.tree:
+			debug_tool.window.tree.call_deferred("locate_selected", node)
+	else:
+		# 节点已失效，清理并重试
+		_clean_invalid_history()
+
+# 导航到下一个节点
+func navigate_next():
+	if !can_navigate_next():
+		return
+	
+	_history_index += 1
+	var node_ref = _history[_history_index]
+	var node = node_ref.get_ref()
+	
+	if node != null and is_instance_valid(node):
+		_is_navigating_history = true
+		set_view_node(node)
+		_is_navigating_history = false
+		
+		# 更新树的选择
+		if debug_tool and debug_tool.window and debug_tool.window.tree:
+			debug_tool.window.tree.call_deferred("locate_selected", node)
+	else:
+		# 节点已失效，清理并重试
+		_clean_invalid_history()
+
+# 检查是否可以导航到上一个
+func can_navigate_prev() -> bool:
+	return _history_index > 0
+
+# 检查是否可以导航到下一个
+func can_navigate_next() -> bool:
+	return _history_index < _history.size() - 1
+
+# 更新历史按钮的启用状态
+func _update_history_buttons():
+	if debug_tool and debug_tool.window:
+		if debug_tool.window.prev_btn:
+			debug_tool.window.prev_btn.disabled = !can_navigate_prev()
+		if debug_tool.window.next_btn:
+			debug_tool.window.next_btn.disabled = !can_navigate_next()

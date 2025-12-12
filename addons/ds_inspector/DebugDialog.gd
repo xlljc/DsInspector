@@ -8,6 +8,10 @@ var exclude_list: DsExcludeList
 @export
 var select_btn: Button
 @export
+var prev_btn: Button
+@export
+var next_btn: Button
+@export
 var save_btn: Button
 @export
 var delete_btn: Button
@@ -24,10 +28,7 @@ var put_away: Button
 @export
 var confirmation: ConfirmationDialog
 @export
-var debug_tool_path: NodePath
-
-@onready
-var debug_tool = get_node(debug_tool_path)
+var debug_tool = CanvasLayer
 
 @onready
 var play_icon: Texture2D = preload("res://addons/ds_inspector/icon/Play.svg")
@@ -54,6 +55,19 @@ func _ready():
 	put_away.pressed.connect(do_put_away)
 	# focus_exited.connect(_on_focus_exited)
 	confirmation.confirmed.connect(_on_delete_confirmed) # 连接确认事件
+	
+	# 连接历史浏览按钮
+	if prev_btn:
+		prev_btn.pressed.connect(_on_prev_btn_pressed)
+		prev_btn.disabled = true # 初始状态禁用
+	if next_btn:
+		next_btn.pressed.connect(_on_next_btn_pressed)
+		next_btn.disabled = true # 初始状态禁用
+
+	# 访问 InspectorContainer
+	# debug_tool.inspector
+	# 访问 NodeTree
+	# debug_tool.tree
 
 func _process(delta):
 	if _next_frame_paused_index > 0:
@@ -199,3 +213,13 @@ func _load_window_state():
 	if debug_tool.save_config:
 		size = debug_tool.save_config.get_window_size()
 		position = debug_tool.save_config.get_window_position()
+
+# 上一个节点按钮点击
+func _on_prev_btn_pressed():
+	if debug_tool and debug_tool.inspector:
+		debug_tool.inspector.navigate_prev()
+
+# 下一个节点按钮点击
+func _on_next_btn_pressed():
+	if debug_tool and debug_tool.inspector:
+		debug_tool.inspector.navigate_next()
