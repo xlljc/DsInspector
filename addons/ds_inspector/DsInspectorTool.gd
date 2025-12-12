@@ -84,7 +84,7 @@ func _process(delta: float) -> void:
 							brush.set_show_text(true)
 							return
 				else:
-					var node := await get_check_node();
+					var node: Node = await get_check_node();
 					if node != null:
 						# print("选中节点: ", node.get_path())
 						var draw_node = brush.get_draw_node()
@@ -108,7 +108,7 @@ func _physics_process(_delta: float) -> void:
 	if _request_coll_list > 0:
 		var coll_list = _get_check_node()
 		_coll_list_ready.emit(coll_list)
-		
+
 ## 获取鼠标点击选中的节点
 func get_check_node() -> Node:
 	_request_coll_list += 1
@@ -128,7 +128,13 @@ func _get_check_node() -> Node:
 		_selected_list.clear()
 		_coll_list.clear()
 
-	# 优先检测碰撞体
+	# 先检测节点区域（包括可见节点）
+	var node: Node = _each_and_check(get_tree().root, "", mousePos, curr_camera, false, _exclude_list)
+	if node != null:
+		_exclude_list.append(node)
+		return node
+	
+	# 如果没有找到可见节点，再检测碰撞体
 	if !_has_exclude_coll:
 		var space_state: PhysicsDirectSpaceState2D = brush.get_viewport().get_world_2d().direct_space_state
 		var pos: Vector2
@@ -157,10 +163,7 @@ func _get_check_node() -> Node:
 						_exclude_list.append(collision_shape)  # 加入排除列表
 						return collision_shape
 	
-	var node: Node = _each_and_check(get_tree().root, "", mousePos, curr_camera, false, _exclude_list);
-	if node != null:
-		_exclude_list.append(node)
-	return node
+	return null
 
 func _find_collision_shape(node: Node):
 	if node == null:
@@ -227,16 +230,16 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 		(node is Window and !node.visible):
 		return null
 
-	if node is Viewport and node != _root_viewport:
+	# 保存进入 Viewport 前的状态
+	var is_viewport = node is Viewport and node != _root_viewport
+	var original_mouse_position = mouse_position
+	var original_camera = camera
+	var original_in_canvaslayer = in_canvaslayer
+	
+	if is_viewport:
 		mouse_position = node.get_mouse_position()
 		in_canvaslayer = false
 		camera = node.get_camera_2d()
-		
-		# 检测该 Viewport 的 world2d 中的碰撞体
-		var collision_node = _check_collision_in_world(node, mouse_position, camera, exclude_list)
-		if collision_node != null:
-			exclude_list.append(collision_node)  # 加入排除列表
-			return collision_node
 
 	# 部分类型节点不参与子节点拣选
 	for i in range(node.get_child_count(true) - 1, -1, -1):  # 从最后一个子节点到第一个子节点
@@ -251,6 +254,13 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 		var result: Node = _each_and_check(child, new_path, mouse_position, camera, in_canvaslayer, exclude_list)
 		if result != null:
 			return result
+	
+	# 如果在 Viewport 中没有找到可见节点，再检测碰撞体
+	if is_viewport:
+		var collision_node = _check_collision_in_world(node, mouse_position, camera, exclude_list)
+		if collision_node != null:
+			exclude_list.append(collision_node)  # 加入排除列表
+			return collision_node
 
 	# 检测包含 polygon 的节点
 	if node is LightOccluder2D:
