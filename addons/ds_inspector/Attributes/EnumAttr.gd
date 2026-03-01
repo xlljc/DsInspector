@@ -17,7 +17,10 @@ func set_enum_options(options: String):
 	clear()
 	var opts = options.split(",")
 	for i in opts.size():
-		add_item(opts[i])
+		if opts[i].contains(":"):
+			add_item(opts[i].get_slice(":", 0), int(opts[i].get_slice(":", 1)))
+		else:
+			add_item(opts[i])
 	pass
 
 func set_attr_name(attr_name: String):
@@ -27,7 +30,7 @@ func set_value(value):
 	if not value is int:
 		return
 	if not has_focus():
-		select(value)
+		select(get_item_index(value))
 	pass
 
 func _on_item_selected(index: int):
