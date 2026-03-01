@@ -268,10 +268,13 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 	if node is LightOccluder2D:
 		var occluder: OccluderPolygon2D = node.occluder
 		if occluder:
-			if is_polygon_node_coll(node, in_canvaslayer, mouse_position, occluder.polygon):
+			if is_polygon_node_coll(node, in_canvaslayer, mouse_position, occluder.polygon, camera):
 				return node
 	elif node is Polygon2D:
-		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon):
+		if is_polygon_node_coll(node, in_canvaslayer, mouse_position, node.polygon, camera):
+			return node
+	elif node is Line2D:
+		if is_line2d_node_coll(node, in_canvaslayer, mouse_position, camera):
 			return node
 	else:
 		var rect = calc_node_rect(node)
@@ -286,19 +289,58 @@ func _each_and_check(node: Node, path: String, mouse_position: Vector2, camera: 
 			return node
 	return null
 
-func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Vector2, polygon: PackedVector2Array) -> bool:
+func is_polygon_node_coll(node: Node2D, in_canvaslayer: bool, mouse_position: Vector2, polygon: PackedVector2Array, camera: Camera2D) -> bool:
 	if polygon != null and polygon.size() > 0:
 		# 将鼠标位置转换到节点的局部坐标系
 		var local_mouse_pos: Vector2 = mouse_position
 		# 如果不在CanvasLayer中，需要将UI坐标转换回场景坐标
 		if !in_canvaslayer:
-			local_mouse_pos = ui_to_scene(mouse_position, curr_camera)
+			local_mouse_pos = ui_to_scene(mouse_position, camera)
 		# 转换到节点的局部坐标系
 		local_mouse_pos = node.to_local(local_mouse_pos)
 		# 使用Godot内置的几何检测函数
 		if Geometry2D.is_point_in_polygon(local_mouse_pos, polygon):
 			return true
 	return false
+
+func is_line2d_node_coll(node: Line2D, in_canvaslayer: bool, mouse_position: Vector2, camera: Camera2D) -> bool:
+	var points: PackedVector2Array = node.points
+	if points == null or points.size() < 2:
+		return false
+	
+	# 将鼠标位置转换到节点的局部坐标系
+	var local_mouse_pos: Vector2 = mouse_position
+	if !in_canvaslayer:
+		local_mouse_pos = ui_to_scene(mouse_position, camera)
+	local_mouse_pos = node.to_local(local_mouse_pos)
+	
+	# 获取线宽，作为检测距离阈值
+	var threshold: float = max(node.width * 0.5, 5.0)  # 至少5像素的检测范围
+	
+	# 检测点是否在任意线段附近
+	for i in range(points.size() - 1):
+		var p1: Vector2 = points[i]
+		var p2: Vector2 = points[i + 1]
+		var dist: float = _point_to_segment_distance(local_mouse_pos, p1, p2)
+		if dist <= threshold:
+			return true
+	
+	return false
+
+# 计算点到线段的最短距离
+func _point_to_segment_distance(point: Vector2, seg_start: Vector2, seg_end: Vector2) -> float:
+	var segment: Vector2 = seg_end - seg_start
+	var length_sq: float = segment.length_squared()
+	
+	if length_sq == 0:
+		# 线段退化为点
+		return point.distance_to(seg_start)
+	
+	# 计算投影参数 t，限制在 [0, 1] 范围内
+	var t: float = clamp(((point - seg_start).dot(segment)) / length_sq, 0.0, 1.0)
+	# 计算最近点
+	var closest_point: Vector2 = seg_start + t * segment
+	return point.distance_to(closest_point)
 
 ## 旋转矩形检测
 func is_in_rotated_rect(mouse_pos: Vector2, rect: Rect2, _rotation: float, _offset: Vector2) -> bool:
@@ -414,6 +456,21 @@ func calc_node_rect(node: Node) -> DsNodeTransInfo:
 		elif node is TouchScreenButton and node.texture_normal != null:
 			var _scale: Vector2 = node.global_scale
 			var size: Vector2 = node.texture_normal.get_size() * _scale
+			return DsNodeTransInfo.new(pos, size, rot)
+		elif node is Line2D and node.points.size() >= 2:
+			var _scale: Vector2 = node.global_scale
+			var points: PackedVector2Array = node.points
+			# 计算 Line2D 的边界矩形大小（用于拣选检测）
+			var min_pos: Vector2 = points[0]
+			var max_pos: Vector2 = points[0]
+			for point in points:
+				min_pos.x = min(min_pos.x, point.x)
+				min_pos.y = min(min_pos.y, point.y)
+				max_pos.x = max(max_pos.x, point.x)
+				max_pos.y = max(max_pos.y, point.y)
+			var local_size: Vector2 = max_pos - min_pos
+			var size: Vector2 = local_size * _scale
+			# 返回节点原点位置（不加偏移），因为绘制时 points 是相对于原点的
 			return DsNodeTransInfo.new(pos, size, rot)
 		return DsNodeTransInfo.new(pos, Vector2.ZERO, rot)
 	return DsNodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)

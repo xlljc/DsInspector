@@ -406,4 +406,5 @@ texture_pressed = ExtResource("4_lq565")
 position = Vector2(436, 14)
 rotation = -0.514872
 scale = Vector2(0.5, 1)
+texture_normal = ExtResource("2_yow5e")
 shape = SubResource("CapsuleShape2D_jtjhr")

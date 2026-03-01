@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cibl6pnjmm7tt"]
+[gd_scene load_steps=7 format=3 uid="uid://cibl6pnjmm7tt"]
 
 [ext_resource type="Script" path="res://demo/Main2.gd" id="1_cd67i"]
 [ext_resource type="PackedScene" uid="uid://dg7yokqpg14u" path="res://demo/TestWindow.tscn" id="2_xdwq8"]
@@ -6,6 +6,10 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mb71u"]
 size = Vector2(128, 128)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lyxb3"]
+radius = 51.43
+height = 167.97
 
 [sub_resource type="Curve2D" id="Curve2D_efqod"]
 _data = {
@@ -172,6 +176,18 @@ texture = ExtResource("3_j24b1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SubViewportContainer/SubViewport/StaticBody2D2"]
 shape = SubResource("RectangleShape2D_mb71u")
+
+[node name="TouchScreenButton2" type="TouchScreenButton" parent="SubViewportContainer/SubViewport"]
+position = Vector2(200, 30)
+rotation = -0.514872
+scale = Vector2(0.5, 1)
+texture_normal = ExtResource("3_j24b1")
+shape = SubResource("CapsuleShape2D_lyxb3")
+
+[node name="Line2D" type="Line2D" parent="SubViewportContainer/SubViewport"]
+position = Vector2(50, 150)
+scale = Vector2(0.3, 0.3)
+points = PackedVector2Array(-16, -74, 91, -13, -36, 125, -90, 49, -24, 13, -97, -48)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(105, 225)
