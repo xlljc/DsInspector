@@ -106,11 +106,11 @@ func _start_http_server():
 	http_server = TCPServer.new()
 	var err = http_server.listen(server_port, "127.0.0.1")
 	if err != OK:
-		print("DsInspector: 无法启动HTTP服务器，端口 ", server_port, " 可能已被占用")
+		printerr("DsInspector: Failed to start HTTP server, port ", server_port, " may be in use")
 		http_server = null
 		return
-	
-	print("DsInspector: HTTP服务器已启动，监听端口 ", server_port)
+			
+	print("DsInspector: HTTP server started, listening on port ", server_port)
 	
 	# 创建定时器定期检查新连接
 	# 由于EditorPlugin没有_process，我们使用Timer节点
@@ -139,7 +139,7 @@ func _stop_http_server():
 			if client != null:
 				client.disconnect_from_host()
 		server_clients.clear()
-		print("DsInspector: HTTP服务器已停止")
+		print("DsInspector: HTTP server stopped")
 
 ## 检查服务器连接
 func _check_server_connections():
@@ -262,7 +262,7 @@ func _parse_query_string(query: String) -> Dictionary:
 ## 在编辑器中打开脚本
 func _open_script_in_editor(script_path: String):
 	if script_path.is_empty():
-		print("DsInspector: Script path is empty")
+		printerr("DsInspector: Script path is empty")
 		return
 	
 	# URL解码
@@ -270,7 +270,7 @@ func _open_script_in_editor(script_path: String):
 	
 	var script: Script = load(script_path)
 	if script == null:
-		print("DsInspector: Failed to load script: ", script_path)
+		printerr("DsInspector: Failed to load script: ", script_path)
 		return
 	
 	call_deferred("_do_open_script", script)
@@ -283,7 +283,7 @@ func _do_open_script(script: Script):
 ## 在编辑器中打开场景
 func _open_scene_in_editor(scene_path: String):
 	if scene_path.is_empty():
-		print("DsInspector: Scene path is empty")
+		printerr("DsInspector: Scene path is empty")
 		return
 	
 	# URL解码

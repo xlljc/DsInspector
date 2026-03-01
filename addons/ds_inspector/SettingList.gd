@@ -192,22 +192,8 @@ func _init_language_options():
 	local_option.clear()
 	var local = debug_tool.local
 	
-	# 获取保存的语言设置
+	# 获取保存的语言设置（SaveConfig 已在初始化时检测系统语言）
 	var saved_language = debug_tool.save_config.get_language()
-	
-	# 如果保存的语言为空，则获取系统语言
-	if saved_language == "":
-		var system_locale = OS.get_locale_language()  # 获取系统语言代码，如 "zh", "en"
-		
-		# 检查系统语言是否在可用语言列表中
-		if local.available_locales.has(system_locale):
-			saved_language = system_locale
-		else:
-			# 如果没有系统语言的翻译，则使用英语
-			saved_language = "en"
-		
-		# 保存选择的语言
-		debug_tool.save_config.set_language(saved_language)
 	
 	# 遍历所有可用语言并添加到选项中
 	var index = 0

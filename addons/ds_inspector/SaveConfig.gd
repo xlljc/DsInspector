@@ -265,6 +265,11 @@ func _load_config() -> void:
 		# 如果文件不存在，使用默认配置
 		_config_data = ConfigData.new()
 		save_config()
+	
+	# 如果语言未设置（首次运行或配置文件中没有语言设置），则检测系统语言
+	if _config_data.language == "":
+		_config_data.language = _detect_system_language()
+		save_config()
 
 # 保存窗口状态
 func save_window_state(window_size: Vector2, window_position: Vector2) -> void:
@@ -649,3 +654,40 @@ func set_language(language: String) -> void:
 # 获取语言
 func get_language() -> String:
 	return _config_data.language
+
+# 检测系统语言
+func _detect_system_language() -> String:
+	var system_locale = OS.get_locale_language()  # 获取系统语言代码，如 "zh", "en"
+	
+	# 获取可用语言列表
+	var available_locales = _get_available_locales()
+	
+	# 检查系统语言是否在可用语言列表中
+	if available_locales.has(system_locale):
+		return system_locale
+	else:
+		# 如果没有系统语言的翻译，则使用英语
+		return "en"
+
+# 扫描获取可用语言列表
+func _get_available_locales() -> Dictionary:
+	var locales = {}
+	var localization_path = "res://addons/ds_inspector/Localization/"
+	
+	var dir = DirAccess.open(localization_path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		
+		while file_name != "":
+			# 只处理 .json 文件
+			if not dir.current_is_dir() and file_name.ends_with(".json"):
+				# 提取语言代码（文件名去掉 .json 后缀）
+				var locale = file_name.trim_suffix(".json")
+				locales[locale] = locale
+			
+			file_name = dir.get_next()
+		
+		dir.list_dir_end()
+	
+	return locales
