@@ -79,6 +79,7 @@ public static class CheatManager
 {
     private static SceneTree _tree;
     private static Node _dsInspector;
+    private static VBoxContainer _cheatVBoxContainer;
 
     /// <summary>
     /// 初始化CheatManager，传入SceneTree实例
@@ -97,8 +98,30 @@ public static class CheatManager
             return null;
         }
         if (_dsInspector == null)
-            _dsInspector = _tree.Root.GetNodeOrNull("DsInspector");
+        {
+            var inst = _tree.Root.GetNodeOrNull("DsInspectorTool");
+            _dsInspector = inst.Get("cheat").As<Node>();
+        }
         return _dsInspector;
+    }
+    
+    private static VBoxContainer GetCheatVBoxContainer()
+    {
+        if (_cheatVBoxContainer == null)
+        {
+            var dsInspector = GetDsInspector();
+            if (dsInspector != null)
+            {
+                _cheatVBoxContainer = _dsInspector.Get("cheat_list").As<VBoxContainer>();
+                var inst = _tree.Root.GetNodeOrNull("DsInspectorTool");
+                var label = inst.GetNodeOrNull<Label>("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat/CheatTips");
+                if (label != null)
+                {
+                    label.Visible = false;
+                }
+            }
+        }
+        return _cheatVBoxContainer;
     }
 
     /// <summary>
@@ -119,6 +142,16 @@ public static class CheatManager
         var dsInspector = GetDsInspector();
         if (dsInspector != null)
             dsInspector.Call("add_cheat_button_callable", title, callable);
+    }
+
+    /// <summary>
+    /// 向DsInspector添加作弊项
+    /// </summary>
+    public static void AddCheatItem(Node item)
+    {
+        var vboxContainer = GetCheatVBoxContainer();
+        if (vboxContainer != null)
+            vboxContainer.AddChild(item);
     }
 }
 ```

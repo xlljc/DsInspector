@@ -77,18 +77,17 @@ In C# projects, you can use the following wrapper class to conveniently add **ch
 using Godot;
 
 /// <summary>
-/// Provides static methods for interacting with the DsInspector singleton,
-/// allowing you to add cheat/debug buttons.
-/// This class needs to be initialized after SceneTree initialization
-/// by calling the <see cref="Init(SceneTree)"/> method.
+/// Provides static methods for interacting with the DsInspector singleton to add cheat buttons.
+/// This class should be used after SceneTree initialization via the <see cref="Init(SceneTree)"/> method.
 /// </summary>
 public static class CheatManager
 {
     private static SceneTree _tree;
     private static Node _dsInspector;
+    private static VBoxContainer _cheatVBoxContainer;
 
     /// <summary>
-    /// Initializes CheatManager, passing in a SceneTree instance
+    /// Initialize CheatManager by passing a SceneTree instance.
     /// </summary>
     public static void Init(SceneTree tree)
     {
@@ -104,12 +103,34 @@ public static class CheatManager
             return null;
         }
         if (_dsInspector == null)
-            _dsInspector = _tree.Root.GetNodeOrNull("DsInspector");
+        {
+            var inst = _tree.Root.GetNodeOrNull("DsInspectorTool");
+            _dsInspector = inst.Get("cheat").As<Node>();
+        }
         return _dsInspector;
+    }
+    
+    private static VBoxContainer GetCheatVBoxContainer()
+    {
+        if (_cheatVBoxContainer == null)
+        {
+            var dsInspector = GetDsInspector();
+            if (dsInspector != null)
+            {
+                _cheatVBoxContainer = _dsInspector.Get("cheat_list").As<VBoxContainer>();
+                var inst = _tree.Root.GetNodeOrNull("DsInspectorTool");
+                var label = inst.GetNodeOrNull<Label>("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat/CheatTips");
+                if (label != null)
+                {
+                    label.Visible = false;
+                }
+            }
+        }
+        return _cheatVBoxContainer;
     }
 
     /// <summary>
-    /// Adds a cheat button to DsInspector by calling the GDScript singleton method.
+    /// Add a cheat button to DsInspector (calls GDScript singleton method).
     /// </summary>
     public static void AddCheatButton(string title, Node target, string method)
     {
@@ -119,13 +140,23 @@ public static class CheatManager
     }
 
     /// <summary>
-    /// Adds a cheat button to DsInspector using a Callable.
+    /// Add a cheat button to DsInspector (via Callable).
     /// </summary>
     public static void AddCheatButtonCallable(string title, Callable callable)
     {
         var dsInspector = GetDsInspector();
         if (dsInspector != null)
             dsInspector.Call("add_cheat_button_callable", title, callable);
+    }
+
+    /// <summary>
+    /// Add a cheat item to DsInspector.
+    /// </summary>
+    public static void AddCheatItem(Node item)
+    {
+        var vboxContainer = GetCheatVBoxContainer();
+        if (vboxContainer != null)
+            vboxContainer.AddChild(item);
     }
 }
 ```
