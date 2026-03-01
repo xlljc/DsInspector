@@ -253,7 +253,9 @@ func _draw_border(brush_node: CanvasItem, path_tips: DsNodePathTips):
 			_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, false)
 	elif _draw_node is TouchScreenButton:
 		if _draw_node.shape != null:
-			_draw_node_shape(brush_node, _draw_node.shape, trans.position + trans.size * 0.5, trans.scale * _draw_node.global_scale, trans.rotation)
+			# 计算 shape 中心位置：偏移量需要经过旋转变换
+			var offset = (trans.size * 0.5).rotated(trans.rotation)
+			_draw_node_shape(brush_node, _draw_node.shape, trans.position + offset, trans.scale * _draw_node.global_scale, trans.rotation)
 		_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, false)
 	elif _draw_node is VisibleOnScreenEnabler2D or _draw_node is VisibleOnScreenNotifier2D:
 		_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, true)
@@ -371,9 +373,10 @@ func _draw_node_shape(brush_node: CanvasItem, shape: Shape2D, pos: Vector2, tr_s
 	var wscale: float = get_viewport_wscale()
 	brush_node.draw_circle(pos, 3 * wscale, Color(1, 0, 0))
 	if shape != null:
-		brush_node.draw_set_transform(pos, rot, tr_scale)
+		var xform = Transform2D(rot, pos).scaled_local(tr_scale)
+		brush_node.draw_set_transform_matrix(xform)
 		shape.draw(brush_node.get_canvas_item(), Color(0, 1, 1, 0.5))
-		brush_node.draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
+		brush_node.draw_set_transform_matrix(Transform2D.IDENTITY)
 
 func _draw_node_polygon(brush_node: CanvasItem, polygon: PackedVector2Array, pos: Vector2, tr_scale: Vector2, rot: float):
 	var wscale: float = get_viewport_wscale()
@@ -383,11 +386,12 @@ func _draw_node_polygon(brush_node: CanvasItem, polygon: PackedVector2Array, pos
 		var arr: Array[Vector2] = []
 		arr.append_array(polygon)
 		arr.append(polygon[0])
-		brush_node.draw_set_transform(pos, rot, tr_scale)
+		var xform = Transform2D(rot, pos).scaled_local(tr_scale)
+		brush_node.draw_set_transform_matrix(xform)
 		# 画填充多边形
 		brush_node.draw_polygon(polygon, [Color(1, 0, 0, 0.3)])  # 半透明红色
 		brush_node.draw_polyline(arr, Color(1, 0, 0), 2.0 * wscale)  # 闭合线
-		brush_node.draw_set_transform(Vector2.ZERO, 0, Vector2.ZERO)
+		brush_node.draw_set_transform_matrix(Transform2D.IDENTITY)
 
 func _draw_node_rect(brush_node: CanvasItem, pos: Vector2, tr_scale: Vector2, size: Vector2, rot: float, filled: bool):
 	var wscale: float = get_viewport_wscale()
@@ -395,21 +399,23 @@ func _draw_node_rect(brush_node: CanvasItem, pos: Vector2, tr_scale: Vector2, si
 	if size == Vector2.ZERO:
 		return
 	# 设置绘制变换
-	brush_node.draw_set_transform(pos, rot, tr_scale)
+	var xform = Transform2D(rot, pos).scaled_local(tr_scale)
+	brush_node.draw_set_transform_matrix(xform)
 	# 绘制矩形
 	var rect = Rect2(Vector2.ZERO, size)
 	if filled:
 		brush_node.draw_rect(rect, Color(1,0,0,0.3), true)
 	brush_node.draw_rect(rect, Color(1,0,0), false, 1 / tr_scale.x * 2 * wscale)
 	# 重置变换
-	brush_node.draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+	brush_node.draw_set_transform_matrix(Transform2D.IDENTITY)
 
 func _draw_node_path(brush_node: CanvasItem, curve: Curve2D, pos: Vector2, canvas_scale: Vector2, rot: float, node_scale: Vector2):
 	var wscale: float = get_viewport_wscale()
 	brush_node.draw_circle(pos, 3 * wscale, Color(1, 0, 0))
 	if curve != null and curve.get_point_count() > 0:
 		# 设置变换，保持 canvas_scale 不变
-		brush_node.draw_set_transform(pos, rot, canvas_scale)
+		var xform = Transform2D(rot, pos).scaled_local(canvas_scale)
+		brush_node.draw_set_transform_matrix(xform)
 		# 获取曲线的细分点并绘制
 		var points: PackedVector2Array = curve.get_baked_points()
 		if points.size() > 1:
@@ -462,14 +468,15 @@ func _draw_node_path(brush_node: CanvasItem, curve: Curve2D, pos: Vector2, canva
 				var point_pos = curve.get_point_position(i) * node_scale
 				brush_node.draw_circle(point_pos, 4 * wscale, Color(0, 1, 0, 0.55))
 		# 重置变换
-		brush_node.draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+		brush_node.draw_set_transform_matrix(Transform2D.IDENTITY)
 
 func _draw_node_line(brush_node: CanvasItem, line: Line2D, pos: Vector2, canvas_scale: Vector2, rot: float, node_scale: Vector2):
 	var wscale: float = get_viewport_wscale()
 	brush_node.draw_circle(pos, 3 * wscale, Color(1, 0, 0))
 	if line != null and line.points.size() > 0:
 		# 设置变换，保持 canvas_scale 不变
-		brush_node.draw_set_transform(pos, rot, canvas_scale)
+		var xform = Transform2D(rot, pos).scaled_local(canvas_scale)
+		brush_node.draw_set_transform_matrix(xform)
 		# 将每个点应用 node_scale
 		var scaled_points: PackedVector2Array = []
 		for point in line.points:
@@ -492,4 +499,4 @@ func _draw_node_line(brush_node: CanvasItem, line: Line2D, pos: Vector2, canvas_
 				var rect = Rect2(min_pos, max_pos - min_pos)
 				brush_node.draw_rect(rect, Color(1, 0, 0), false, 2.0 * wscale)
 		# 重置变换
-		brush_node.draw_set_transform(Vector2.ZERO, 0, Vector2.ONE)
+		brush_node.draw_set_transform_matrix(Transform2D.IDENTITY)
