@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://de6ga7m5exyll"]
+[gd_scene load_steps=14 format=3 uid="uid://de6ga7m5exyll"]
 
 [ext_resource type="Script" path="res://demo/Main.gd" id="1_ghtww"]
 [ext_resource type="Script" path="res://demo/RotAnim.gd" id="1_j20sw"]
@@ -105,6 +105,10 @@ _data = {
 "points": PackedVector2Array(29.9336, -23.4026, -29.9336, 23.4026, -148, -23, 0, 0, 0, 0, -104, 100, 0, 0, 0, 0, -38, 87, 0, 0, 0, 0, 3, -52, -24.219, -33.4712, 24.219, 33.4712, -62, -13, 3.80973, -44.9004, -3.80973, 44.9004, 19, 42)
 }
 point_count = 6
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jtjhr"]
+radius = 51.43
+height = 167.97
 
 [node name="Main2" type="Node2D" node_paths=PackedStringArray("ref_node", "ref_node2")]
 position = Vector2(422, 337)
@@ -391,3 +395,16 @@ texture = ExtResource("2_yow5e")
 position = Vector2(169, 324)
 scale = Vector2(1, 2)
 points = PackedVector2Array(-16, -74, 91, -13, -36, 125, -90, 49, -24, 13, -97, -48)
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="."]
+position = Vector2(256, 28)
+rotation = 0.514872
+texture_normal = ExtResource("2_yow5e")
+texture_pressed = ExtResource("4_lq565")
+
+[node name="TouchScreenButton2" type="TouchScreenButton" parent="."]
+position = Vector2(436, 14)
+rotation = -0.514872
+scale = Vector2(0.5, 1)
+texture_normal = ExtResource("2_yow5e")
+shape = SubResource("CapsuleShape2D_jtjhr")

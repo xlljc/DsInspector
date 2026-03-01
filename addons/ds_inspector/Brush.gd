@@ -242,7 +242,6 @@ func _draw():
 
 func _draw_border(brush_node: CanvasItem, path_tips: DsNodePathTips):
 	var trans = calc_node_trans(_draw_node)
-
 	if _draw_node is CollisionShape2D:
 		_draw_node_shape(brush_node, _draw_node.shape, trans.position, trans.scale, trans.rotation)
 	elif _draw_node is CollisionPolygon2D or _draw_node is Polygon2D:
@@ -252,6 +251,10 @@ func _draw_border(brush_node: CanvasItem, path_tips: DsNodePathTips):
 			_draw_node_polygon(brush_node, _draw_node.occluder.polygon, trans.position, trans.scale, trans.rotation)
 		else:
 			_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, false)
+	elif _draw_node is TouchScreenButton:
+		if _draw_node.shape != null:
+			_draw_node_shape(brush_node, _draw_node.shape, trans.position + trans.size * 0.5, trans.scale * _draw_node.global_scale, trans.rotation)
+		_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, false)
 	elif _draw_node is VisibleOnScreenEnabler2D or _draw_node is VisibleOnScreenNotifier2D:
 		_draw_node_rect(brush_node, trans.position, trans.scale, trans.size, trans.rotation, true)
 	elif _draw_node is Path2D:

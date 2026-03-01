@@ -411,6 +411,10 @@ func calc_node_rect(node: Node) -> DsNodeTransInfo:
 			var rect: Rect2 = node.rect;
 			pos -= (rect.size * 0.5 * _scale).rotated(rot)
 			return DsNodeTransInfo.new(pos, rect.size * _scale, rot)
+		elif node is TouchScreenButton and node.texture_normal != null:
+			var _scale: Vector2 = node.global_scale
+			var size: Vector2 = node.texture_normal.get_size() * _scale
+			return DsNodeTransInfo.new(pos, size, rot)
 		return DsNodeTransInfo.new(pos, Vector2.ZERO, rot)
 	return DsNodeTransInfo.new(Vector2.ZERO, Vector2.ZERO, 0)
 
