@@ -118,12 +118,6 @@ public static class CheatManager
             if (dsInspector != null)
             {
                 _cheatVBoxContainer = _dsInspector.Get("cheat_list").As<VBoxContainer>();
-                var inst = _tree.Root.GetNodeOrNull("DsInspectorTool");
-                var label = inst.GetNodeOrNull<Label>("WindowDialog/Bg/ScrollContainer/MarginContainer/VBoxContainer/HSplitContainer/TabContainer/Cheat/CheatTips");
-                if (label != null)
-                {
-                    label.Visible = false;
-                }
             }
         }
         return _cheatVBoxContainer;
