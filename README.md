@@ -1,5 +1,7 @@
 # DsInspector
 
+[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgodotengine.org%2Fasset-library%2Fapi%2Fasset%2F4605&query=%24.version_string&logo=godotengine&label=asset%20library&labelColor=333639)](https://godotengine.org/asset-library/asset/4605)
+
 [English](README.md) | [中文](README_zh.md)
 
 **DsInspector (Developer Support Inspector)** is a **Godot 4** runtime debugging plugin that allows you to **view and modify nodes and properties in the scene tree in real time** while the game is running.
